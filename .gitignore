@@ -15,9 +15,9 @@
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
+![Rr]elease/
+![Rr]eleases/
+!x64/
 x86/
 bld/
 [Bb]in/
@@ -78,6 +78,7 @@ StyleCopReport.xml
 *.tmp
 *.tmp_proj
 *.log
+*.tlog
 *.vspscc
 *.vssscc
 .builds
