@@ -15,6 +15,6 @@ This repository contains the VRTRIX Glove Motionbuilder Plugin, which allows use
 
 - Note that this repository may contains code for work-in-progress modules, tentative modules, or older modules that may be unsupported. And this repository's content is based on Motionbuilder 2016 SDK. For other version of Motionbuilder, we recommend using the release version packages available on the [our release page][devsite].
 
-[chinese]: https://github.com/VRTRIX/VRTRIXGlove_Unity3D_SDK/blob/master/README_CN.md "chinese"
-[devsite]: https://github.com/VRTRIX/VRTRIXGlove_Unity3D_SDK/releases "VRTRIX Glove Unity Plugin Release site"
+[chinese]: https://github.com/VRTRIX/VRTRIXGlove_MotionBuilder_Plugin/blob/master/README_CN.md "chinese"
+[devsite]: https://github.com/VRTRIX/VRTRIXGlove_MotionBuilder_Plugin/releases "VRTRIX Glove MB Plugin Release site"
 
