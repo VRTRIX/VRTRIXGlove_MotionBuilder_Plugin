@@ -130,7 +130,8 @@ namespace VRTRIX {
 		AlgorithmConfig_FingerBendUpThreshold = 5,
 		AlgorithmConfig_FingerBendDownThreshold = 6,
 		AlgorithmConfig_ThumbOffset = 7,
-		AlgorithmConfig_Max = 8,
+		AlgorithmConfig_FinalFingerSpacing = 8,
+		AlgorithmConfig_Max = 9,
 	};
 	
 	struct PortInfo {

@@ -36,6 +36,9 @@
     <ClInclude Include="statushandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JsonHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

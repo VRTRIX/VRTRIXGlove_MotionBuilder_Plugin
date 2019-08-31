@@ -4,6 +4,7 @@
 #include "statushandle.h"
 #include "BoneHierarchySetup.h"
 #include <Eigen/Dense>
+#include "JsonHandler.h"
 
 class ORHardwareVRTRIXGlove
 {
@@ -43,6 +44,7 @@ public:
 	double	GetDataRY		(int pChannel)		{	return mChannel[pChannel].mR[1];		}
 	double	GetDataRZ		(int pChannel)		{	return mChannel[pChannel].mR[2];		}
 
+	void SetConfig(IDataGloveConfig config);
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version);
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
 	void OnTPoseCalibration();
@@ -50,11 +52,13 @@ public:
 	void OnReceivedNewPose(VRTRIX::Pose pose);
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value);
 	void OnSetFingerSpacing(double value);
+	void OnSetFinalFingerSpacing(double value);
 	void OnSetBendUpThreshold(double value);
 	void OnSetBendDownThreshold(double value);
 	void OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
 
 private:
+	IDataGloveConfig    m_cfg;
 	SkeletonNodeInfo	mChannel[BoneNum];//!< Channel data & info.
 	FBTVector	mLocalTranslationL[HandBoneNum];
 	FBTVector	mLocalTranslationR[HandBoneNum];

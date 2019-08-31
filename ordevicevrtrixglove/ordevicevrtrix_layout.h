@@ -1,5 +1,6 @@
 #pragma once
 #include "ordevicevrtrixglove_device.h"
+#include "JsonHandler.h"
 
 class ORDeviceVRTRIXLayout: public FBDeviceLayout
 {
@@ -34,12 +35,14 @@ public:
 	void	EventButtonAdvancedModeEnableClick		( HISender pSender, HKEvent pEvent );
 	void	EventHandTypeChange						( HISender pSender, HKEvent pEvent );
 	void	EventFingerIndexChange					( HISender pSender, HKEvent pEvent );
+	
 	void	EventProximalSlerpDownChange			( HISender pSender, HKEvent pEvent );
 	void	EventDistalSlerpDownChange				( HISender pSender, HKEvent pEvent );
 	void	EventProximalSlerpUpChange				( HISender pSender, HKEvent pEvent );
 	void	EventDistalSlerpUpChange				( HISender pSender, HKEvent pEvent );
 	void	EventButtonParamSyncEnableClick			( HISender pSender, HKEvent pEvent );
 	void	EventFingerSpacingChange				( HISender pSender, HKEvent pEvent );
+	void	EventFinalFingerSpacingChange			( HISender pSender, HKEvent pEvent );
 	void	EventBendUpThresholdChange				( HISender pSender, HKEvent pEvent );
 	void	EventBendDownThresholdChange				( HISender pSender, HKEvent pEvent );
 	
@@ -51,6 +54,8 @@ public:
 	void	EventRHModelOffsetChange				( HISender pSender, HKEvent pEvent );
 
 	void	EventButtonTPoseCalibrationClick		( HISender pSender, HKEvent pEvent);
+	void	EventButtonSaveParameter				( HISender pSender, HKEvent pEvent);
+
 private:
 	FBTabPanel			mTabPanel;
 
@@ -60,7 +65,8 @@ private:
 	FBLayout			mLayoutSetup;
 		FBLabel				mLabelSetup;
 		FBButton			mButtonParamSyncEnable;
-
+		//Save Parameter Button
+		FBButton			mButtonSaveParameter;
 
 	FBLayout			mLayoutTuning;
 		FBButton			mButtonAdvancedEnable;
@@ -68,6 +74,8 @@ private:
 			FBList				mListHandType;
 			FBLabel				mLabelFingerSpacing;
 			FBEditNumber		mEditFingerSpacing;
+			FBLabel				mLabelFinalFingerSpacing;
+			FBEditNumber		mEditFinalFingerSpacing;
 			FBLabel				mLabelFingerIndex;
 			FBList				mListFingerIndex;
 			FBLabel				mLabelProximalSlerpDown;
@@ -117,21 +125,28 @@ private:
 
 private:
 	VRTRIX::HandType		mHandType;					//!< Hand Type
-	int						mFingerIndex;				//!< Finger Index;
+	int						mFingerIndex;				//!< Finger Index
+	int						mHardwareVersion;			//!< Hardware version of data glove
 	bool					mIsParamSyncEnabled;		//!< Whether apply parameters for all fingers.
+	bool					mIsAdvancedModeEnabled;		//!< Whether the advanced mode is enabled.
 	double					mFingerSpacing;				//!< Finger spacing when advanced mode is NOT enabled.
+	double					mFinalFingerSpacing;		//!< Final finger spacing when making a fist
 	double					mBendUpThreshold;			//!< Finger bend up stop threshold
 	double					mBendDownThreshold;			//!< Finger bend down stop threshold
 	double					mProximalSlerpDownValue[5];		//!< Proximal joint slerp-down value array.
 	double					mDistalSlerpDownValue[5];		//!< Distal joint slerp-down value array.
 	double					mProximalSlerpUpValue[5];		//!< Proximal joint slerp-up value array.
 	double					mDistalSlerpUpValue[5];		//!< Distal joint slerp value-up array.
-	FBVector3d				mThumbOffset[3];			//!< Thumb offset vector array
-	
+
+	FBVector3d				mLHThumbOffset[3];			//!< Left Hand Thumb offset vector array
+	FBVector3d				mRHThumbOffset[3];			//!< Right Hand Thumb offset vector array
+
 	FBVector3d				mLHModelOffset[3];			//!< Left Hand Model Offset
 	FBVector3d				mRHModelOffset[3];			//!< Right Hand Model Offset
 
 	FBSystem				mSystem;					//!< System interface.
 	ORDeviceVRTRIXGlove*	mDevice;					//!< Handle onto device.
+
+	JsonHandler * m_jHandler;
 };
 

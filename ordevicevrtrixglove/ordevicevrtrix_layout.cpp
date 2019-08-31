@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ordevicevrtrix_layout.h"
 
-
 #define ORDEVICEVRTRIX_LAYOUT    ORDeviceVRTRIXLayout
 
 //--- FiLMBOX implementation and registration
@@ -19,37 +18,33 @@ bool ORDeviceVRTRIXLayout::FBCreate()
 	mIsParamSyncEnabled = false;
 	mHandType = VRTRIX::Hand_Left;
 	mFingerIndex = 0;
-	mFingerSpacing = 5;
-	mBendUpThreshold = 100;
-	mBendDownThreshold = -160;
-	for (int i = 0; i < 5; ++i) {
-		mProximalSlerpDownValue[i] = 0.45f;
-		mDistalSlerpDownValue[i] = 0.5f;
-		mProximalSlerpUpValue[i] = 0.9f;
-		mDistalSlerpUpValue[i] = 0.0f;
-		if (i == 4) {
-			mProximalSlerpDownValue[i] = 0.55f;
-			mDistalSlerpDownValue[i] = 0.75f;
-			mProximalSlerpUpValue[i] = 0.0f;
-			mDistalSlerpUpValue[i] = 0.0f;
-		}
-	}
 
-	mThumbOffset[0] = { 0,4,-35 };
-	mThumbOffset[1] = { 0,10,-8 };
-	mThumbOffset[2] = { 0,26,-10 };
+	//Loading config file
+	m_jHandler = new JsonHandler();
+
+	mIsAdvancedModeEnabled = m_jHandler->m_cfg.mAdvancedMode;
+	mHardwareVersion = m_jHandler->m_cfg.mHardwareVersion;
+	mFingerSpacing = m_jHandler->m_cfg.mFingerSpacing;
+	mFinalFingerSpacing = m_jHandler->m_cfg.mFinalFingerSpacing;
+	mBendUpThreshold = m_jHandler->m_cfg.mBendUpThreshold;
+	mBendDownThreshold = m_jHandler->m_cfg.mBendDownThreshold;
+	for (int i = 0; i < 5; ++i) {
+		mProximalSlerpDownValue[i] = m_jHandler->m_cfg.mProximalSlerpDownValue[i];
+		mDistalSlerpDownValue[i] = m_jHandler->m_cfg.mDistalSlerpDownValue[i];
+		mProximalSlerpUpValue[i] = m_jHandler->m_cfg.mProximalSlerpUpValue[i];
+		mDistalSlerpUpValue[i] = m_jHandler->m_cfg.mDistalSlerpUpValue[i];
+	}
 	
-	mLHModelOffset[0] = { 1,0,0 };
-	mLHModelOffset[1] = { 0,-1,0 };
-	mLHModelOffset[2] = { 0,0,1 };
-	
-	mRHModelOffset[0] = { -1,0,0 };
-	mRHModelOffset[1] = { 0,1,0 };
-	mRHModelOffset[2] = { 0,0,1 };
+	for (int i = 0; i < 3; ++i) {
+		mLHThumbOffset[i] = m_jHandler->m_cfg.mLHThumbOffset[i];
+		mRHThumbOffset[i] = m_jHandler->m_cfg.mRHThumbOffset[i];
+		mLHModelOffset[i] = m_jHandler->m_cfg.mLHModelOffset[i];
+		mRHModelOffset[i] = m_jHandler->m_cfg.mRHModelOffset[i];
+	}
 
 	// Get a handle on the device.
 	mDevice = ((ORDeviceVRTRIXGlove *)(FBDevice *)Device);
-
+	mDevice->SetConfig(m_jHandler->m_cfg);
 	// Create/configure UI
 	UICreate	();
 	UIConfigure	();
@@ -153,10 +148,19 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 	mLayoutSetup.SetControl(	"ButtonParamSyncEnable",	mButtonParamSyncEnable );
 
 
+	mLayoutSetup.AddRegion( "ButtonSaveParam",		"ButtonSaveParam",
+													0,		kFBAttachLeft,		"LabelSetup",	1.00,
+													lS,		kFBAttachBottom,		"LabelSetup",	1.00,
+													200,		kFBAttachNone,		NULL,					1.00,
+													25,		kFBAttachNone,		NULL,					1.00 );
+	
+	mLayoutSetup.SetControl(	"ButtonSaveParam",	mButtonSaveParameter );
+
+
 	int lS_y	= -15;
 	lW			= 100 *2;
 	lH			= 25;
-	int lHlr	= 160 *2;
+	int lHlr	= 180 *2;
 	int lWlr	= 260 *2;
 	int lWrb	= 140*1.5;
 	int lSlbx	= 30;
@@ -165,7 +169,7 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 
 	mLayoutSetup.AddRegion( "AlgorithmTuning",	"AlgorithmTuning",
 													lS,		kFBAttachLeft,		"",						1.00,
-													15,		kFBAttachBottom,	"LabelSetup",	1.00,
+													15,		kFBAttachBottom,	"ButtonSaveParam",	1.00,
 													lWlr,	kFBAttachNone,	NULL,					1.00,
 													lHlr,	kFBAttachNone,	NULL,					1.00 );
 
@@ -206,11 +210,24 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 													lW,		kFBAttachNone,		NULL,					1.00,
 													0,		kFBAttachHeight,		"LabelFingerSpacing",					1.00 );
 
-	mLayoutTuning.AddRegion( "LabelFingerIndex",		"LabelFingerIndex",
+	mLayoutTuning.AddRegion( "LabelFinalFingerSpacing",		"LabelFinalFingerSpacing",
 													0,		kFBAttachLeft,		"LabelFingerSpacing",	1.00,
-													lS,		kFBAttachBottom,	"LabelFingerSpacing",	1.00,
-													0,		kFBAttachWidth,		"LabelFingerSpacing",	1.00,
-													0,		kFBAttachHeight,	"LabelFingerSpacing",	1.00 );
+													lS,		kFBAttachBottom,		"LabelFingerSpacing",	1.00,
+													0,		kFBAttachWidth,		"LabelFingerSpacing",					1.00,
+													0,		kFBAttachHeight,		"LabelFingerSpacing",					1.00 );
+	
+	mLayoutTuning.AddRegion( "EditFinalFingerSpacing",		"EditFinalFingerSpacing",
+													lS,		kFBAttachRight,		"LabelFinalFingerSpacing",	1.00,
+													0,		kFBAttachTop,		"LabelFinalFingerSpacing",	1.00,
+													lW,		kFBAttachNone,		NULL,					1.00,
+													0,		kFBAttachHeight,		"LabelFinalFingerSpacing",					1.00 );
+
+
+	mLayoutTuning.AddRegion( "LabelFingerIndex",		"LabelFingerIndex",
+													0,		kFBAttachLeft,		"LabelFinalFingerSpacing",	1.00,
+													lS,		kFBAttachBottom,	"LabelFinalFingerSpacing",	1.00,
+													0,		kFBAttachWidth,		"LabelFinalFingerSpacing",	1.00,
+													0,		kFBAttachHeight,	"LabelFinalFingerSpacing",	1.00 );
 	
 	mLayoutTuning.AddRegion( "ListFingerIndex",		"ListFingerIndex",
 													lS,		kFBAttachRight,		"LabelFingerIndex",		1.00,
@@ -330,6 +347,9 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 
 	mLayoutTuning.SetControl( "LabelFingerSpacing",			mLabelFingerSpacing);
 	mLayoutTuning.SetControl( "EditFingerSpacing",			mEditFingerSpacing);
+
+	mLayoutTuning.SetControl( "LabelFinalFingerSpacing",		mLabelFinalFingerSpacing);
+	mLayoutTuning.SetControl( "EditFinalFingerSpacing",			mEditFinalFingerSpacing);
 	
 	mLayoutTuning.SetControl( "LabelFingerIndex",			mLabelFingerIndex);
 	mLayoutTuning.SetControl( "ListFingerIndex",			mListFingerIndex);
@@ -515,12 +535,17 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mIsParamSyncEnabled = true;
 	mButtonParamSyncEnable.OnClick.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventButtonParamSyncEnableClick );
 
+	mButtonSaveParameter.Caption = "Save Parameters";
+	mButtonSaveParameter.Style = kFBPushButton;
+	mButtonSaveParameter.OnClick.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventButtonSaveParameter );
+
+
     mLayoutTuning.SetBorder( "LayoutRegionTuning",	kFBEmbossBorder,false,true,2,1,90.0,0);
 
 
 	mButtonAdvancedEnable.Caption	= "Enable advanced mode";
 	mButtonAdvancedEnable.Style		= kFBCheckbox;
-	mButtonAdvancedEnable.State		= false;
+	mButtonAdvancedEnable.State		= mIsAdvancedModeEnabled;
 	mButtonAdvancedEnable.OnClick.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventButtonAdvancedModeEnableClick );
 	
 	mLabelHandType.Caption = "Hand Type";
@@ -535,6 +560,15 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mEditFingerSpacing.LargeStep = 0.1;
 	mEditFingerSpacing.Value	= mFingerSpacing;
 	mEditFingerSpacing.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventFingerSpacingChange );
+
+
+	mLabelFinalFingerSpacing.Caption = "Final Finger Spacing";
+	mEditFinalFingerSpacing.Min	= -10;
+	mEditFinalFingerSpacing.Max = 10;
+	mEditFinalFingerSpacing.SmallStep = 0.02;
+	mEditFinalFingerSpacing.LargeStep = 0.1;
+	mEditFinalFingerSpacing.Value	= mFinalFingerSpacing;
+	mEditFinalFingerSpacing.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventFinalFingerSpacingChange );
 
 	
 	mLabelFingerIndex.Caption = "Finger Index";
@@ -596,15 +630,15 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mEditBendDownThreshold.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventBendDownThresholdChange );
 
 	mLabelThumbProximalOffset.Caption = "Thumb Proximal Offset:";
-	mEditThumbProximalOffset.Value = mThumbOffset[0];
+	mEditThumbProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[0] : mRHThumbOffset[0];
 	mEditThumbProximalOffset.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventThumbProximalOffsetChange );
 
 	mLabelThumbMiddleOffset.Caption = "Thumb Middle Offset:";
-	mEditThumbMiddleOffset.Value = mThumbOffset[1];
+	mEditThumbMiddleOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[1] : mRHThumbOffset[1];
 	mEditThumbMiddleOffset.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventThumbMiddleOffsetChange );
 
 	mLabelThumbDistalOffset.Caption = "Thumb Distal Offset:";
-	mEditThumbDistalOffset.Value = mThumbOffset[2];
+	mEditThumbDistalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[2] : mRHThumbOffset[2];
 	mEditThumbDistalOffset.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventThumbDistalOffsetChange );
 
 }
@@ -618,6 +652,10 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 	mLabelHardwareVersion.Caption = "Hardware Version";
 	mListHardwareVersion.Items.SetString("DK1~DK2~PRO");	
 	mListHardwareVersion.Style = kFBDropDownList;
+	mListHardwareVersion.ItemIndex = mHardwareVersion;
+	if (mHardwareVersion == 2) {
+		mDevice->SetHardwareVersion(VRTRIX::PRO);
+	}
 	mListHardwareVersion.OnChange.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventHardwareTypeChange );
 
 	mLabelXAxisOffsetL.Caption = "Left Hand Model X Axis:";
@@ -768,6 +806,7 @@ void ORDeviceVRTRIXLayout::EventTabPanelChange( HISender pSender, HKEvent pEvent
 
 void ORDeviceVRTRIXLayout::EventHardwareTypeChange(HISender pSender, HKEvent pEvent)
 {
+	mHardwareVersion = mListHardwareVersion.ItemIndex;
 	if (mListHardwareVersion.ItemIndex == 0) {
 		mDevice->SetHardwareVersion(VRTRIX::DK1);
 	}
@@ -781,12 +820,16 @@ void ORDeviceVRTRIXLayout::EventHardwareTypeChange(HISender pSender, HKEvent pEv
 
 void ORDeviceVRTRIXLayout::EventButtonAdvancedModeEnableClick(HISender pSender, HKEvent pEvent)
 {
-	mDevice->OnAvancedModeEnabled(mButtonAdvancedEnable.State);
+	mDevice->OnAvancedModeEnabled(mButtonAdvancedEnable.State == 1);
+	mIsAdvancedModeEnabled = (mButtonAdvancedEnable.State == 1);
 }
 
 void ORDeviceVRTRIXLayout::EventHandTypeChange(HISender pSender, HKEvent pEvent)
 {
 	mHandType = (mListHandType.ItemIndex == 0) ? VRTRIX::Hand_Left : VRTRIX::Hand_Right;
+	mEditThumbProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[0] : mRHThumbOffset[0];
+	mEditThumbMiddleOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[1] : mRHThumbOffset[1];
+	mEditThumbDistalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[2] : mRHThumbOffset[2];
 }
 
 void ORDeviceVRTRIXLayout::EventFingerIndexChange(HISender pSender, HKEvent pEvent)
@@ -1011,6 +1054,12 @@ void ORDeviceVRTRIXLayout::EventFingerSpacingChange(HISender pSender, HKEvent pE
 	mFingerSpacing = mEditFingerSpacing.Value;
 }
 
+void ORDeviceVRTRIXLayout::EventFinalFingerSpacingChange(HISender pSender, HKEvent pEvent)
+{
+	mDevice->OnSetFinalFingerSpacing(mEditFinalFingerSpacing.Value);
+	mFinalFingerSpacing = mEditFinalFingerSpacing.Value;
+}
+
 void ORDeviceVRTRIXLayout::EventBendUpThresholdChange(HISender pSender, HKEvent pEvent)
 {
 	mDevice->OnSetBendUpThreshold(mEditBendUpThreshold.Value);
@@ -1025,36 +1074,42 @@ void ORDeviceVRTRIXLayout::EventBendDownThresholdChange(HISender pSender, HKEven
 
 void ORDeviceVRTRIXLayout::EventThumbProximalOffsetChange(HISender pSender, HKEvent pEvent)
 {
-	mThumbOffset[0] = mEditThumbProximalOffset.Value;
-	VRTRIX::VRTRIXVector_t offset = { mThumbOffset[0].mValue[0], mThumbOffset[0].mValue[1],mThumbOffset[0].mValue[2] };
 	if (mHandType == VRTRIX::Hand_Left) {
+		mLHThumbOffset[0] = mEditThumbProximalOffset.Value;
+		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[0].mValue[0], (float)mLHThumbOffset[0].mValue[1], (float)mLHThumbOffset[0].mValue[2] };
 		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Left);
 	}
 	else {
+		mRHThumbOffset[0] = mEditThumbProximalOffset.Value;
+		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[0].mValue[0], (float)mRHThumbOffset[0].mValue[1],(float)mRHThumbOffset[0].mValue[2] };
 		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Right);
 	}
 }
 
 void ORDeviceVRTRIXLayout::EventThumbMiddleOffsetChange(HISender pSender, HKEvent pEvent)
 {
-	mThumbOffset[1] = mEditThumbMiddleOffset.Value;
-	VRTRIX::VRTRIXVector_t offset = { mThumbOffset[1].mValue[0], mThumbOffset[1].mValue[1],mThumbOffset[1].mValue[2] };
 	if (mHandType == VRTRIX::Hand_Left) {
+		mLHThumbOffset[1] = mEditThumbMiddleOffset.Value;
+		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[1].mValue[0], (float)mLHThumbOffset[1].mValue[1],(float)mLHThumbOffset[1].mValue[2] };
 		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Left);
 	}
 	else {
+		mRHThumbOffset[1] = mEditThumbMiddleOffset.Value;
+		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[1].mValue[0], (float)mRHThumbOffset[1].mValue[1],(float)mRHThumbOffset[1].mValue[2] };
 		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Right);
 	}
 }
 
 void ORDeviceVRTRIXLayout::EventThumbDistalOffsetChange(HISender pSender, HKEvent pEvent)
 {
-	mThumbOffset[2] = mEditThumbDistalOffset.Value;
-	VRTRIX::VRTRIXVector_t offset = { mThumbOffset[2].mValue[0], mThumbOffset[2].mValue[1],mThumbOffset[2].mValue[2] };
 	if (mHandType == VRTRIX::Hand_Left) {
+		mLHThumbOffset[2] = mEditThumbDistalOffset.Value;
+		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[2].mValue[0], (float)mLHThumbOffset[2].mValue[1],(float)mLHThumbOffset[2].mValue[2] };
 		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Left);
 	}
 	else {
+		mRHThumbOffset[2] = mEditThumbDistalOffset.Value;
+		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[2].mValue[0], (float)mRHThumbOffset[2].mValue[1],(float)mRHThumbOffset[2].mValue[2] };
 		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Right);
 	}
 }
@@ -1062,16 +1117,51 @@ void ORDeviceVRTRIXLayout::EventThumbDistalOffsetChange(HISender pSender, HKEven
 void ORDeviceVRTRIXLayout::EventLHModelOffsetChange(HISender pSender, HKEvent pEvent)
 {
 	mDevice->SetModelOffset((FBVector3d)mEditXAxisOffsetL.Value, (FBVector3d)mEditYAxisOffsetL.Value, (FBVector3d)mEditZAxisOffsetL.Value, VRTRIX::Hand_Left);
+	mLHModelOffset[0] = (FBVector3d)mEditXAxisOffsetL.Value;
+	mLHModelOffset[1] = (FBVector3d)mEditYAxisOffsetL.Value;
+	mLHModelOffset[2] = (FBVector3d)mEditZAxisOffsetL.Value;
 }
 
 void ORDeviceVRTRIXLayout::EventRHModelOffsetChange(HISender pSender, HKEvent pEvent)
 {
 	mDevice->SetModelOffset((FBVector3d)mEditXAxisOffsetR.Value, (FBVector3d)mEditYAxisOffsetR.Value, (FBVector3d)mEditZAxisOffsetR.Value, VRTRIX::Hand_Right);
+	mRHModelOffset[0] = (FBVector3d)mEditXAxisOffsetR.Value;
+	mRHModelOffset[1] = (FBVector3d)mEditYAxisOffsetR.Value;
+	mRHModelOffset[2] = (FBVector3d)mEditZAxisOffsetR.Value;
 }
 
 void ORDeviceVRTRIXLayout::EventButtonTPoseCalibrationClick(HISender pSender, HKEvent pEvent)
 {
 	mDevice->OnTPoseCalibration();
+}
+
+void ORDeviceVRTRIXLayout::EventButtonSaveParameter(HISender pSender, HKEvent pEvent)
+{
+	m_jHandler->m_cfg.mAdvancedMode = mIsAdvancedModeEnabled;
+	m_jHandler->m_cfg.mHardwareVersion = mHardwareVersion;
+	m_jHandler->m_cfg.mFingerSpacing = mFingerSpacing;
+	m_jHandler->m_cfg.mFinalFingerSpacing = mFinalFingerSpacing;
+	m_jHandler->m_cfg.mBendUpThreshold = mBendUpThreshold;
+	m_jHandler->m_cfg.mBendDownThreshold = mBendDownThreshold;
+	for (int i = 0; i < 5; ++i) {
+		m_jHandler->m_cfg.mProximalSlerpDownValue[i] = mProximalSlerpDownValue[i];
+		m_jHandler->m_cfg.mDistalSlerpDownValue[i] = mDistalSlerpDownValue[i];
+		m_jHandler->m_cfg.mProximalSlerpUpValue[i] = mProximalSlerpUpValue[i];
+		m_jHandler->m_cfg.mDistalSlerpUpValue[i] = mDistalSlerpUpValue[i];
+	}
+	
+	for (int i = 0; i < 3; ++i) {
+		m_jHandler->m_cfg.mLHThumbOffset[i] = mLHThumbOffset[i];
+		m_jHandler->m_cfg.mRHThumbOffset[i] = mRHThumbOffset[i];
+		m_jHandler->m_cfg.mLHModelOffset[i] = mLHModelOffset[i];
+		m_jHandler->m_cfg.mRHModelOffset[i] = mRHModelOffset[i];
+	}
+	if (m_jHandler->writeBack()) {
+		FBMessageBox("Parameter Saving", "Data glove parameters have been saved!", "OK" );
+	}
+	else {
+		FBMessageBox("Parameter Saving", "Failed to save parameters!", "OK" );
+	}
 }
 
 

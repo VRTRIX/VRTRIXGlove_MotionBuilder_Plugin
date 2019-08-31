@@ -110,7 +110,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fbsdk.lib;opengl32.lib;glu32.lib;Msdmo.lib;dmoguids.lib;amstrmid.lib;avrt.lib;VRTRIXIMU.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fbsdk.lib;opengl32.lib;glu32.lib;Msdmo.lib;dmoguids.lib;amstrmid.lib;avrt.lib;VRTRIXIMU.lib;jsoncpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -149,11 +149,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fbsdk.lib;opengl32.lib;glu32.lib;Msdmo.lib;dmoguids.lib;amstrmid.lib;avrt.lib;VRTRIXIMU.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fbsdk.lib;opengl32.lib;glu32.lib;Msdmo.lib;dmoguids.lib;amstrmid.lib;avrt.lib;VRTRIXIMU.lib;jsoncpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BoneHierarchySetup.h" />
+    <ClInclude Include="JsonHandler.h" />
     <ClInclude Include="ordevicevrtrixglove_device.h" />
     <ClInclude Include="ordevicevrtrix_layout.h" />
     <ClInclude Include="orhardwarevrtrixglove.h" />

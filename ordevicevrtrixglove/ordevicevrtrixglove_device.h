@@ -78,6 +78,8 @@ public:
 	double GetDataRY(int pChannelIndex)			{	return mHardware.GetDataRY(pChannelIndex);		}
 	double GetDataRZ(int pChannelIndex)			{	return mHardware.GetDataRZ(pChannelIndex);		}
 
+	//--- Set Configuration from json file
+	void SetConfig(IDataGloveConfig config) { return mHardware.SetConfig(config); }
 	//--- Set Hardware version on start
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version) { return mHardware.SetHardwareVersion(version); }
 	//--- Set model offset on start
@@ -88,6 +90,8 @@ public:
 	void OnAvancedModeEnabled(bool isEnabled) { return mHardware.OnAvancedModeEnabled(isEnabled); }
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value) { return mHardware.OnSetAlgorithmParameters(finger, type, value); }
 	void OnSetFingerSpacing(double value) { return mHardware.OnSetFingerSpacing(value); }
+	void OnSetFinalFingerSpacing(double value) { return mHardware.OnSetFinalFingerSpacing(value); }
+
 	void OnSetBendUpThreshold(double value) { return mHardware.OnSetBendUpThreshold(value); }
 	void OnSetBendDownThreshold(double value) { return mHardware.OnSetBendDownThreshold(value); }
 	void OnSetThumbOffset(VRTRIX::VRTRIXVector_t value, VRTRIX::Joint joint, VRTRIX::HandType type) { return mHardware.OnSetThumbOffset(value, joint, type); }

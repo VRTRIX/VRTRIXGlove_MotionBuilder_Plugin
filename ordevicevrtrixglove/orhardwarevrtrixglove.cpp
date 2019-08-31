@@ -76,7 +76,7 @@ bool ORHardwareVRTRIXGlove::Init()
 	m_pLeftHandDataGlove->RegisterIMUDataCallback(pLHEventHandler, this);
 	m_pRightHandDataGlove->RegisterIMUDataCallback(pRHEventHandler, this);
 
-    mInitSuccessful = true;
+	mInitSuccessful = true;
     return true;
 }
 
@@ -147,6 +147,55 @@ bool ORHardwareVRTRIXGlove::StartDataStream()
 			return false;
 		}
 		mOpened = true;
+
+		OnAvancedModeEnabled(m_cfg.mAdvancedMode);
+		OnSetFingerSpacing(m_cfg.mFingerSpacing);
+		OnSetFinalFingerSpacing(m_cfg.mFinalFingerSpacing);
+		OnSetBendUpThreshold(m_cfg.mBendUpThreshold);
+		OnSetBendDownThreshold(m_cfg.mBendDownThreshold);
+		
+		VRTRIX::VRTRIXVector_t offset = { (float)m_cfg.mLHThumbOffset[0].mValue[0], (float)m_cfg.mLHThumbOffset[0].mValue[1],(float)m_cfg.mLHThumbOffset[0].mValue[2] };	
+		OnSetThumbOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Left);
+	    
+		offset = { (float)m_cfg.mLHThumbOffset[1].mValue[0], (float)m_cfg.mLHThumbOffset[1].mValue[1],(float)m_cfg.mLHThumbOffset[1].mValue[2] };	
+		OnSetThumbOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Left);
+	
+		offset = { (float)m_cfg.mLHThumbOffset[2].mValue[0], (float)m_cfg.mLHThumbOffset[2].mValue[1],(float)m_cfg.mLHThumbOffset[2].mValue[2] };	
+		OnSetThumbOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Left);
+	
+		offset = { (float)m_cfg.mRHThumbOffset[0].mValue[0], (float)m_cfg.mRHThumbOffset[0].mValue[1],(float)m_cfg.mRHThumbOffset[0].mValue[2] };	
+		OnSetThumbOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Right);
+	    
+		offset = { (float)m_cfg.mRHThumbOffset[1].mValue[0], (float)m_cfg.mRHThumbOffset[1].mValue[1],(float)m_cfg.mRHThumbOffset[1].mValue[2] };	
+		OnSetThumbOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Right);
+	
+		offset = { (float)m_cfg.mRHThumbOffset[2].mValue[0], (float)m_cfg.mRHThumbOffset[2].mValue[1],(float)m_cfg.mRHThumbOffset[2].mValue[2] };	
+		OnSetThumbOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Right);
+	
+		OnSetAlgorithmParameters(VRTRIX::Index_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpDown, m_cfg.mProximalSlerpDownValue[0]);
+		OnSetAlgorithmParameters(VRTRIX::Middle_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpDown, m_cfg.mProximalSlerpDownValue[1]);
+		OnSetAlgorithmParameters(VRTRIX::Ring_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpDown, m_cfg.mProximalSlerpDownValue[2]);
+		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpDown, m_cfg.mProximalSlerpDownValue[3]);
+		OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_ProximalSlerpDown, m_cfg.mProximalSlerpDownValue[4]);
+	
+		OnSetAlgorithmParameters(VRTRIX::Index_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[0]);
+		OnSetAlgorithmParameters(VRTRIX::Middle_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[1]);
+		OnSetAlgorithmParameters(VRTRIX::Ring_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[2]);
+		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[3]);
+		OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[4]);
+	
+		OnSetAlgorithmParameters(VRTRIX::Index_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[0]);
+		OnSetAlgorithmParameters(VRTRIX::Middle_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[1]);
+		OnSetAlgorithmParameters(VRTRIX::Ring_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[2]);
+		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[3]);
+		OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[4]);
+	
+		OnSetAlgorithmParameters(VRTRIX::Index_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[0]);
+		OnSetAlgorithmParameters(VRTRIX::Middle_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[1]);
+		OnSetAlgorithmParameters(VRTRIX::Ring_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[2]);
+		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[3]);
+		OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[4]);
+
 		return true;
     }
     return false;
@@ -305,6 +354,19 @@ void ORHardwareVRTRIXGlove::SetSensorFloorOffsetSet()
     mSensorFloorOffsetSet = true;
 }
 
+void ORHardwareVRTRIXGlove::SetConfig(IDataGloveConfig config)
+{
+	if (config.mHardwareVersion == 0 || config.mHardwareVersion == 1) {
+		mHardwareVersion = VRTRIX::DK2;
+	}
+	else {
+		mHardwareVersion = VRTRIX::PRO;
+	}
+	SetModelOffset(config.mLHModelOffset[0], config.mLHModelOffset[1], config.mLHModelOffset[2], VRTRIX::Hand_Left);
+	SetModelOffset(config.mRHModelOffset[0], config.mRHModelOffset[1], config.mRHModelOffset[2], VRTRIX::Hand_Right);
+	m_cfg = config;
+}
+
 void ORHardwareVRTRIXGlove::SetHardwareVersion(VRTRIX::GLOVEVERSION version)
 {
 	mHardwareVersion = version;
@@ -393,6 +455,14 @@ void ORHardwareVRTRIXGlove::OnSetFingerSpacing(double value)
 	VRTRIX::EIMUError eIMUError;
 	m_pLeftHandDataGlove->AlgorithmTuning(eIMUError, VRTRIX::Joint_MAX, VRTRIX::AlgorithmConfig_FingerSpcaing, value);
 	m_pRightHandDataGlove->AlgorithmTuning(eIMUError, VRTRIX::Joint_MAX, VRTRIX::AlgorithmConfig_FingerSpcaing, value);
+}
+
+void ORHardwareVRTRIXGlove::OnSetFinalFingerSpacing(double value)
+{
+	if( !mInitSuccessful ) return;
+	VRTRIX::EIMUError eIMUError;
+	m_pLeftHandDataGlove->AlgorithmTuning(eIMUError, VRTRIX::Joint_MAX, VRTRIX::AlgorithmConfig_FinalFingerSpacing, value);
+	m_pRightHandDataGlove->AlgorithmTuning(eIMUError, VRTRIX::Joint_MAX, VRTRIX::AlgorithmConfig_FinalFingerSpacing, value);
 }
 
 void ORHardwareVRTRIXGlove::OnSetBendUpThreshold(double value)
