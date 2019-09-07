@@ -6,7 +6,7 @@
    "mDistalSlerpUpValue" : [ 0.0, 0.0, 0.0, 0.0, 0.0 ],
    "mFinalFingerSpacing" : 0.0,
    "mFingerSpacing" : 5.0,
-   "mHardwareVersion" : 1,
+   "mHardwareVersion" : 2,
    "mLHModelOffset" : [
       [ 1.0, 0.0, 0.0 ],
       [ 0.0, -1.0, 0.0 ],
