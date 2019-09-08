@@ -554,7 +554,7 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mListHandType.OnChange.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventHandTypeChange );
 
 	mLabelFingerSpacing.Caption = "Finger Spacing";
-	mEditFingerSpacing.Min	= 0;
+	mEditFingerSpacing.Min	= -10;
 	mEditFingerSpacing.Max = 10;
 	mEditFingerSpacing.SmallStep = 0.02;
 	mEditFingerSpacing.LargeStep = 0.1;
