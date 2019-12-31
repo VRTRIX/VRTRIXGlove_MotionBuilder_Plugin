@@ -129,24 +129,6 @@ class CVRTRIXIMUEventHandler :public VRTRIX::IVRTRIXIMUEventHandler
 			std::cout << "Magnetic Abnormal Detected!" << std::endl;
 			break;
 		}
-		case(VRTRIX::HandStatus_TrackerConnected): {
-			if (event.type == VRTRIX::Hand_Left) {
-				std::cout << "LH Tracker Connected!" << std::endl;
-			}
-			else if (event.type == VRTRIX::Hand_Right) {
-				std::cout << "RH Tracker Connected!" << std::endl;
-			}
-			break;
-		}
-		case(VRTRIX::HandStatus_TrackerDisconnected): {
-			if (event.type == VRTRIX::Hand_Left) {
-				std::cout << "LH Tracker Disconnected!" << std::endl;
-			}
-			else if (event.type == VRTRIX::Hand_Right) {
-				std::cout << "RH Tracker Disconnected!" << std::endl;
-			}
-			break;
-		}
 		default: break;
 		}
 	}

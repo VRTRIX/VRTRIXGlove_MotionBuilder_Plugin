@@ -3,7 +3,6 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-
 #define RADTODEGREE 180.0f/M_PI
 #define DEGREETORAD M_PI/180.0f
 
@@ -21,7 +20,7 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	mOpened(false),
 	//mKinectMocapJointsState(NULL),
 	mAverageSensorFloorOffset(0.0),
-	mHardwareVersion(VRTRIX::DK2),
+	mHardwareVersion(VRTRIX::PRO11),
 	m_LHOffset(Eigen::Quaterniond::Identity()), 
 	m_RHOffset(Eigen::Quaterniond::Identity()),
     mSensorFloorOffsetSet(false),
@@ -264,6 +263,10 @@ bool ORHardwareVRTRIXGlove::GetSetupInfo()
         memcpy(mChannel[i].mDefaultR,mChannel[i].mR, sizeof(double)*3);
     }
 	HandHierarchySetup(mLocalTranslationR, mLocalTranslationL);
+	for (int i = 0; i < HandBoneNum; ++i) {
+		FBMult(mLocalTranslationR[i], mLocalTranslationR[i] ,(double)Scale);
+		FBMult(mLocalTranslationL[i], mLocalTranslationL[i] ,(double)Scale);
+	}
 	//mKinectMocapJointsState = new FBMocapJointsState(mChannelCount);
     return true;
 }
@@ -356,11 +359,14 @@ void ORHardwareVRTRIXGlove::SetSensorFloorOffsetSet()
 
 void ORHardwareVRTRIXGlove::SetConfig(IDataGloveConfig config)
 {
-	if (config.mHardwareVersion == 0 || config.mHardwareVersion == 1) {
-		mHardwareVersion = VRTRIX::DK2;
+	if (config.mHardwareVersion == 0) {
+		mHardwareVersion = VRTRIX::PRO7;
+	}
+	else if(config.mHardwareVersion == 1){
+		mHardwareVersion = VRTRIX::PRO11;
 	}
 	else {
-		mHardwareVersion = VRTRIX::PRO;
+		mHardwareVersion = VRTRIX::PRO12;
 	}
 	SetModelOffset(config.mLHModelOffset[0], config.mLHModelOffset[1], config.mLHModelOffset[2], VRTRIX::Hand_Left);
 	SetModelOffset(config.mRHModelOffset[0], config.mRHModelOffset[1], config.mRHModelOffset[2], VRTRIX::Hand_Right);
@@ -504,68 +510,112 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 	bool bIsRHFetched = false, bIsLHFetched = false;
 	if (m_bIsRHDataReady) {
 
-		//0:RightHand
-		FBRVector rot = VRTRIXQuaternionToEuler(m_RHPose.imuData[VRTRIX::Wrist_Joint], VRTRIX::Hand_Right, VRTRIX::Wrist_Joint);
-		mChannel[RHandIndex].mR[0] = rot[0];
-		mChannel[RHandIndex].mR[1] = rot[1];
-		mChannel[RHandIndex].mR[2] = rot[2];
-		mChannel[RHandIndex].mT[0] = mLocalTranslationR[0][0];
-		mChannel[RHandIndex].mT[1] = mLocalTranslationR[0][1];
-		mChannel[RHandIndex].mT[2] = mLocalTranslationR[0][2];
+		////0:RightHand
+		//FBRVector rot = VRTRIXQuaternionToEuler(m_RHPose.imuData[VRTRIX::Wrist_Joint], VRTRIX::Hand_Right, VRTRIX::Wrist_Joint);
+		//mChannel[RHandIndex].mR[0] = rot[0];
+		//mChannel[RHandIndex].mR[1] = rot[1];
+		//mChannel[RHandIndex].mR[2] = rot[2];
+		//mChannel[RHandIndex].mT[0] = mChannel[RHandIndex].mDefaultT[0];
+		//mChannel[RHandIndex].mT[1] = mChannel[RHandIndex].mDefaultT[1];
+		//mChannel[RHandIndex].mT[2] = mChannel[RHandIndex].mDefaultT[2];
 
-		for (int i = 0; i < HandBoneNum - 1; ++i) {
+		//for (int i = 0; i < HandBoneNum - 1; ++i) {
+		//	FBRVector rot = VRTRIXQuaternionToEuler(m_RHPose.imuData[(VRTRIX::Joint)i], VRTRIX::Hand_Right, (VRTRIX::Joint)i);
+
+		//	mChannel[RHandIndex + i + 1].mR[0] = rot[0];
+		//	mChannel[RHandIndex + i + 1].mR[1] = rot[1];
+		//	mChannel[RHandIndex + i + 1].mR[2] = rot[2];
+
+		//	int parent = mChannel[RHandIndex + i + 1].mParentChannel;
+		//	FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1 };
+		//	if (parent == RHandIndex) {
+		//		GetTransformOnRigidBody(translation, m_RHPose.imuData[parent - RHandIndex], mLocalTranslationR[i + 1], VRTRIX::Hand_Right);
+		//	}
+		//	else {
+		//		GetTransformOnRigidBody(translation, m_RHPose.imuData[parent - RHandIndex - 1], mLocalTranslationR[i + 1], VRTRIX::Hand_Right);
+		//	}
+		//	mChannel[RHandIndex + i + 1].mT[0] = translation[0];
+		//	mChannel[RHandIndex + i + 1].mT[1] = translation[1];
+		//	mChannel[RHandIndex + i + 1].mT[2] = translation[2];
+
+		for (int i = 0; i < HandBoneNum; ++i) {
 			FBRVector rot = VRTRIXQuaternionToEuler(m_RHPose.imuData[(VRTRIX::Joint)i], VRTRIX::Hand_Right, (VRTRIX::Joint)i);
-
-			mChannel[RHandIndex + i + 1].mR[0] = rot[0];
-			mChannel[RHandIndex + i + 1].mR[1] = rot[1];
-			mChannel[RHandIndex + i + 1].mR[2] = rot[2];
-
-			int parent = mChannel[RHandIndex + i + 1].mParentChannel;
-			FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1 };
-			if (parent == RHandIndex) {
-				GetTransformOnRigidBody(translation, m_RHPose.imuData[parent - RHandIndex], mLocalTranslationR[i + 1], VRTRIX::Hand_Right);
+	
+			mChannel[RHandIndex + i].mR[0] = rot[0];
+			mChannel[RHandIndex + i].mR[1] = rot[1];
+			mChannel[RHandIndex + i].mR[2] = rot[2];
+	
+			if (i == 0) {
+				mChannel[RHandIndex].mT[0] = mChannel[RHandIndex].mDefaultT[0];
+				mChannel[RHandIndex].mT[1] = mChannel[RHandIndex].mDefaultT[1];
+				mChannel[RHandIndex].mT[2] = mChannel[RHandIndex].mDefaultT[2];
 			}
 			else {
-				GetTransformOnRigidBody(translation, m_RHPose.imuData[parent - RHandIndex - 1], mLocalTranslationR[i + 1], VRTRIX::Hand_Right);
+				int parent = mChannel[RHandIndex + i].mParentChannel;
+				FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
+				GetTransformOnRigidBody(translation, m_RHPose.imuData[parent-RHandIndex], mLocalTranslationR[i], VRTRIX::Hand_Right);
+				mChannel[RHandIndex + i].mT[0] = translation[0];
+				mChannel[RHandIndex + i].mT[1] = translation[1];
+				mChannel[RHandIndex + i].mT[2] = translation[2];
 			}
-			mChannel[RHandIndex + i + 1].mT[0] = translation[0];
-			mChannel[RHandIndex + i + 1].mT[1] = translation[1];
-			mChannel[RHandIndex + i + 1].mT[2] = translation[2];
 		}
 		m_bIsRHDataReady = false;
 		bIsRHFetched = true;
 	}
 	if (m_bIsLHDataReady) {
 
-		FBRVector rot = VRTRIXQuaternionToEuler(m_LHPose.imuData[VRTRIX::Wrist_Joint], VRTRIX::Hand_Left, VRTRIX::Wrist_Joint);
-	    mChannel[LHandIndex].mR[0] = rot[0];
-	    mChannel[LHandIndex].mR[1] = rot[1];
-	    mChannel[LHandIndex].mR[2] = rot[2];
-		mChannel[LHandIndex].mT[0] = mLocalTranslationL[0][0];
-	    mChannel[LHandIndex].mT[1] = mLocalTranslationL[0][1];
-	    mChannel[LHandIndex].mT[2] = mLocalTranslationL[0][2];
+		//FBRVector rot = VRTRIXQuaternionToEuler(m_LHPose.imuData[VRTRIX::Wrist_Joint], VRTRIX::Hand_Left, VRTRIX::Wrist_Joint);
+	 //   mChannel[LHandIndex].mR[0] = rot[0];
+	 //   mChannel[LHandIndex].mR[1] = rot[1];
+	 //   mChannel[LHandIndex].mR[2] = rot[2];
+		//mChannel[LHandIndex].mT[0] = mChannel[LHandIndex].mDefaultT[0];
+		//mChannel[LHandIndex].mT[1] = mChannel[LHandIndex].mDefaultT[1];
+		//mChannel[LHandIndex].mT[2] = mChannel[LHandIndex].mDefaultT[2];
 
+		//for (int i = 0; i < HandBoneNum - 1; ++i) {
+		//	FBRVector rot = VRTRIXQuaternionToEuler(m_LHPose.imuData[(VRTRIX::Joint)i], VRTRIX::Hand_Left, (VRTRIX::Joint)i);
 
-		for (int i = 0; i < HandBoneNum - 1; ++i) {
+		//	mChannel[LHandIndex + i + 1].mR[0] = rot[0];
+		//	mChannel[LHandIndex + i + 1].mR[1] = rot[1];
+		//	mChannel[LHandIndex + i + 1].mR[2] = rot[2];
+
+		//	int parent = mChannel[LHandIndex + i + 1].mParentChannel;
+
+		//	FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
+		//	if (parent == LHandIndex) {
+		//		GetTransformOnRigidBody(translation, m_LHPose.imuData[parent-LHandIndex], mLocalTranslationL[i+1], VRTRIX::Hand_Left);
+		//	}
+		//	else {
+		//		GetTransformOnRigidBody(translation, m_LHPose.imuData[parent-LHandIndex-1], mLocalTranslationL[i+1], VRTRIX::Hand_Left);
+		//	}
+		//	mChannel[LHandIndex + i + 1].mT[0] = translation[0];
+		//	mChannel[LHandIndex + i + 1].mT[1] = translation[1];
+		//	mChannel[LHandIndex + i + 1].mT[2] = translation[2];
+		//}
+
+		for (int i = 0; i < HandBoneNum; ++i) {
 			FBRVector rot = VRTRIXQuaternionToEuler(m_LHPose.imuData[(VRTRIX::Joint)i], VRTRIX::Hand_Left, (VRTRIX::Joint)i);
 
-			mChannel[LHandIndex + i + 1].mR[0] = rot[0];
-			mChannel[LHandIndex + i + 1].mR[1] = rot[1];
-			mChannel[LHandIndex + i + 1].mR[2] = rot[2];
+			mChannel[LHandIndex + i].mR[0] = rot[0];
+			mChannel[LHandIndex + i].mR[1] = rot[1];
+			mChannel[LHandIndex + i].mR[2] = rot[2];
 
-			int parent = mChannel[LHandIndex + i + 1].mParentChannel;
-
-			FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
-			if (parent == LHandIndex) {
-				GetTransformOnRigidBody(translation, m_LHPose.imuData[parent-LHandIndex], mLocalTranslationL[i+1], VRTRIX::Hand_Left);
+			if (i == 0) {
+				mChannel[LHandIndex].mT[0] = mChannel[LHandIndex].mDefaultT[0];
+				mChannel[LHandIndex].mT[1] = mChannel[LHandIndex].mDefaultT[1];
+				mChannel[LHandIndex].mT[2] = mChannel[LHandIndex].mDefaultT[2];
 			}
 			else {
-				GetTransformOnRigidBody(translation, m_LHPose.imuData[parent-LHandIndex-1], mLocalTranslationL[i+1], VRTRIX::Hand_Left);
+				int parent = mChannel[LHandIndex + i].mParentChannel;
+				FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
+				GetTransformOnRigidBody(translation, m_LHPose.imuData[parent-LHandIndex], mLocalTranslationL[i], VRTRIX::Hand_Left);
+				mChannel[LHandIndex + i].mT[0] = translation[0];
+				mChannel[LHandIndex + i].mT[1] = translation[1];
+				mChannel[LHandIndex + i].mT[2] = translation[2];
 			}
-			mChannel[LHandIndex + i + 1].mT[0] = translation[0];
-			mChannel[LHandIndex + i + 1].mT[1] = translation[1];
-			mChannel[LHandIndex + i + 1].mT[2] = translation[2];
 		}
+
+
 		m_bIsLHDataReady = false;
 		bIsLHFetched = true;
 	}

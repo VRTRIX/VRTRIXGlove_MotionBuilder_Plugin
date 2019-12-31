@@ -650,11 +650,11 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 {
 	mLabelHardwareVersion.Caption = "Hardware Version";
-	mListHardwareVersion.Items.SetString("DK1~DK2~PRO");	
+	mListHardwareVersion.Items.SetString("PRO7~PRO11~PRO12");	
 	mListHardwareVersion.Style = kFBDropDownList;
 	mListHardwareVersion.ItemIndex = mHardwareVersion;
-	if (mHardwareVersion == 2) {
-		mDevice->SetHardwareVersion(VRTRIX::PRO);
+	if (mHardwareVersion == 1) {
+		mDevice->SetHardwareVersion(VRTRIX::PRO11);
 	}
 	mListHardwareVersion.OnChange.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventHardwareTypeChange );
 
@@ -808,13 +808,13 @@ void ORDeviceVRTRIXLayout::EventHardwareTypeChange(HISender pSender, HKEvent pEv
 {
 	mHardwareVersion = mListHardwareVersion.ItemIndex;
 	if (mListHardwareVersion.ItemIndex == 0) {
-		mDevice->SetHardwareVersion(VRTRIX::DK1);
+		mDevice->SetHardwareVersion(VRTRIX::PRO7);
 	}
 	else if (mListHardwareVersion.ItemIndex == 1) {
-		mDevice->SetHardwareVersion(VRTRIX::DK2);
+		mDevice->SetHardwareVersion(VRTRIX::PRO11);
 	}
 	else {
-		mDevice->SetHardwareVersion(VRTRIX::PRO);
+		mDevice->SetHardwareVersion(VRTRIX::PRO12);
 	}
 }
 
