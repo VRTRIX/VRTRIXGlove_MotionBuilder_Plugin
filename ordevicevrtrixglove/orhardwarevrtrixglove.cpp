@@ -90,8 +90,6 @@ bool ORHardwareVRTRIXGlove::Open()
 	
 	VRTRIX::EIMUError eIMUError;
 	//Prepare PortInfo struct and open the data streaming serial port of glove.
-	//Note: the default baud_rate is 1000000 and should NOT be changed.
-	m_LHportInfo.baud_rate = 1000000;
 	m_LHportInfo.type = VRTRIX::Hand_Left;
 	m_pLeftHandDataGlove->OpenPort(eIMUError, m_LHportInfo);
 
@@ -107,7 +105,6 @@ bool ORHardwareVRTRIXGlove::Open()
 		return false;
 	}
 
-	m_RHportInfo.baud_rate = 1000000;
 	m_RHportInfo.type = VRTRIX::Hand_Right;
 	m_pRightHandDataGlove->OpenPort(eIMUError, m_RHportInfo);
 
