@@ -9,27 +9,29 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+
 #define IMU_NUM 6
+#define BUF_SIZE 100
 
 namespace VRTRIX {
     //! HandType enum.
     /*! Enum values of hand type. */
 	enum HandType {
-		Hand_None = 0,	   
-		Hand_Other = 1,  
-		Hand_Left = 2,
-		Hand_Right = 3, 
-		Hand_Both = 4,  // Currently not supported
+		Hand_None,	   
+		Hand_Other,  
+		Hand_Left,
+		Hand_Right, 
+		Hand_Both,  // Currently not supported
 	};
 
     //! Data glove initMode enum.
     /*! Enum values of glove initialization mode. */
 	enum InitMode
 	{
-		InitMode_None = 0,
-		InitMode_Normal = 1,
-		InitMode_Advanced = 2,
-		InitMode_GloveStatusChecking = 3,
+		InitMode_None,
+		InitMode_Normal,
+		InitMode_Advanced,
+		InitMode_GloveStatusChecking,
 	};
 
 
@@ -44,22 +46,22 @@ namespace VRTRIX {
     //! Joint enum.
     /*! Enum values of data gloves supported hand joints. */
 	enum Joint {
-		Wrist_Joint = 0,
-		Thumb_Proximal = 1,
-		Thumb_Intermediate = 2,
-		Thumb_Distal = 3,
-		Index_Proximal = 4,
-		Index_Intermediate = 5,
-		Index_Distal = 6,
-		Middle_Proximal = 7,
-		Middle_Intermediate = 8,
-		Middle_Distal = 9,
-		Ring_Proximal = 10,
-		Ring_Intermediate = 11,
-		Ring_Distal = 12,
-		Pinky_Proximal = 13,
-		Pinky_Intermediate = 14,
-		Pinky_Distal = 15,
+		Wrist_Joint,
+		Thumb_Proximal,
+		Thumb_Intermediate,
+		Thumb_Distal,
+		Index_Proximal,
+		Index_Intermediate,
+		Index_Distal,
+		Middle_Proximal,
+		Middle_Intermediate,
+		Middle_Distal,
+		Ring_Proximal,
+		Ring_Intermediate,
+		Ring_Distal,
+		Pinky_Proximal,
+		Pinky_Intermediate,
+		Pinky_Distal,
 		Joint_MAX = 16
 	};
 
@@ -67,11 +69,11 @@ namespace VRTRIX {
     //! Finger bend state enum.
     /*! Enum values of data gloves finger bending state. */
 	enum VRTRIXFingerBendState {
-		VRTRIXFinger_None = 0,
-		VRTRIXFinger_BendUp = 1,
-		VRTRIXFinger_BendDown = 2,
-		VRTRIXFinger_BendUpStop = 3,
-		VRTRIXFinger_BendDownStop = 4,
+		VRTRIXFinger_None,
+		VRTRIXFinger_BendUp,
+		VRTRIXFinger_BendDown,
+		VRTRIXFinger_BendUpStop,
+		VRTRIXFinger_BendDownStop,
 	};
 
     //! Data gloves status enum.
@@ -79,8 +81,9 @@ namespace VRTRIX {
 	enum HandStatus 
 	{
 		HandStatus_None,
-		HandStatus_Idle,
-		HandStatus_Running,
+		HandStatus_Connected,
+		HandStatus_Disconnected,
+		HandStatus_ChannelHopping,
 		HandStatus_LowBattery,
 		HandStatus_BatteryFull,
 		HandStatus_Paired,
@@ -92,28 +95,28 @@ namespace VRTRIX {
     /*!	Enum values to pass into InitDataGlove to identify what kind of initialization error is arised.*/
 	enum EInitError
 	{
-		InitError_None = 0,
-		InitError_Unknown = 1,
-		InitError_PortBusy = 2,
-		InitError_ConnectionRefused = 3,
-		InitError_ConnectionReset = 4,
-		InitError_NoSuchDevice = 5,
+		InitError_None,
+		InitError_Unknown,
+		InitError_PortBusy,
+		InitError_ConnectionRefused,
+		InitError_ConnectionReset,
+		InitError_NoSuchDevice,
 	};
 
     //! IMU error enum.
     /*!	Enum values to pass into methods to identify what kind of IMU error is arised. */
 	enum EIMUError
 	{
-		IMUError_None = 0,
-		IMUError_Unknown = 1,
-		IMUError_ConnectionAorted = 2,
-		IMUError_ConnectionInterrupted = 3,
-		IMUError_ConnectionBusy = 4,
-		IMUError_NotConnected = 5,
-		IMUError_TimedOut = 6,
-		IMUError_PortNotFound = 7,
-		IMUError_PortAccessDenied = 8,
-		IMUError_DataNotValid = 9,
+		IMUError_None,
+		IMUError_Unknown,
+		IMUError_ConnectionAorted,
+		IMUError_ConnectionInterrupted,
+		IMUError_ConnectionBusy,
+		IMUError_NotConnected,
+		IMUError_TimedOut,
+		IMUError_PortNotFound,
+		IMUError_PortAccessDenied,
+		IMUError_DataNotValid,
 	};
 
 	
@@ -121,15 +124,15 @@ namespace VRTRIX {
     /*!	Enum values to pass into algorithm tuning methods.*/
 	enum AlgorithmConfig
 	{
-		AlgorithmConfig_ProximalSlerpUp = 0,
-		AlgorithmConfig_ProximalSlerpDown = 1,
-		AlgorithmConfig_DistalSlerpUp = 2,
-		AlgorithmConfig_DistalSlerpDown = 3,
-		AlgorithmConfig_FingerSpcaing = 4,
-		AlgorithmConfig_FingerBendUpThreshold = 5,
-		AlgorithmConfig_FingerBendDownThreshold = 6,
-		AlgorithmConfig_ThumbOffset = 7,
-		AlgorithmConfig_FinalFingerSpacing = 8,
+		AlgorithmConfig_ProximalSlerpUp,
+		AlgorithmConfig_ProximalSlerpDown,
+		AlgorithmConfig_DistalSlerpUp,
+		AlgorithmConfig_DistalSlerpDown,
+		AlgorithmConfig_FingerSpcaing,
+		AlgorithmConfig_FingerBendUpThreshold,
+		AlgorithmConfig_FingerBendDownThreshold,
+		AlgorithmConfig_ThumbOffset,
+		AlgorithmConfig_FinalFingerSpacing,
 		AlgorithmConfig_Max = 9,
 	};
 
@@ -138,20 +141,23 @@ namespace VRTRIX {
 		/*! Baud Rate */
 		int baud_rate;
 
+		/*! Index number of data glove ports */
+		int index = 16;
+
 		/*! Hand Type */
 		HandType type;
 
 		/*! Address of the serial port (this can be passed to the constructor of Serial). */
-		std::string port;
+		char port[BUF_SIZE];
 
 		/*! Human readable description of serial device if available. */
-		std::string description;
+		char description[BUF_SIZE];
 
 		/*! Hardware ID (e.g. VID:PID of USB serial devices) or "n/a" if not available. */
-		std::string hardware_id;
+		char hardware_id[BUF_SIZE];
 
 		/*! Instance ID */
-		std::string instance_id;
+		char instance_id[BUF_SIZE];
 	};
 
 	//! Quaternion data structure used in C++ API.
@@ -187,6 +193,8 @@ namespace VRTRIX {
 	{
 		VRTRIXQuaternion_t imuData[Joint_MAX]; //!< IMU data in quaternion (Global coordinate)
 		HandType type; //!< Glove hand type
+		int dataRate; //!< Glove data rate (Hz)
+		int channel; //!< Glove radio channel (1-99)
 		int calScore[IMU_NUM]; //!< IMU calibration score. Lower score means better calibration results.
 		int radioStrength; //!< Glove wireless radio strength
 		double battery; //!< Glove battery percentage
