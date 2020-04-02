@@ -236,21 +236,21 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 													0,		kFBAttachHeight,	"LabelFingerIndex",		1.00 );
 	
 	
-	mLayoutTuning.AddRegion( "LabelProximalSlerpDown",		"LabelProximalSlerpDown",
-													0,		kFBAttachLeft,		"LabelFingerIndex",		1.00,
-													lS,		kFBAttachBottom,	"LabelFingerIndex",		1.00,
-													0,		kFBAttachWidth,		"LabelFingerIndex",		1.00,
-													0,		kFBAttachHeight,	"LabelFingerIndex",		1.00 );
-	mLayoutTuning.AddRegion( "EditProximalSlerpDown",		"EditProximalSlerpDown",
-													lS,		kFBAttachRight,		"LabelProximalSlerpDown",	1.00,
-													0,		kFBAttachTop,		"LabelProximalSlerpDown",	1.00,
-													lW,		kFBAttachNone,		NULL,						1.00,
-													0,		kFBAttachHeight,	"LabelProximalSlerpDown",	1.00 );
+	//mLayoutTuning.AddRegion( "LabelProximalSlerpDown",		"LabelProximalSlerpDown",
+	//												0,		kFBAttachLeft,		"LabelFingerIndex",		1.00,
+	//												lS,		kFBAttachBottom,	"LabelFingerIndex",		1.00,
+	//												0,		kFBAttachWidth,		"LabelFingerIndex",		1.00,
+	//												0,		kFBAttachHeight,	"LabelFingerIndex",		1.00 );
+	//mLayoutTuning.AddRegion( "EditProximalSlerpDown",		"EditProximalSlerpDown",
+	//												lS,		kFBAttachRight,		"LabelProximalSlerpDown",	1.00,
+	//												0,		kFBAttachTop,		"LabelProximalSlerpDown",	1.00,
+	//												lW,		kFBAttachNone,		NULL,						1.00,
+	//												0,		kFBAttachHeight,	"LabelProximalSlerpDown",	1.00 );
 	mLayoutTuning.AddRegion( "LabelDistalSlerpDown",	"LabelDistalSlerpDown",
-													0,		kFBAttachLeft,		"LabelProximalSlerpDown",	1.00,
-													lS,		kFBAttachBottom,	"LabelProximalSlerpDown",	1.00,
-													0,		kFBAttachWidth,		"LabelProximalSlerpDown",	1.00,
-													0,		kFBAttachHeight,	"LabelProximalSlerpDown",	1.00 );
+													0,		kFBAttachLeft,		"LabelFingerIndex",	1.00,
+													lS,		kFBAttachBottom,	"LabelFingerIndex",	1.00,
+													0,		kFBAttachWidth,		"LabelFingerIndex",	1.00,
+													0,		kFBAttachHeight,	"LabelFingerIndex",	1.00 );
 	mLayoutTuning.AddRegion( "EditDistalSlerpDown",	"EditDistalSlerpDown",
 													lS,		kFBAttachRight,		"LabelDistalSlerpDown",		1.00,
 													0,		kFBAttachTop,		"LabelDistalSlerpDown",		1.00,
@@ -259,21 +259,21 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 
 	
 	
-	mLayoutTuning.AddRegion( "LabelProximalSlerpUp",		"LabelProximalSlerpUp",
-													0,		kFBAttachLeft,		"LabelDistalSlerpDown",		1.00,
-													lS,		kFBAttachBottom,	"LabelDistalSlerpDown",		1.00,
-													0,		kFBAttachWidth,		"LabelDistalSlerpDown",		1.00,
-													0,		kFBAttachHeight,	"LabelDistalSlerpDown",		1.00 );
-	mLayoutTuning.AddRegion( "EditProximalSlerpUp",		"EditProximalSlerpUp",
-													lS,		kFBAttachRight,		"LabelProximalSlerpUp",	1.00,
-													0,		kFBAttachTop,		"LabelProximalSlerpUp",	1.00,
-													lW,		kFBAttachNone,		NULL,					1.00,
-													0,		kFBAttachHeight,	"LabelProximalSlerpUp",					1.00 );
+	//mLayoutTuning.AddRegion( "LabelProximalSlerpUp",		"LabelProximalSlerpUp",
+	//												0,		kFBAttachLeft,		"LabelDistalSlerpDown",		1.00,
+	//												lS,		kFBAttachBottom,	"LabelDistalSlerpDown",		1.00,
+	//												0,		kFBAttachWidth,		"LabelDistalSlerpDown",		1.00,
+	//												0,		kFBAttachHeight,	"LabelDistalSlerpDown",		1.00 );
+	//mLayoutTuning.AddRegion( "EditProximalSlerpUp",		"EditProximalSlerpUp",
+	//												lS,		kFBAttachRight,		"LabelProximalSlerpUp",	1.00,
+	//												0,		kFBAttachTop,		"LabelProximalSlerpUp",	1.00,
+	//												lW,		kFBAttachNone,		NULL,					1.00,
+	//												0,		kFBAttachHeight,	"LabelProximalSlerpUp",					1.00 );
 	mLayoutTuning.AddRegion( "LabelDistalSlerpUp",	"LabelDistalSlerpUp",
-													0,		kFBAttachLeft,		"LabelProximalSlerpUp",	1.00,
-													lS,		kFBAttachBottom,	"LabelProximalSlerpUp",	1.00,
-													0,		kFBAttachWidth,		"LabelProximalSlerpUp",	1.00,
-													0,		kFBAttachHeight,	"LabelProximalSlerpUp",	1.00 );
+													0,		kFBAttachLeft,		"LabelDistalSlerpDown",	1.00,
+													lS,		kFBAttachBottom,	"LabelDistalSlerpDown",	1.00,
+													0,		kFBAttachWidth,		"LabelDistalSlerpDown",	1.00,
+													0,		kFBAttachHeight,	"LabelDistalSlerpDown",	1.00 );
 	mLayoutTuning.AddRegion( "EditDistalSlerpUp",	"EditDistalSlerpUp",
 													lS,		kFBAttachRight,		"LabelDistalSlerpUp",		1.00,
 													0,		kFBAttachTop,		"LabelDistalSlerpUp",		1.00,
@@ -304,10 +304,10 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 
 
 	mLayoutTuning.AddRegion( "LabelThumbProximalOffset",	"LabelThumbProximalOffset",
-													0,		kFBAttachLeft,		"LabelDistalSlerpUp",	1.00,
-													lS,		kFBAttachBottom,	"LabelDistalSlerpUp",	1.00,
-													0,		kFBAttachWidth,		"LabelDistalSlerpUp",	1.00,
-													0,		kFBAttachHeight,	"LabelDistalSlerpUp",	1.00 );
+													0,		kFBAttachLeft,		"LabelDistalSlerpDown",	1.00,
+													lS,		kFBAttachBottom,	"LabelDistalSlerpDown",	1.00,
+													0,		kFBAttachWidth,		"LabelDistalSlerpDown",	1.00,
+													0,		kFBAttachHeight,	"LabelDistalSlerpDown",	1.00 );
 	mLayoutTuning.AddRegion( "EditThumbProximalOffset",		"EditThumbProximalOffset",
 													lS,		kFBAttachRight,		"LabelThumbProximalOffset",		1.00,
 													0,		kFBAttachTop,		"LabelThumbProximalOffset",		1.00,
@@ -354,13 +354,13 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 	mLayoutTuning.SetControl( "LabelFingerIndex",			mLabelFingerIndex);
 	mLayoutTuning.SetControl( "ListFingerIndex",			mListFingerIndex);
 
-	mLayoutTuning.SetControl( "LabelProximalSlerpDown",		mLabelProximalSlerpDown);
-	mLayoutTuning.SetControl( "EditProximalSlerpDown",		mEditProximalSlerpDown);
+	//mLayoutTuning.SetControl( "LabelProximalSlerpDown",		mLabelProximalSlerpDown);
+	//mLayoutTuning.SetControl( "EditProximalSlerpDown",		mEditProximalSlerpDown);
 	mLayoutTuning.SetControl( "LabelDistalSlerpDown",		mLabelDistalSlerpDown);
 	mLayoutTuning.SetControl( "EditDistalSlerpDown",		mEditDistalSlerpDown);
 
-	mLayoutTuning.SetControl( "LabelProximalSlerpUp",		mLabelProximalSlerpUp);
-	mLayoutTuning.SetControl( "EditProximalSlerpUp",		mEditProximalSlerpUp);
+	//mLayoutTuning.SetControl( "LabelProximalSlerpUp",		mLabelProximalSlerpUp);
+	//mLayoutTuning.SetControl( "EditProximalSlerpUp",		mEditProximalSlerpUp);
 	mLayoutTuning.SetControl( "LabelDistalSlerpUp",			mLabelDistalSlerpUp);
 	mLayoutTuning.SetControl( "EditDistalSlerpUp",			mEditDistalSlerpUp);
 
@@ -581,14 +581,14 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mLayoutTuning.SetBorder( "EditProximalSlerpUp",	kFBStandardBorder, false,true, 1, 0,90,0);
 	mLayoutTuning.SetBorder( "EditDistalSlerpUp",		kFBStandardBorder, false,true, 1, 0,90,0);
 
-	mLabelProximalSlerpDown.Caption	= "Index Proximal Slerp-Down Rate:";
+	/*mLabelProximalSlerpDown.Caption	= "Index Proximal Slerp-Down Rate:";
 	mEditProximalSlerpDown.Min	= 0;
 	mEditProximalSlerpDown.Max = 1;
 	mEditProximalSlerpDown.SmallStep = 0.002;
 	mEditProximalSlerpDown.LargeStep = 0.01;
 	mEditProximalSlerpDown.Value	= mProximalSlerpDownValue[mFingerIndex];
 	mEditProximalSlerpDown.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventProximalSlerpDownChange );
-
+*/
 	mLabelDistalSlerpDown.Caption		= "Index Distal Slerp-Down Rate:";
 	mEditDistalSlerpDown.Min		= 0;
 	mEditDistalSlerpDown.Max		= 1;
@@ -597,13 +597,13 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mEditDistalSlerpDown.Value	= mDistalSlerpDownValue[mFingerIndex];
 	mEditDistalSlerpDown.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventDistalSlerpDownChange );
 
-	mLabelProximalSlerpUp.Caption	= "Index Proximal Slerp-Up Rate:";
-	mEditProximalSlerpUp.Min	= 0;
-	mEditProximalSlerpUp.Max = 1;
-	mEditProximalSlerpUp.SmallStep = 0.002;
-	mEditProximalSlerpUp.LargeStep = 0.01;
-	mEditProximalSlerpUp.Value	= mProximalSlerpUpValue[mFingerIndex];
-	mEditProximalSlerpUp.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventProximalSlerpUpChange );
+	//mLabelProximalSlerpUp.Caption	= "Index Proximal Slerp-Up Rate:";
+	//mEditProximalSlerpUp.Min	= 0;
+	//mEditProximalSlerpUp.Max = 1;
+	//mEditProximalSlerpUp.SmallStep = 0.002;
+	//mEditProximalSlerpUp.LargeStep = 0.01;
+	//mEditProximalSlerpUp.Value	= mProximalSlerpUpValue[mFingerIndex];
+	//mEditProximalSlerpUp.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventProximalSlerpUpChange );
 
 	mLabelDistalSlerpUp.Caption		= "Index Distal Slerp-Up Rate:";
 	mEditDistalSlerpUp.Min		= 0;
@@ -614,16 +614,16 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mEditDistalSlerpUp.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventDistalSlerpUpChange );
 
 	mLabelBendUpThreshold.Caption	= "Finger Bend Up Threshold:";
-	mEditBendUpThreshold.Min	= 30;
-	mEditBendUpThreshold.Max = 110;
+	mEditBendUpThreshold.Min	= 0;
+	mEditBendUpThreshold.Max = 50;
 	mEditBendUpThreshold.SmallStep = 0.04;
 	mEditBendUpThreshold.LargeStep = 0.2;
 	mEditBendUpThreshold.Value	= mBendUpThreshold;
 	mEditBendUpThreshold.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventBendUpThresholdChange );
 
 	mLabelBendDownThreshold.Caption		= "Finger Bend Down Threshold:";
-	mEditBendDownThreshold.Min		= -170;
-	mEditBendDownThreshold.Max		= -150;
+	mEditBendDownThreshold.Min		= -120;
+	mEditBendDownThreshold.Max		= -50;
 	mEditBendDownThreshold.SmallStep = 0.04;
 	mEditBendDownThreshold.LargeStep = 0.2;
 	mEditBendDownThreshold.Value	= mBendDownThreshold;
@@ -842,6 +842,8 @@ void ORDeviceVRTRIXLayout::EventFingerIndexChange(HISender pSender, HKEvent pEve
 		mLayoutTuning.ClearControl("LabelThumbDistalOffset");
 		mLayoutTuning.ClearControl("EditThumbDistalOffset");
 
+		mLayoutTuning.SetControl("LabelDistalSlerpUp", mLabelDistalSlerpUp);
+		mLayoutTuning.SetControl("EditDistalSlerpUp", mEditDistalSlerpUp);
 		mLayoutTuning.SetControl( "LabelBendUpThreshold",		mLabelBendUpThreshold);
 		mLayoutTuning.SetControl( "EditBendUpThreshold",		mEditBendUpThreshold);
 		mLayoutTuning.SetControl( "LabelBendDownThreshold",		mLabelBendDownThreshold);
@@ -850,40 +852,40 @@ void ORDeviceVRTRIXLayout::EventFingerIndexChange(HISender pSender, HKEvent pEve
 
 	mFingerIndex = mListFingerIndex.ItemIndex;
 	if (mListFingerIndex.ItemIndex == 0) {
-		mLabelProximalSlerpDown.Caption	= "Index Proximal Slerp-Down Rate:";
+		//mLabelProximalSlerpDown.Caption	= "Index Proximal Slerp-Down Rate:";
 		mLabelDistalSlerpDown.Caption	= "Index Distal Slerp-Down Rate:";
 		
-		mLabelProximalSlerpUp.Caption	= "Index Proximal Slerp-Up Rate:";
+		//mLabelProximalSlerpUp.Caption	= "Index Proximal Slerp-Up Rate:";
 		mLabelDistalSlerpUp.Caption		= "Index Distal Slerp-Up Rate:";
 	}
 	else if (mListFingerIndex.ItemIndex == 1) {
-		mLabelProximalSlerpDown.Caption	= "Middle Proximal Slerp-Down Rate:";
+		//mLabelProximalSlerpDown.Caption	= "Middle Proximal Slerp-Down Rate:";
 		mLabelDistalSlerpDown.Caption	= "Middle Distal Slerp-Down Rate:";
 
-		mLabelProximalSlerpUp.Caption	= "Middle Proximal Slerp-Up Rate:";
+		//mLabelProximalSlerpUp.Caption	= "Middle Proximal Slerp-Up Rate:";
 		mLabelDistalSlerpUp.Caption		= "Middle Distal Slerp-Up Rate:";
 	}
 	else if (mListFingerIndex.ItemIndex == 2) {
-		mLabelProximalSlerpDown.Caption	= "Ring Proximal Slerp-Down Rate:";
+		//mLabelProximalSlerpDown.Caption	= "Ring Proximal Slerp-Down Rate:";
 		mLabelDistalSlerpDown.Caption	= "Ring Distal Slerp-Down Rate:";
 
-		mLabelProximalSlerpUp.Caption	= "Ring Proximal Slerp-Up Rate:";
+		//mLabelProximalSlerpUp.Caption	= "Ring Proximal Slerp-Up Rate:";
 		mLabelDistalSlerpUp.Caption		= "Ring Distal Slerp-Up Rate:";
 	}
 	else if (mListFingerIndex.ItemIndex == 3) {
-		mLabelProximalSlerpDown.Caption	= "Pinky Proximal Slerp-Down Rate:";
+		//mLabelProximalSlerpDown.Caption	= "Pinky Proximal Slerp-Down Rate:";
 		mLabelDistalSlerpDown.Caption	= "Pinky Distal Slerp-Down Rate:";
 
-		mLabelProximalSlerpUp.Caption	= "Pinky Proximal Slerp-Up Rate:";
+		//mLabelProximalSlerpUp.Caption	= "Pinky Proximal Slerp-Up Rate:";
 		mLabelDistalSlerpUp.Caption		= "Pinky Distal Slerp-Up Rate:";
 	}
 	else if (mListFingerIndex.ItemIndex == 4) {
-		mLabelProximalSlerpDown.Caption	= "Thumb Proximal Slerp-Down Rate:";
-		mLabelDistalSlerpDown.Caption	= "Thumb Distal Slerp-Down Rate:";
+		//mLabelProximalSlerpDown.Caption	= "Thumb Proximal Slerp-Down Rate:";
+		mLabelDistalSlerpDown.Caption	= "Thumb Proximal Slerp-Down Rate:";
+		mEditDistalSlerpDown.Value = mProximalSlerpDownValue[mFingerIndex];
 
-		mLabelProximalSlerpUp.Caption	= "Thumb Proximal Slerp-Up Rate:";
-		mLabelDistalSlerpUp.Caption		= "Thumb Distal Slerp-Up Rate:";
-
+		mLayoutTuning.ClearControl("LabelDistalSlerpUp");
+		mLayoutTuning.ClearControl("EditDistalSlerpUp");
 		mLayoutTuning.ClearControl("LabelBendUpThreshold");
 		mLayoutTuning.ClearControl("EditBendUpThreshold");
 		mLayoutTuning.ClearControl("LabelBendDownThreshold");
@@ -946,7 +948,7 @@ void ORDeviceVRTRIXLayout::EventDistalSlerpDownChange(HISender pSender, HKEvent 
 {
 	if (mIsParamSyncEnabled) {
 		if (mListFingerIndex.ItemIndex == 4) {
-			mDevice->OnSetAlgorithmParameters(VRTRIX::Thumb_Distal, VRTRIX::AlgorithmConfig_DistalSlerpDown, mEditDistalSlerpDown.Value);
+			mDevice->OnSetAlgorithmParameters(VRTRIX::Thumb_Distal, VRTRIX::AlgorithmConfig_ProximalSlerpDown, mEditDistalSlerpDown.Value);
 			mDistalSlerpDownValue[mFingerIndex] = mEditDistalSlerpDown.Value;
 			return;
 		}
@@ -1132,7 +1134,23 @@ void ORDeviceVRTRIXLayout::EventRHModelOffsetChange(HISender pSender, HKEvent pE
 
 void ORDeviceVRTRIXLayout::EventButtonTPoseCalibrationClick(HISender pSender, HKEvent pEvent)
 {
-	mDevice->OnTPoseCalibration();
+	VRTRIX::AlignmentParameter m_LHAlignParam, m_RHAlignParam;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> LHIMUAlignmentPitch(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
+	std::vector<VRTRIX::VRTRIXQuaternion_t> LHIMUAlignmentYaw(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
+	
+	std::vector<VRTRIX::VRTRIXQuaternion_t> RHIMUAlignmentPitch(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
+	std::vector<VRTRIX::VRTRIXQuaternion_t> RHIMUAlignmentYaw(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
+
+	m_LHAlignParam = { LHIMUAlignmentYaw, LHIMUAlignmentPitch };
+	m_RHAlignParam = { RHIMUAlignmentYaw, RHIMUAlignmentPitch };
+	mDevice->OnTPoseCalibration(m_LHAlignParam, m_RHAlignParam);
+
+	m_jHandler->m_cfg.mLHIMUAlignmentPitch = m_LHAlignParam.IMUAlignmentPitch;
+	m_jHandler->m_cfg.mLHIMUAlignmentYaw = m_LHAlignParam.IMUAlignmentYaw;
+	m_jHandler->m_cfg.mRHIMUAlignmentPitch = m_RHAlignParam.IMUAlignmentPitch;
+	m_jHandler->m_cfg.mRHIMUAlignmentYaw = m_RHAlignParam.IMUAlignmentYaw;
+
+	m_jHandler->writeBack();
 }
 
 void ORDeviceVRTRIXLayout::EventButtonSaveParameter(HISender pSender, HKEvent pEvent)

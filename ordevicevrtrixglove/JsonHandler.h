@@ -22,6 +22,10 @@ struct IDataGloveConfig {
 	double mDistalSlerpDownValue[5];
 	double mProximalSlerpUpValue[5];
 	double mDistalSlerpUpValue[5];
+	std::vector<VRTRIX::VRTRIXQuaternion_t> mLHIMUAlignmentPitch;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> mLHIMUAlignmentYaw;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> mRHIMUAlignmentPitch;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> mRHIMUAlignmentYaw;
 };
 
 class JsonHandler
@@ -82,6 +86,20 @@ public:
 		}
 	}
 
+	//// Read Json Matrix and return as std vector
+	void ReadJsonVector(Json::Value jsonMat, std::vector<VRTRIX::VRTRIXQuaternion_t>& vec)
+	{
+		int rows = jsonMat.size();
+		int cols = jsonMat[0].size();
+
+		if (rows != VRTRIX::Joint_MAX || cols != 4) return;
+		for (int i = 0; i < rows; i++)
+		{
+			VRTRIX::VRTRIXQuaternion_t quat = { jsonMat[i][1].asFloat(), jsonMat[i][2].asFloat(), jsonMat[i][3].asFloat(), jsonMat[i][0].asFloat() };
+			vec.push_back(quat);
+		}
+	}
+
 	//// Read FBVector3d and return as Json Matrix
 	Json::Value WriteJsonMatrix(FBVector3d mat[3])
 	{
@@ -96,7 +114,7 @@ public:
 		return jsonMat;
 	}
 
-	//// Read TrackingVector3_t and return as Json Matrix
+	//// Write TrackingVector3_t and return as Json Matrix
 	Json::Value WriteJsonVec(double vec[5])
 	{
 		Json::Value jsonVec;
@@ -107,6 +125,19 @@ public:
 		return jsonVec;
 	}
 
+	//// Write vector and return as Json Matrix
+	Json::Value WriteJsonVec(std::vector<VRTRIX::VRTRIXQuaternion_t>& vec)
+	{
+		Json::Value jsonMat;
+		for (int i = 0; i < VRTRIX::Joint_MAX; i++)
+		{
+			jsonMat[i][0] = vec[i].qw;
+			jsonMat[i][1] = vec[i].qx;
+			jsonMat[i][2] = vec[i].qy;
+			jsonMat[i][3] = vec[i].qz;
+		}
+		return jsonMat;
+	}
 
 	void parseDisplayCfg(const Json::Value &cfg_root) {
 		m_cfg.mAdvancedMode = cfg_root["mAdvancedMode"].asBool();
@@ -123,6 +154,11 @@ public:
 		ReadJsonVector(cfg_root["mDistalSlerpDownValue"], m_cfg.mDistalSlerpDownValue);
 		ReadJsonVector(cfg_root["mProximalSlerpUpValue"], m_cfg.mProximalSlerpUpValue);
 		ReadJsonVector(cfg_root["mDistalSlerpUpValue"], m_cfg.mDistalSlerpUpValue);
+
+		ReadJsonVector(cfg_root["mLHIMUAlignmentPitch"], m_cfg.mLHIMUAlignmentPitch);
+		ReadJsonVector(cfg_root["mLHIMUAlignmentYaw"], m_cfg.mLHIMUAlignmentYaw);
+		ReadJsonVector(cfg_root["mRHIMUAlignmentPitch"], m_cfg.mRHIMUAlignmentPitch);
+		ReadJsonVector(cfg_root["mRHIMUAlignmentYaw"], m_cfg.mRHIMUAlignmentYaw);
 	}
 
 	bool writeBack() {
@@ -143,6 +179,11 @@ public:
 		root["mDistalSlerpDownValue"] = WriteJsonVec(m_cfg.mDistalSlerpDownValue);
 		root["mProximalSlerpUpValue"] = WriteJsonVec(m_cfg.mProximalSlerpUpValue);
 		root["mDistalSlerpUpValue"] = WriteJsonVec(m_cfg.mDistalSlerpUpValue);
+
+		root["mLHIMUAlignmentPitch"] = WriteJsonVec(m_cfg.mLHIMUAlignmentPitch);
+		root["mLHIMUAlignmentYaw"] = WriteJsonVec(m_cfg.mLHIMUAlignmentYaw);
+		root["mRHIMUAlignmentPitch"] = WriteJsonVec(m_cfg.mRHIMUAlignmentPitch);
+		root["mRHIMUAlignmentYaw"] = WriteJsonVec(m_cfg.mRHIMUAlignmentYaw);
 
 		std::ofstream file_id;
 		file_id.open(current_dir);

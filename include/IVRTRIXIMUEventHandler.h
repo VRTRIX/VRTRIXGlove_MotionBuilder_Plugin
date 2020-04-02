@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <vector>
 
 #define IMU_NUM 6
 #define BUF_SIZE 100
@@ -62,8 +63,7 @@ namespace VRTRIX {
 		Pinky_Proximal,
 		Pinky_Intermediate,
 		Pinky_Distal,
-		Wrist_Joint_Double,
-		Joint_MAX = 17
+		Joint_MAX = 16
 	};
 
 
@@ -207,6 +207,12 @@ namespace VRTRIX {
 	struct HandEvent {
 		HandStatus stat; //!< Glove hardware status
 		HandType type;	//!< Glove hand type
+	};
+
+	//! Saved current alignment params.
+	struct AlignmentParameter {
+		std::vector<VRTRIXQuaternion_t> IMUAlignmentYaw; //!<Finger yaw alignment param
+		std::vector<VRTRIXQuaternion_t> IMUAlignmentPitch; //!<Finger pitch alignment param
 	};
 
 	//!  VRTRIX IMU event handler class. 

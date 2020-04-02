@@ -40,14 +40,14 @@ public:
 	double	GetDataTX		(int pChannel)		{	return mChannel[pChannel].mT[0];		}
 	double	GetDataTY		(int pChannel)		{	return mChannel[pChannel].mT[1];		}
 	double	GetDataTZ		(int pChannel)		{	return mChannel[pChannel].mT[2];		}
-	double	GetDataRX		(int pChannel)		{	return mChannel[pChannel].mR[0];		}
+	double	GetDataRX       (int pChannel)      {	return mChannel[pChannel].mR[0];		}
 	double	GetDataRY		(int pChannel)		{	return mChannel[pChannel].mR[1];		}
 	double	GetDataRZ		(int pChannel)		{	return mChannel[pChannel].mR[2];		}
 
 	void SetConfig(IDataGloveConfig config);
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version);
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
-	void OnTPoseCalibration();
+	void OnTPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam);
 	void OnAvancedModeEnabled(bool bIsEnabled);
 	void OnReceivedNewPose(VRTRIX::Pose pose);
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value);
@@ -56,6 +56,7 @@ public:
 	void OnSetBendUpThreshold(double value);
 	void OnSetBendDownThreshold(double value);
 	void OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
+	void OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type);
 
 private:
 	IDataGloveConfig    m_cfg;
@@ -73,6 +74,8 @@ private:
 	VRTRIX::PortInfo		m_RHportInfo;
 	VRTRIX::Pose			m_LHPose;
 	VRTRIX::Pose			m_RHPose;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> m_LHIMUData;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> m_RHIMUData;
 	Eigen::Matrix3d			m_LHModelOffset;
 	Eigen::Matrix3d			m_RHModelOffset;
 	Eigen::Quaterniond		m_LHOffset;

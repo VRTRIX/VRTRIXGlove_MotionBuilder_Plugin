@@ -23,6 +23,8 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	mHardwareVersion(VRTRIX::PRO11),
 	m_LHOffset(Eigen::Quaterniond::Identity()), 
 	m_RHOffset(Eigen::Quaterniond::Identity()),
+	m_LHIMUData(HandBoneNum, { 0.f,0.f,0.f,0.f }),
+	m_RHIMUData(HandBoneNum, { 0.f,0.f,0.f,0.f }),
     mSensorFloorOffsetSet(false),
     mInitSuccessful(false),
 	m_bIsLHDataReady(false),
@@ -30,7 +32,7 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	m_bIsLHCalibrated(false),
 	m_bIsRHCalibrated(false)
 {
-    
+
 }
 
 
@@ -192,6 +194,8 @@ bool ORHardwareVRTRIXGlove::StartDataStream()
 		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[3]);
 		OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[4]);
 
+		OnLoadAlignParam(m_cfg, VRTRIX::Hand_Left);
+		OnLoadAlignParam(m_cfg, VRTRIX::Hand_Right);
 		return true;
     }
     return false;
@@ -399,10 +403,13 @@ void ORHardwareVRTRIXGlove::SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, F
 	}
 }
 
-void ORHardwareVRTRIXGlove::OnTPoseCalibration()
+void ORHardwareVRTRIXGlove::OnTPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam)
 {
 	m_bIsLHCalibrated = false;
 	m_bIsRHCalibrated = false;
+	VRTRIX::EIMUError error;
+	m_pLeftHandDataGlove->SoftwareAlign(error, m_LHAlignParam);
+	m_pRightHandDataGlove->SoftwareAlign(error, m_RHAlignParam);
 }
 
 void ORHardwareVRTRIXGlove::OnAvancedModeEnabled(bool bIsEnabled)
@@ -427,6 +434,34 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 			rot = m_LHOffset * rot;
 			m_LHPose.imuData[i] = { (float)rot.x(), (float)rot.y(), (float)rot.z(), (float)rot.w() };
 		}
+
+		if (HandBoneNum == 16) {
+			for (int i = 0; i < HandBoneNum; ++i) {
+				m_LHIMUData[i] = m_LHPose.imuData[i];
+			}
+		}
+		else if (HandBoneNum == 20) {
+			m_LHIMUData[0] = m_LHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_LHIMUData[1] = m_LHPose.imuData[(int)VRTRIX::Thumb_Proximal];
+			m_LHIMUData[2] = m_LHPose.imuData[(int)VRTRIX::Thumb_Intermediate];
+			m_LHIMUData[3] = m_LHPose.imuData[(int)VRTRIX::Thumb_Distal];
+			m_LHIMUData[4] = m_LHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_LHIMUData[5] = m_LHPose.imuData[(int)VRTRIX::Index_Proximal];
+			m_LHIMUData[6] = m_LHPose.imuData[(int)VRTRIX::Index_Intermediate];
+			m_LHIMUData[7] = m_LHPose.imuData[(int)VRTRIX::Index_Distal];
+			m_LHIMUData[8] = m_LHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_LHIMUData[9] = m_LHPose.imuData[(int)VRTRIX::Middle_Proximal];
+			m_LHIMUData[10] = m_LHPose.imuData[(int)VRTRIX::Middle_Intermediate];
+			m_LHIMUData[11] = m_LHPose.imuData[(int)VRTRIX::Middle_Distal];
+			m_LHIMUData[12] = m_LHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_LHIMUData[13] = m_LHPose.imuData[(int)VRTRIX::Ring_Proximal];
+			m_LHIMUData[14] = m_LHPose.imuData[(int)VRTRIX::Ring_Intermediate];
+			m_LHIMUData[15] = m_LHPose.imuData[(int)VRTRIX::Ring_Distal];
+			m_LHIMUData[16] = m_LHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_LHIMUData[17] = m_LHPose.imuData[(int)VRTRIX::Pinky_Proximal];
+			m_LHIMUData[18] = m_LHPose.imuData[(int)VRTRIX::Pinky_Intermediate];
+			m_LHIMUData[19] = m_LHPose.imuData[(int)VRTRIX::Pinky_Distal];
+		}
 	}
 	else if (pose.type == VRTRIX::Hand_Right) {
 		m_bIsRHDataReady = true;
@@ -441,7 +476,37 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 			rot = m_RHOffset * rot;
 			m_RHPose.imuData[i] = { (float)rot.x(), (float)rot.y(), (float)rot.z(), (float)rot.w() };
 		}
+
+		if (HandBoneNum == 16) {
+			for (int i = 0; i < HandBoneNum; ++i) {
+				m_RHIMUData[i] = m_RHPose.imuData[i];
+			}
+		}
+		else if (HandBoneNum == 20) {
+			m_RHIMUData[0] = m_RHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_RHIMUData[1] = m_RHPose.imuData[(int)VRTRIX::Thumb_Proximal];
+			m_RHIMUData[2] = m_RHPose.imuData[(int)VRTRIX::Thumb_Intermediate];
+			m_RHIMUData[3] = m_RHPose.imuData[(int)VRTRIX::Thumb_Distal];
+			m_RHIMUData[4] = m_RHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_RHIMUData[5] = m_RHPose.imuData[(int)VRTRIX::Index_Proximal];
+			m_RHIMUData[6] = m_RHPose.imuData[(int)VRTRIX::Index_Intermediate];
+			m_RHIMUData[7] = m_RHPose.imuData[(int)VRTRIX::Index_Distal];
+			m_RHIMUData[8] = m_RHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_RHIMUData[9] = m_RHPose.imuData[(int)VRTRIX::Middle_Proximal];
+			m_RHIMUData[10] = m_RHPose.imuData[(int)VRTRIX::Middle_Intermediate];
+			m_RHIMUData[11] = m_RHPose.imuData[(int)VRTRIX::Middle_Distal];
+			m_RHIMUData[12] = m_RHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_RHIMUData[13] = m_RHPose.imuData[(int)VRTRIX::Ring_Proximal];
+			m_RHIMUData[14] = m_RHPose.imuData[(int)VRTRIX::Ring_Intermediate];
+			m_RHIMUData[15] = m_RHPose.imuData[(int)VRTRIX::Ring_Distal];
+			m_RHIMUData[16] = m_RHPose.imuData[(int)VRTRIX::Wrist_Joint];
+			m_RHIMUData[17] = m_RHPose.imuData[(int)VRTRIX::Pinky_Proximal];
+			m_RHIMUData[18] = m_RHPose.imuData[(int)VRTRIX::Pinky_Intermediate];
+			m_RHIMUData[19] = m_RHPose.imuData[(int)VRTRIX::Pinky_Distal];
+		}
 	}
+
+
 }
 
 void ORHardwareVRTRIXGlove::OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value)
@@ -499,6 +564,27 @@ void ORHardwareVRTRIXGlove::OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTR
 	}
 	}
 }
+void ORHardwareVRTRIXGlove::OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type)
+{
+	if (!mInitSuccessful) return;
+	VRTRIX::EIMUError eIMUError;
+	VRTRIX::AlignmentParameter param;
+
+	switch (type) {
+	case(VRTRIX::Hand_Left): {
+		param.IMUAlignmentPitch = config.mLHIMUAlignmentPitch;
+		param.IMUAlignmentYaw = config.mLHIMUAlignmentYaw;
+		m_pLeftHandDataGlove->LoadAlignmentParam(eIMUError, param);
+		break;
+	}
+	case(VRTRIX::Hand_Right): {
+		param.IMUAlignmentPitch = config.mRHIMUAlignmentPitch;
+		param.IMUAlignmentYaw = config.mRHIMUAlignmentYaw;
+		m_pRightHandDataGlove->LoadAlignmentParam(eIMUError, param);
+		break;
+	}
+	}
+}
 /************************************************
  *    Fetch one frame skeleton data from the Kinect.
  ************************************************/
@@ -507,36 +593,8 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 	bool bIsRHFetched = false, bIsLHFetched = false;
 	if (m_bIsRHDataReady) {
 
-		////0:RightHand
-		//FBRVector rot = VRTRIXQuaternionToEuler(m_RHPose.imuData[VRTRIX::Wrist_Joint], VRTRIX::Hand_Right, VRTRIX::Wrist_Joint);
-		//mChannel[RHandIndex].mR[0] = rot[0];
-		//mChannel[RHandIndex].mR[1] = rot[1];
-		//mChannel[RHandIndex].mR[2] = rot[2];
-		//mChannel[RHandIndex].mT[0] = mChannel[RHandIndex].mDefaultT[0];
-		//mChannel[RHandIndex].mT[1] = mChannel[RHandIndex].mDefaultT[1];
-		//mChannel[RHandIndex].mT[2] = mChannel[RHandIndex].mDefaultT[2];
-
-		//for (int i = 0; i < HandBoneNum - 1; ++i) {
-		//	FBRVector rot = VRTRIXQuaternionToEuler(m_RHPose.imuData[(VRTRIX::Joint)i], VRTRIX::Hand_Right, (VRTRIX::Joint)i);
-
-		//	mChannel[RHandIndex + i + 1].mR[0] = rot[0];
-		//	mChannel[RHandIndex + i + 1].mR[1] = rot[1];
-		//	mChannel[RHandIndex + i + 1].mR[2] = rot[2];
-
-		//	int parent = mChannel[RHandIndex + i + 1].mParentChannel;
-		//	FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1 };
-		//	if (parent == RHandIndex) {
-		//		GetTransformOnRigidBody(translation, m_RHPose.imuData[parent - RHandIndex], mLocalTranslationR[i + 1], VRTRIX::Hand_Right);
-		//	}
-		//	else {
-		//		GetTransformOnRigidBody(translation, m_RHPose.imuData[parent - RHandIndex - 1], mLocalTranslationR[i + 1], VRTRIX::Hand_Right);
-		//	}
-		//	mChannel[RHandIndex + i + 1].mT[0] = translation[0];
-		//	mChannel[RHandIndex + i + 1].mT[1] = translation[1];
-		//	mChannel[RHandIndex + i + 1].mT[2] = translation[2];
-
 		for (int i = 0; i < HandBoneNum; ++i) {
-			FBRVector rot = VRTRIXQuaternionToEuler(m_RHPose.imuData[(VRTRIX::Joint)i], VRTRIX::Hand_Right, (VRTRIX::Joint)i);
+			FBRVector rot = VRTRIXQuaternionToEuler(m_RHIMUData[i], VRTRIX::Hand_Right, (VRTRIX::Joint)i);
 	
 			mChannel[RHandIndex + i].mR[0] = rot[0];
 			mChannel[RHandIndex + i].mR[1] = rot[1];
@@ -550,7 +608,7 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 			else {
 				int parent = mChannel[RHandIndex + i].mParentChannel;
 				FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
-				GetTransformOnRigidBody(translation, m_RHPose.imuData[parent-RHandIndex], mLocalTranslationR[i], VRTRIX::Hand_Right);
+				GetTransformOnRigidBody(translation, m_RHIMUData[parent-RHandIndex], mLocalTranslationR[i], VRTRIX::Hand_Right);
 				mChannel[RHandIndex + i].mT[0] = translation[0];
 				mChannel[RHandIndex + i].mT[1] = translation[1];
 				mChannel[RHandIndex + i].mT[2] = translation[2];
@@ -561,37 +619,8 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 	}
 	if (m_bIsLHDataReady) {
 
-		//FBRVector rot = VRTRIXQuaternionToEuler(m_LHPose.imuData[VRTRIX::Wrist_Joint], VRTRIX::Hand_Left, VRTRIX::Wrist_Joint);
-	 //   mChannel[LHandIndex].mR[0] = rot[0];
-	 //   mChannel[LHandIndex].mR[1] = rot[1];
-	 //   mChannel[LHandIndex].mR[2] = rot[2];
-		//mChannel[LHandIndex].mT[0] = mChannel[LHandIndex].mDefaultT[0];
-		//mChannel[LHandIndex].mT[1] = mChannel[LHandIndex].mDefaultT[1];
-		//mChannel[LHandIndex].mT[2] = mChannel[LHandIndex].mDefaultT[2];
-
-		//for (int i = 0; i < HandBoneNum - 1; ++i) {
-		//	FBRVector rot = VRTRIXQuaternionToEuler(m_LHPose.imuData[(VRTRIX::Joint)i], VRTRIX::Hand_Left, (VRTRIX::Joint)i);
-
-		//	mChannel[LHandIndex + i + 1].mR[0] = rot[0];
-		//	mChannel[LHandIndex + i + 1].mR[1] = rot[1];
-		//	mChannel[LHandIndex + i + 1].mR[2] = rot[2];
-
-		//	int parent = mChannel[LHandIndex + i + 1].mParentChannel;
-
-		//	FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
-		//	if (parent == LHandIndex) {
-		//		GetTransformOnRigidBody(translation, m_LHPose.imuData[parent-LHandIndex], mLocalTranslationL[i+1], VRTRIX::Hand_Left);
-		//	}
-		//	else {
-		//		GetTransformOnRigidBody(translation, m_LHPose.imuData[parent-LHandIndex-1], mLocalTranslationL[i+1], VRTRIX::Hand_Left);
-		//	}
-		//	mChannel[LHandIndex + i + 1].mT[0] = translation[0];
-		//	mChannel[LHandIndex + i + 1].mT[1] = translation[1];
-		//	mChannel[LHandIndex + i + 1].mT[2] = translation[2];
-		//}
-
 		for (int i = 0; i < HandBoneNum; ++i) {
-			FBRVector rot = VRTRIXQuaternionToEuler(m_LHPose.imuData[(VRTRIX::Joint)i], VRTRIX::Hand_Left, (VRTRIX::Joint)i);
+			FBRVector rot = VRTRIXQuaternionToEuler(m_LHIMUData[i], VRTRIX::Hand_Left, (VRTRIX::Joint)i);
 
 			mChannel[LHandIndex + i].mR[0] = rot[0];
 			mChannel[LHandIndex + i].mR[1] = rot[1];
@@ -605,7 +634,7 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 			else {
 				int parent = mChannel[LHandIndex + i].mParentChannel;
 				FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
-				GetTransformOnRigidBody(translation, m_LHPose.imuData[parent-LHandIndex], mLocalTranslationL[i], VRTRIX::Hand_Left);
+				GetTransformOnRigidBody(translation, m_LHIMUData[parent-LHandIndex], mLocalTranslationL[i], VRTRIX::Hand_Left);
 				mChannel[LHandIndex + i].mT[0] = translation[0];
 				mChannel[LHandIndex + i].mT[1] = translation[1];
 				mChannel[LHandIndex + i].mT[2] = translation[2];
