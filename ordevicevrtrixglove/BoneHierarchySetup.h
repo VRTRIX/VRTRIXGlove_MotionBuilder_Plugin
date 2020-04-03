@@ -724,10 +724,15 @@ static void HandHierarchySetup(FBTVector* mLocalTranslationR, FBTVector* mLocalT
 	mLocalTranslationL[0].mValue[1] = 160.075286865;
 	mLocalTranslationL[0].mValue[2] = -1.24851214886;
 
+	////1:Robot_LeftHandThumb1
+	//mLocalTranslationL[1].mValue[0] = 3.37866973877;
+	//mLocalTranslationL[1].mValue[1] = 0.257476806641;
+	//mLocalTranslationL[1].mValue[2] = 4.23559713364;
+
 	//1:Robot_LeftHandThumb1
-	mLocalTranslationL[1].mValue[0] = 3.37866973877;
+	mLocalTranslationL[1].mValue[0] = 4.10187839645;
 	mLocalTranslationL[1].mValue[1] = 0.257476806641;
-	mLocalTranslationL[1].mValue[2] = 4.23559713364;
+	mLocalTranslationL[1].mValue[2] = 4.73020429638;
 
 	//2:Robot_LeftHandThumb2
 	mLocalTranslationL[2].mValue[0] = 4.99879455566;

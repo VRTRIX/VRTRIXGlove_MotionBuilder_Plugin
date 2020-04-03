@@ -48,6 +48,7 @@ public:
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version);
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
 	void OnTPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam);
+	void OnOKPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam);
 	void OnAvancedModeEnabled(bool bIsEnabled);
 	void OnReceivedNewPose(VRTRIX::Pose pose);
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value);

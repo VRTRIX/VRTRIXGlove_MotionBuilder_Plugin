@@ -86,6 +86,8 @@ public:
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type) { return mHardware.SetModelOffset(xAxis, yAxis, zAxis, type); }
 	//--- Perform T Pose calibration on start
 	void OnTPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam) { return mHardware.OnTPoseCalibration(m_LHAlignParam, m_RHAlignParam); }
+	//--- Perform OK Pose calibration on start
+	void OnOKPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam) { return mHardware.OnOKPoseCalibration(m_LHAlignParam, m_RHAlignParam); }
 	//--- Algorithm Tuning for hardware.
 	void OnAvancedModeEnabled(bool isEnabled) { return mHardware.OnAvancedModeEnabled(isEnabled); }
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value) { return mHardware.OnSetAlgorithmParameters(finger, type, value); }

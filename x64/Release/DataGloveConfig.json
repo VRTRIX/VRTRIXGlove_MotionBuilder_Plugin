@@ -1,22 +1,12 @@
 {
    "mAdvancedMode" : false,
-   "mBendDownThreshold" : -85.0,
-   "mBendUpThreshold" : 20.0,
-   "mDistalSlerpDownValue" : [ 0.75, 0.75, 0.75, 0.75, 0.40000000000000002 ],
+   "mBendDownThreshold" : -90.0,
+   "mBendUpThreshold" : 25.0,
+   "mDistalSlerpDownValue" : [ 0.75, 0.75, 0.75, 0.75, 1.0 ],
    "mDistalSlerpUpValue" : [ 1.0, 1.0, 1.0, 1.0, 0.0 ],
    "mFinalFingerSpacing" : 2.0,
    "mFingerSpacing" : 2.0,
    "mHardwareVersion" : 1,
-   "mLHModelOffset" : [
-      [ -1.0, 0.0, 0.0 ],
-      [ 0.0, 1.0, 0.0 ],
-      [ 0.0, 0.0, 1.0 ]
-   ],
-   "mLHThumbOffset" : [
-      [ 0.0, 0.0, 0.0 ],
-      [ 0.0, 0.0, 0.0 ],
-      [ 0.0, 0.0, 0.0 ]
-   ],
    "mLHIMUAlignmentPitch" : [
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
@@ -53,6 +43,18 @@
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ]
    ],
+   "mLHModelOffset" : [
+      [ -1.0, 0.0, 0.0 ],
+      [ 0.0, 1.0, 0.0 ],
+      [ 0.0, 0.0, 1.0 ]
+   ],
+   "mLHThumbOffset" : [
+      [ 0.0, 16.0, 0.0 ],
+      [ 0.0, 8.0, 0.0 ],
+      [ 0.0, 0.0, 0.0 ]
+   ],
+   "mProximalSlerpDownValue" : [ 1.0, 1.0, 1.0, 1.0, 0.5 ],
+   "mProximalSlerpUpValue" : [ 1.0, 1.0, 1.0, 1.0, 0.0 ],
    "mRHIMUAlignmentPitch" : [
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
@@ -89,16 +91,14 @@
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ]
    ],
-   "mProximalSlerpDownValue" : [ 1.0, 1.0, 1.0, 1.0, 0.5 ],
-   "mProximalSlerpUpValue" : [ 1.0, 1.0, 1.0, 1.0, 0.0 ],
    "mRHModelOffset" : [
       [ 1.0, 0.0, 0.0 ],
       [ 0.0, 1.0, 0.0 ],
       [ 0.0, 0.0, -1.0 ]
    ],
    "mRHThumbOffset" : [
-      [ 0.0, 0.0, 0.0 ],
-      [ 0.0, 0.0, 0.0 ],
+      [ 0.0, -16.0, 0.0 ],
+      [ 0.0, -8.0, 0.0 ],
       [ 0.0, 0.0, 0.0 ]
    ]
 }

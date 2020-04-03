@@ -180,19 +180,19 @@ bool ORHardwareVRTRIXGlove::StartDataStream()
 		OnSetAlgorithmParameters(VRTRIX::Middle_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[1]);
 		OnSetAlgorithmParameters(VRTRIX::Ring_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[2]);
 		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[3]);
-		OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[4]);
+		//OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_ProximalSlerpUp, m_cfg.mProximalSlerpUpValue[4]);
 	
 		OnSetAlgorithmParameters(VRTRIX::Index_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[0]);
 		OnSetAlgorithmParameters(VRTRIX::Middle_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[1]);
 		OnSetAlgorithmParameters(VRTRIX::Ring_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[2]);
 		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[3]);
-		OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[4]);
+		//OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpUp, m_cfg.mDistalSlerpUpValue[4]);
 	
 		OnSetAlgorithmParameters(VRTRIX::Index_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[0]);
 		OnSetAlgorithmParameters(VRTRIX::Middle_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[1]);
 		OnSetAlgorithmParameters(VRTRIX::Ring_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[2]);
 		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[3]);
-		OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[4]);
+		//OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[4]);
 
 		OnLoadAlignParam(m_cfg, VRTRIX::Hand_Left);
 		OnLoadAlignParam(m_cfg, VRTRIX::Hand_Right);
@@ -410,6 +410,13 @@ void ORHardwareVRTRIXGlove::OnTPoseCalibration(VRTRIX::AlignmentParameter& m_LHA
 	VRTRIX::EIMUError error;
 	m_pLeftHandDataGlove->SoftwareAlign(error, m_LHAlignParam);
 	m_pRightHandDataGlove->SoftwareAlign(error, m_RHAlignParam);
+}
+
+void ORHardwareVRTRIXGlove::OnOKPoseCalibration(VRTRIX::AlignmentParameter & m_LHAlignParam, VRTRIX::AlignmentParameter & m_RHAlignParam)
+{
+	VRTRIX::EIMUError error;
+	m_pLeftHandDataGlove->OKPoseAlign(error);
+	m_pRightHandDataGlove->OKPoseAlign(error);
 }
 
 void ORHardwareVRTRIXGlove::OnAvancedModeEnabled(bool bIsEnabled)

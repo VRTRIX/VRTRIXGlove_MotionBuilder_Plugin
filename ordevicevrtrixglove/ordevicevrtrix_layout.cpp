@@ -473,6 +473,12 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 													0,		kFBAttachWidth,		"LabelZAxisOffsetR",	1.00,
 													0,		kFBAttachHeight,	"LabelZAxisOffsetR",	1.00 );
 	
+	mLayoutOrientationAlign.AddRegion("ButtonOKPoseCalibration", "ButtonOKPoseCalibration",
+													0, kFBAttachLeft, "ButtonTPoseCalibration", 1.00,
+													lS, kFBAttachBottom, "ButtonTPoseCalibration", 1.00,
+													0, kFBAttachWidth, "ButtonTPoseCalibration", 1.00,
+													0, kFBAttachHeight, "ButtonTPoseCalibration", 1.00);
+
 
 	// Assign regions
 	mLayoutOrientationAlign.SetControl( "LabelHardwareVersion",				mLabelHardwareVersion);
@@ -494,6 +500,7 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 	mLayoutOrientationAlign.SetControl( "EditZAxisOffsetR",				mEditZAxisOffsetR);
 
 	mLayoutOrientationAlign.SetControl( "ButtonTPoseCalibration",				mButtonTPoseCalibration);
+	mLayoutOrientationAlign.SetControl( "ButtonOKPoseCalibration", mButtonOKPoseCalibration);
 
 }
 
@@ -697,6 +704,10 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 	mButtonTPoseCalibration.Caption	= "TPose Calibration";
 	mButtonTPoseCalibration.Style		= kFBPushButton;
 	mButtonTPoseCalibration.OnClick.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventButtonTPoseCalibrationClick );
+
+	mButtonOKPoseCalibration.Caption = "OK Pose Calibration";
+	mButtonOKPoseCalibration.Style = kFBPushButton;
+	mButtonOKPoseCalibration.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick);
 }
 /************************************************
  *	Refresh the UI.
@@ -852,35 +863,34 @@ void ORDeviceVRTRIXLayout::EventFingerIndexChange(HISender pSender, HKEvent pEve
 
 	mFingerIndex = mListFingerIndex.ItemIndex;
 	if (mListFingerIndex.ItemIndex == 0) {
-		//mLabelProximalSlerpDown.Caption	= "Index Proximal Slerp-Down Rate:";
 		mLabelDistalSlerpDown.Caption	= "Index Distal Slerp-Down Rate:";
-		
-		//mLabelProximalSlerpUp.Caption	= "Index Proximal Slerp-Up Rate:";
 		mLabelDistalSlerpUp.Caption		= "Index Distal Slerp-Up Rate:";
-	}
-	else if (mListFingerIndex.ItemIndex == 1) {
-		//mLabelProximalSlerpDown.Caption	= "Middle Proximal Slerp-Down Rate:";
-		mLabelDistalSlerpDown.Caption	= "Middle Distal Slerp-Down Rate:";
 
-		//mLabelProximalSlerpUp.Caption	= "Middle Proximal Slerp-Up Rate:";
+		mEditDistalSlerpDown.Value = mDistalSlerpDownValue[mFingerIndex];
+		mEditDistalSlerpUp.Value = mDistalSlerpUpValue[mFingerIndex];
+	}
+	else if (mListFingerIndex.ItemIndex == 1) {;
+		mLabelDistalSlerpDown.Caption	= "Middle Distal Slerp-Down Rate:";
 		mLabelDistalSlerpUp.Caption		= "Middle Distal Slerp-Up Rate:";
+
+		mEditDistalSlerpDown.Value = mDistalSlerpDownValue[mFingerIndex];
+		mEditDistalSlerpUp.Value = mDistalSlerpUpValue[mFingerIndex];
 	}
 	else if (mListFingerIndex.ItemIndex == 2) {
-		//mLabelProximalSlerpDown.Caption	= "Ring Proximal Slerp-Down Rate:";
 		mLabelDistalSlerpDown.Caption	= "Ring Distal Slerp-Down Rate:";
-
-		//mLabelProximalSlerpUp.Caption	= "Ring Proximal Slerp-Up Rate:";
 		mLabelDistalSlerpUp.Caption		= "Ring Distal Slerp-Up Rate:";
+
+		mEditDistalSlerpDown.Value = mDistalSlerpDownValue[mFingerIndex];
+		mEditDistalSlerpUp.Value = mDistalSlerpUpValue[mFingerIndex];
 	}
 	else if (mListFingerIndex.ItemIndex == 3) {
-		//mLabelProximalSlerpDown.Caption	= "Pinky Proximal Slerp-Down Rate:";
 		mLabelDistalSlerpDown.Caption	= "Pinky Distal Slerp-Down Rate:";
-
-		//mLabelProximalSlerpUp.Caption	= "Pinky Proximal Slerp-Up Rate:";
 		mLabelDistalSlerpUp.Caption		= "Pinky Distal Slerp-Up Rate:";
+
+		mEditDistalSlerpDown.Value = mDistalSlerpDownValue[mFingerIndex];
+		mEditDistalSlerpUp.Value = mDistalSlerpUpValue[mFingerIndex];
 	}
-	else if (mListFingerIndex.ItemIndex == 4) {
-		//mLabelProximalSlerpDown.Caption	= "Thumb Proximal Slerp-Down Rate:";
+	else if (mListFingerIndex.ItemIndex == 4) {;
 		mLabelDistalSlerpDown.Caption	= "Thumb Proximal Slerp-Down Rate:";
 		mEditDistalSlerpDown.Value = mProximalSlerpDownValue[mFingerIndex];
 
@@ -899,11 +909,6 @@ void ORDeviceVRTRIXLayout::EventFingerIndexChange(HISender pSender, HKEvent pEve
 		mLayoutTuning.SetControl( "EditThumbDistalOffset",	mEditThumbDistalOffset);
 
 	}
-	
-	mEditProximalSlerpDown.Value = mProximalSlerpDownValue[mFingerIndex];
-	mEditDistalSlerpDown.Value = mDistalSlerpDownValue[mFingerIndex];
-	mEditProximalSlerpUp.Value = mProximalSlerpUpValue[mFingerIndex];
-	mEditDistalSlerpUp.Value = mDistalSlerpUpValue[mFingerIndex];
 }
 
 void ORDeviceVRTRIXLayout::EventProximalSlerpDownChange(HISender pSender, HKEvent pEvent)
@@ -911,7 +916,7 @@ void ORDeviceVRTRIXLayout::EventProximalSlerpDownChange(HISender pSender, HKEven
 	if (mIsParamSyncEnabled) {
 		if (mListFingerIndex.ItemIndex == 4) {
 			mDevice->OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_ProximalSlerpDown, mEditProximalSlerpDown.Value);
-			mProximalSlerpDownValue[mFingerIndex] = mEditProximalSlerpDown.Value;
+			mProximalSlerpDownValue[mFingerIndex] = mEditDistalSlerpDown.Value;
 			return;
 		}
 
@@ -949,7 +954,7 @@ void ORDeviceVRTRIXLayout::EventDistalSlerpDownChange(HISender pSender, HKEvent 
 	if (mIsParamSyncEnabled) {
 		if (mListFingerIndex.ItemIndex == 4) {
 			mDevice->OnSetAlgorithmParameters(VRTRIX::Thumb_Distal, VRTRIX::AlgorithmConfig_ProximalSlerpDown, mEditDistalSlerpDown.Value);
-			mDistalSlerpDownValue[mFingerIndex] = mEditDistalSlerpDown.Value;
+			mProximalSlerpDownValue[mFingerIndex] = mEditDistalSlerpDown.Value;
 			return;
 		}
 		mDevice->OnSetAlgorithmParameters(VRTRIX::Index_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, mEditDistalSlerpDown.Value);
@@ -1152,6 +1157,28 @@ void ORDeviceVRTRIXLayout::EventButtonTPoseCalibrationClick(HISender pSender, HK
 
 	m_jHandler->writeBack();
 }
+
+void ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick(HISender pSender, HKEvent pEvent)
+{
+	VRTRIX::AlignmentParameter m_LHAlignParam, m_RHAlignParam;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> LHIMUAlignmentPitch(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
+	std::vector<VRTRIX::VRTRIXQuaternion_t> LHIMUAlignmentYaw(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
+
+	std::vector<VRTRIX::VRTRIXQuaternion_t> RHIMUAlignmentPitch(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
+	std::vector<VRTRIX::VRTRIXQuaternion_t> RHIMUAlignmentYaw(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
+
+	m_LHAlignParam = { LHIMUAlignmentYaw, LHIMUAlignmentPitch };
+	m_RHAlignParam = { RHIMUAlignmentYaw, RHIMUAlignmentPitch };
+	mDevice->OnOKPoseCalibration(m_LHAlignParam, m_RHAlignParam);
+
+	//m_jHandler->m_cfg.mLHIMUAlignmentPitch = m_LHAlignParam.IMUAlignmentPitch;
+	//m_jHandler->m_cfg.mLHIMUAlignmentYaw = m_LHAlignParam.IMUAlignmentYaw;
+	//m_jHandler->m_cfg.mRHIMUAlignmentPitch = m_RHAlignParam.IMUAlignmentPitch;
+	//m_jHandler->m_cfg.mRHIMUAlignmentYaw = m_RHAlignParam.IMUAlignmentYaw;
+
+	//m_jHandler->writeBack();
+}
+
 
 void ORDeviceVRTRIXLayout::EventButtonSaveParameter(HISender pSender, HKEvent pEvent)
 {
