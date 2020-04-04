@@ -89,6 +89,7 @@ namespace VRTRIX {
 		HandStatus_BatteryFull,
 		HandStatus_Paired,
 		HandStatus_MagAbnormal,
+		HandStatus_Calibrated,
 	};
 
 
@@ -202,17 +203,18 @@ namespace VRTRIX {
 		double battery; //!< Glove battery percentage
 	};
 
+	//! Saved current alignment params.
+	struct AlignmentParameter {
+		VRTRIXQuaternion_t IMUAlignmentYaw[Joint_MAX]; //!<Finger yaw alignment param
+		VRTRIXQuaternion_t IMUAlignmentTPosePitch[Joint_MAX]; //!<Finger t-pose pitch alignment param
+		VRTRIXQuaternion_t IMUAlignmentOKPosePitch[Joint_MAX]; //!<Finger ok-pose pitch alignment param
+	};
 
 	//! Glove hand event data structure used in C++ API.
 	struct HandEvent {
 		HandStatus stat; //!< Glove hardware status
 		HandType type;	//!< Glove hand type
-	};
-
-	//! Saved current alignment params.
-	struct AlignmentParameter {
-		std::vector<VRTRIXQuaternion_t> IMUAlignmentYaw; //!<Finger yaw alignment param
-		std::vector<VRTRIXQuaternion_t> IMUAlignmentPitch; //!<Finger pitch alignment param
+		AlignmentParameter param; //!< Glove calibration parameters
 	};
 
 	//!  VRTRIX IMU event handler class. 

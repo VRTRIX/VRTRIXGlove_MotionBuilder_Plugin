@@ -1139,44 +1139,12 @@ void ORDeviceVRTRIXLayout::EventRHModelOffsetChange(HISender pSender, HKEvent pE
 
 void ORDeviceVRTRIXLayout::EventButtonTPoseCalibrationClick(HISender pSender, HKEvent pEvent)
 {
-	VRTRIX::AlignmentParameter m_LHAlignParam, m_RHAlignParam;
-	std::vector<VRTRIX::VRTRIXQuaternion_t> LHIMUAlignmentPitch(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
-	std::vector<VRTRIX::VRTRIXQuaternion_t> LHIMUAlignmentYaw(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
-	
-	std::vector<VRTRIX::VRTRIXQuaternion_t> RHIMUAlignmentPitch(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
-	std::vector<VRTRIX::VRTRIXQuaternion_t> RHIMUAlignmentYaw(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
-
-	m_LHAlignParam = { LHIMUAlignmentYaw, LHIMUAlignmentPitch };
-	m_RHAlignParam = { RHIMUAlignmentYaw, RHIMUAlignmentPitch };
-	mDevice->OnTPoseCalibration(m_LHAlignParam, m_RHAlignParam);
-
-	m_jHandler->m_cfg.mLHIMUAlignmentPitch = m_LHAlignParam.IMUAlignmentPitch;
-	m_jHandler->m_cfg.mLHIMUAlignmentYaw = m_LHAlignParam.IMUAlignmentYaw;
-	m_jHandler->m_cfg.mRHIMUAlignmentPitch = m_RHAlignParam.IMUAlignmentPitch;
-	m_jHandler->m_cfg.mRHIMUAlignmentYaw = m_RHAlignParam.IMUAlignmentYaw;
-
-	m_jHandler->writeBack();
+	mDevice->OnTPoseCalibration();
 }
 
 void ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick(HISender pSender, HKEvent pEvent)
 {
-	VRTRIX::AlignmentParameter m_LHAlignParam, m_RHAlignParam;
-	std::vector<VRTRIX::VRTRIXQuaternion_t> LHIMUAlignmentPitch(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
-	std::vector<VRTRIX::VRTRIXQuaternion_t> LHIMUAlignmentYaw(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
-
-	std::vector<VRTRIX::VRTRIXQuaternion_t> RHIMUAlignmentPitch(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
-	std::vector<VRTRIX::VRTRIXQuaternion_t> RHIMUAlignmentYaw(VRTRIX::Joint_MAX, { 0.f, 0.f, 0.f, 0.f });
-
-	m_LHAlignParam = { LHIMUAlignmentYaw, LHIMUAlignmentPitch };
-	m_RHAlignParam = { RHIMUAlignmentYaw, RHIMUAlignmentPitch };
-	mDevice->OnOKPoseCalibration(m_LHAlignParam, m_RHAlignParam);
-
-	//m_jHandler->m_cfg.mLHIMUAlignmentPitch = m_LHAlignParam.IMUAlignmentPitch;
-	//m_jHandler->m_cfg.mLHIMUAlignmentYaw = m_LHAlignParam.IMUAlignmentYaw;
-	//m_jHandler->m_cfg.mRHIMUAlignmentPitch = m_RHAlignParam.IMUAlignmentPitch;
-	//m_jHandler->m_cfg.mRHIMUAlignmentYaw = m_RHAlignParam.IMUAlignmentYaw;
-
-	//m_jHandler->writeBack();
+	mDevice->OnOKPoseCalibration();
 }
 
 

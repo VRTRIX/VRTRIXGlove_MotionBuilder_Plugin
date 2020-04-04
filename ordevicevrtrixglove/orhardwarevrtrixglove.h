@@ -47,10 +47,11 @@ public:
 	void SetConfig(IDataGloveConfig config);
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version);
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
-	void OnTPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam);
-	void OnOKPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam);
+	void OnTPoseCalibration();
+	void OnOKPoseCalibration();
 	void OnAvancedModeEnabled(bool bIsEnabled);
 	void OnReceivedNewPose(VRTRIX::Pose pose);
+	void OnReceivedCalibratedResult(VRTRIX::HandEvent event);
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value);
 	void OnSetFingerSpacing(double value);
 	void OnSetFinalFingerSpacing(double value);
@@ -93,6 +94,8 @@ private:
 
 public:
     FBMocapJointsState* mKinectMocapJointsState;
+	bool					m_bIsLHConnected;
+	bool					m_bIsRHConnected;
 };
 
 class CVRTRIXIMUEventHandler :public VRTRIX::IVRTRIXIMUEventHandler
@@ -116,24 +119,17 @@ class CVRTRIXIMUEventHandler :public VRTRIX::IVRTRIXIMUEventHandler
 	* @returns void
 	*/
 	void OnReceivedNewEvent(VRTRIX::HandEvent event, void* pUserParam) {
-		switch (event.stat) {
-		case(VRTRIX::HandStatus_LowBattery): {
-			std::cout << "Low Battery!" << std::endl;
-			break;
+		ORHardwareVRTRIXGlove* pGlove = (ORHardwareVRTRIXGlove*)pUserParam;
+		if (event.stat == VRTRIX::HandStatus_Connected) {
+			event.type == VRTRIX::Hand_Left ? pGlove->m_bIsLHConnected = true : pGlove->m_bIsRHConnected = true;
 		}
-		case(VRTRIX::HandStatus_BatteryFull): {
-			std::cout << "Battery Full!" << std::endl;
-			break;
+
+		if (event.stat == VRTRIX::HandStatus_Disconnected) {
+			event.type == VRTRIX::Hand_Left ? pGlove->m_bIsLHConnected = false : pGlove->m_bIsRHConnected = false;
 		}
-		case(VRTRIX::HandStatus_Paired): {
-			std::cout << "Data Glove Paired!" << std::endl;
-			break;
-		}
-		case(VRTRIX::HandStatus_MagAbnormal): {
-			std::cout << "Magnetic Abnormal Detected!" << std::endl;
-			break;
-		}
-		default: break;
+
+		if (event.stat == VRTRIX::HandStatus_Calibrated) {
+			pGlove->OnReceivedCalibratedResult(event);
 		}
 	}
 };

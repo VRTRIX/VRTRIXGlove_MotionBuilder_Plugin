@@ -29,8 +29,10 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
     mInitSuccessful(false),
 	m_bIsLHDataReady(false),
 	m_bIsRHDataReady(false),
-	m_bIsLHCalibrated(false),
-	m_bIsRHCalibrated(false)
+	m_bIsLHCalibrated(true),
+	m_bIsRHCalibrated(true),
+	m_bIsLHConnected(false),
+	m_bIsRHConnected(false)
 {
 
 }
@@ -196,6 +198,9 @@ bool ORHardwareVRTRIXGlove::StartDataStream()
 
 		OnLoadAlignParam(m_cfg, VRTRIX::Hand_Left);
 		OnLoadAlignParam(m_cfg, VRTRIX::Hand_Right);
+
+		m_LHOffset = Eigen::Quaterniond(m_cfg.mLHWristOffset.qw, m_cfg.mLHWristOffset.qx, m_cfg.mLHWristOffset.qy, m_cfg.mLHWristOffset.qz);
+		m_RHOffset = Eigen::Quaterniond(m_cfg.mRHWristOffset.qw, m_cfg.mRHWristOffset.qx, m_cfg.mRHWristOffset.qy, m_cfg.mRHWristOffset.qz);
 		return true;
     }
     return false;
@@ -220,8 +225,6 @@ bool ORHardwareVRTRIXGlove::Close()
 		UnInit(m_pRightHandDataGlove);
     }
 	mOpened = false;
-	m_bIsLHCalibrated = false;
-	m_bIsRHCalibrated = false;
     return true;
 }
 
@@ -245,8 +248,6 @@ bool ORHardwareVRTRIXGlove::StopDataStream()
 		UnInit(m_pRightHandDataGlove);
     }
 	mOpened = false;
-	m_bIsLHCalibrated = false;
-	m_bIsRHCalibrated = false;
     return true;
 }
 
@@ -403,27 +404,39 @@ void ORHardwareVRTRIXGlove::SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, F
 	}
 }
 
-void ORHardwareVRTRIXGlove::OnTPoseCalibration(VRTRIX::AlignmentParameter& m_LHAlignParam, VRTRIX::AlignmentParameter& m_RHAlignParam)
+void ORHardwareVRTRIXGlove::OnTPoseCalibration()
 {
-	m_bIsLHCalibrated = false;
-	m_bIsRHCalibrated = false;
 	VRTRIX::EIMUError error;
-	m_pLeftHandDataGlove->SoftwareAlign(error, m_LHAlignParam);
-	m_pRightHandDataGlove->SoftwareAlign(error, m_RHAlignParam);
+	if (m_bIsLHConnected) {
+		m_bIsLHCalibrated = false;
+		m_pLeftHandDataGlove->SoftwareAlign(error);
+	}
+	if (m_bIsRHConnected) {
+		m_bIsRHCalibrated = false;
+		m_pRightHandDataGlove->SoftwareAlign(error);
+	}
 }
 
-void ORHardwareVRTRIXGlove::OnOKPoseCalibration(VRTRIX::AlignmentParameter & m_LHAlignParam, VRTRIX::AlignmentParameter & m_RHAlignParam)
+void ORHardwareVRTRIXGlove::OnOKPoseCalibration()
 {
 	VRTRIX::EIMUError error;
-	m_pLeftHandDataGlove->OKPoseAlign(error);
-	m_pRightHandDataGlove->OKPoseAlign(error);
+	if (m_bIsLHConnected) {
+		m_pLeftHandDataGlove->OKPoseAlign(error);
+	}
+	if (m_bIsRHConnected) {
+		m_pRightHandDataGlove->OKPoseAlign(error);
+	}
 }
 
 void ORHardwareVRTRIXGlove::OnAvancedModeEnabled(bool bIsEnabled)
 {
 	VRTRIX::EIMUError error;
-	m_pLeftHandDataGlove->SwitchToAdvancedMode(error, bIsEnabled);
-	m_pRightHandDataGlove->SwitchToAdvancedMode(error, bIsEnabled);
+	if (m_bIsLHConnected) {
+		m_pLeftHandDataGlove->SwitchToAdvancedMode(error, bIsEnabled);
+	}
+	if (m_bIsRHConnected) {
+		m_pRightHandDataGlove->SwitchToAdvancedMode(error, bIsEnabled);
+	}
 }
 
 void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
@@ -436,6 +449,12 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 			if (!m_bIsLHCalibrated && i == (int)VRTRIX::Wrist_Joint) {
 				Eigen::Quaterniond target = MBEuler2Quat(mChannel[LHandIndex].mDefaultR);
 				m_LHOffset = CalculateStaticOffset(target, rot);
+				
+				m_cfg.mLHWristOffset = { (float)m_LHOffset.x(),  (float)m_LHOffset.y() ,(float)m_LHOffset.z() ,(float)m_LHOffset.w() };
+				JsonHandler * m_jHandler = new JsonHandler();
+				m_jHandler->writeBack(m_cfg);
+				delete m_jHandler;
+				
 				m_bIsLHCalibrated = true;
 			}
 			rot = m_LHOffset * rot;
@@ -478,6 +497,12 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 			if (!m_bIsRHCalibrated && i == (int)VRTRIX::Wrist_Joint) {
 				Eigen::Quaterniond target = MBEuler2Quat(mChannel[RHandIndex].mDefaultR);
 				m_RHOffset = CalculateStaticOffset(target, rot);
+
+				m_cfg.mRHWristOffset = { (float)m_RHOffset.x(), (float)m_RHOffset.y() ,(float)m_RHOffset.z() ,(float)m_RHOffset.w() };
+				JsonHandler * m_jHandler = new JsonHandler();
+				m_jHandler->writeBack(m_cfg);
+				delete m_jHandler;
+
 				m_bIsRHCalibrated = true;
 			}
 			rot = m_RHOffset * rot;
@@ -514,6 +539,25 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 	}
 
 
+}
+
+void ORHardwareVRTRIXGlove::OnReceivedCalibratedResult(VRTRIX::HandEvent event)
+{
+	for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
+		if (event.type == VRTRIX::Hand_Left) {
+			m_cfg.mLHIMUAlignmentTPosePitch[i] = event.param.IMUAlignmentTPosePitch[i];
+			m_cfg.mLHIMUAlignmentOKPosePitch[i] = event.param.IMUAlignmentOKPosePitch[i];
+			m_cfg.mLHIMUAlignmentYaw[i] = event.param.IMUAlignmentYaw[i];
+		}
+		else if (event.type == VRTRIX::Hand_Right) {
+			m_cfg.mRHIMUAlignmentTPosePitch[i] = event.param.IMUAlignmentTPosePitch[i];
+			m_cfg.mRHIMUAlignmentOKPosePitch[i] = event.param.IMUAlignmentOKPosePitch[i];
+			m_cfg.mRHIMUAlignmentYaw[i] = event.param.IMUAlignmentYaw[i];
+		}
+	}
+	JsonHandler * m_jHandler = new JsonHandler();
+	m_jHandler->writeBack(m_cfg);
+	delete m_jHandler;
 }
 
 void ORHardwareVRTRIXGlove::OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value)
@@ -579,14 +623,20 @@ void ORHardwareVRTRIXGlove::OnLoadAlignParam(IDataGloveConfig config, VRTRIX::Ha
 
 	switch (type) {
 	case(VRTRIX::Hand_Left): {
-		param.IMUAlignmentPitch = config.mLHIMUAlignmentPitch;
-		param.IMUAlignmentYaw = config.mLHIMUAlignmentYaw;
+		for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
+			param.IMUAlignmentTPosePitch[i] = config.mLHIMUAlignmentTPosePitch[i];
+			param.IMUAlignmentOKPosePitch[i] = config.mLHIMUAlignmentOKPosePitch[i];
+			param.IMUAlignmentYaw[i] = config.mLHIMUAlignmentYaw[i];
+		}
 		m_pLeftHandDataGlove->LoadAlignmentParam(eIMUError, param);
 		break;
 	}
 	case(VRTRIX::Hand_Right): {
-		param.IMUAlignmentPitch = config.mRHIMUAlignmentPitch;
-		param.IMUAlignmentYaw = config.mRHIMUAlignmentYaw;
+		for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
+			param.IMUAlignmentTPosePitch[i] = config.mRHIMUAlignmentTPosePitch[i];
+			param.IMUAlignmentOKPosePitch[i] = config.mRHIMUAlignmentOKPosePitch[i];
+			param.IMUAlignmentYaw[i] = config.mRHIMUAlignmentYaw[i];
+		}
 		m_pRightHandDataGlove->LoadAlignmentParam(eIMUError, param);
 		break;
 	}

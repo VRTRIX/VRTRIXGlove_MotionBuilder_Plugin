@@ -22,10 +22,14 @@ struct IDataGloveConfig {
 	double mDistalSlerpDownValue[5];
 	double mProximalSlerpUpValue[5];
 	double mDistalSlerpUpValue[5];
-	std::vector<VRTRIX::VRTRIXQuaternion_t> mLHIMUAlignmentPitch;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> mLHIMUAlignmentTPosePitch;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> mLHIMUAlignmentOKPosePitch;
 	std::vector<VRTRIX::VRTRIXQuaternion_t> mLHIMUAlignmentYaw;
-	std::vector<VRTRIX::VRTRIXQuaternion_t> mRHIMUAlignmentPitch;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> mRHIMUAlignmentTPosePitch;
+	std::vector<VRTRIX::VRTRIXQuaternion_t> mRHIMUAlignmentOKPosePitch;
 	std::vector<VRTRIX::VRTRIXQuaternion_t> mRHIMUAlignmentYaw;
+	VRTRIX::VRTRIXQuaternion_t mLHWristOffset;
+	VRTRIX::VRTRIXQuaternion_t mRHWristOffset;
 };
 
 class JsonHandler
@@ -100,6 +104,15 @@ public:
 		}
 	}
 
+	//// Read Json Matrix and return as quaternion
+	void ReadJsonQuat(Json::Value jsonMat, VRTRIX::VRTRIXQuaternion_t& quat)
+	{
+		int size = jsonMat.size();
+
+		if (size != 4) return;
+		quat = { jsonMat[1].asFloat(), jsonMat[2].asFloat(), jsonMat[3].asFloat(), jsonMat[0].asFloat() };
+	}
+
 	//// Read FBVector3d and return as Json Matrix
 	Json::Value WriteJsonMatrix(FBVector3d mat[3])
 	{
@@ -139,6 +152,17 @@ public:
 		return jsonMat;
 	}
 
+	//// Write quaternion and return as Json Matrix
+	Json::Value WriteJsonQuat(VRTRIX::VRTRIXQuaternion_t quat)
+	{
+		Json::Value jsonMat;
+		jsonMat[0] = quat.qw;
+		jsonMat[1] = quat.qx;
+		jsonMat[2] = quat.qy;
+		jsonMat[3] = quat.qz;
+		return jsonMat;
+	}
+
 	void parseDisplayCfg(const Json::Value &cfg_root) {
 		m_cfg.mAdvancedMode = cfg_root["mAdvancedMode"].asBool();
 		m_cfg.mHardwareVersion = cfg_root["mHardwareVersion"].asUInt();
@@ -155,35 +179,45 @@ public:
 		ReadJsonVector(cfg_root["mProximalSlerpUpValue"], m_cfg.mProximalSlerpUpValue);
 		ReadJsonVector(cfg_root["mDistalSlerpUpValue"], m_cfg.mDistalSlerpUpValue);
 
-		ReadJsonVector(cfg_root["mLHIMUAlignmentPitch"], m_cfg.mLHIMUAlignmentPitch);
+		ReadJsonVector(cfg_root["mLHIMUAlignmentTPosePitch"], m_cfg.mLHIMUAlignmentTPosePitch);
+		ReadJsonVector(cfg_root["mLHIMUAlignmentOKPosePitch"], m_cfg.mLHIMUAlignmentOKPosePitch);
 		ReadJsonVector(cfg_root["mLHIMUAlignmentYaw"], m_cfg.mLHIMUAlignmentYaw);
-		ReadJsonVector(cfg_root["mRHIMUAlignmentPitch"], m_cfg.mRHIMUAlignmentPitch);
+		ReadJsonVector(cfg_root["mRHIMUAlignmentTPosePitch"], m_cfg.mRHIMUAlignmentTPosePitch);
+		ReadJsonVector(cfg_root["mRHIMUAlignmentOKPosePitch"], m_cfg.mRHIMUAlignmentOKPosePitch);
 		ReadJsonVector(cfg_root["mRHIMUAlignmentYaw"], m_cfg.mRHIMUAlignmentYaw);
+	
+		ReadJsonQuat(cfg_root["mLHWristOffset"], m_cfg.mLHWristOffset);
+		ReadJsonQuat(cfg_root["mRHWristOffset"], m_cfg.mRHWristOffset);
 	}
 
-	bool writeBack() {
+	bool writeBack(IDataGloveConfig& cfg) {
 		Json::Value root;
-		root["mAdvancedMode"] = m_cfg.mAdvancedMode;
-		root["mHardwareVersion"] = m_cfg.mHardwareVersion;
-		root["mFingerSpacing"] = m_cfg.mFingerSpacing;
-		root["mFinalFingerSpacing"] = m_cfg.mFinalFingerSpacing;
-		root["mBendUpThreshold"] = m_cfg.mBendUpThreshold;
-		root["mBendDownThreshold"] = m_cfg.mBendDownThreshold;
+		root["mAdvancedMode"] = cfg.mAdvancedMode;
+		root["mHardwareVersion"] = cfg.mHardwareVersion;
+		root["mFingerSpacing"] = cfg.mFingerSpacing;
+		root["mFinalFingerSpacing"] = cfg.mFinalFingerSpacing;
+		root["mBendUpThreshold"] = cfg.mBendUpThreshold;
+		root["mBendDownThreshold"] = cfg.mBendDownThreshold;
 
-		root["mLHThumbOffset"] = WriteJsonMatrix(m_cfg.mLHThumbOffset);
-		root["mRHThumbOffset"] = WriteJsonMatrix(m_cfg.mRHThumbOffset);
-		root["mLHModelOffset"] = WriteJsonMatrix(m_cfg.mLHModelOffset);
-		root["mRHModelOffset"] = WriteJsonMatrix(m_cfg.mRHModelOffset);
+		root["mLHThumbOffset"] = WriteJsonMatrix(cfg.mLHThumbOffset);
+		root["mRHThumbOffset"] = WriteJsonMatrix(cfg.mRHThumbOffset);
+		root["mLHModelOffset"] = WriteJsonMatrix(cfg.mLHModelOffset);
+		root["mRHModelOffset"] = WriteJsonMatrix(cfg.mRHModelOffset);
 
-		root["mProximalSlerpDownValue"] = WriteJsonVec(m_cfg.mProximalSlerpDownValue);
-		root["mDistalSlerpDownValue"] = WriteJsonVec(m_cfg.mDistalSlerpDownValue);
-		root["mProximalSlerpUpValue"] = WriteJsonVec(m_cfg.mProximalSlerpUpValue);
-		root["mDistalSlerpUpValue"] = WriteJsonVec(m_cfg.mDistalSlerpUpValue);
+		root["mProximalSlerpDownValue"] = WriteJsonVec(cfg.mProximalSlerpDownValue);
+		root["mDistalSlerpDownValue"] = WriteJsonVec(cfg.mDistalSlerpDownValue);
+		root["mProximalSlerpUpValue"] = WriteJsonVec(cfg.mProximalSlerpUpValue);
+		root["mDistalSlerpUpValue"] = WriteJsonVec(cfg.mDistalSlerpUpValue);
 
-		root["mLHIMUAlignmentPitch"] = WriteJsonVec(m_cfg.mLHIMUAlignmentPitch);
-		root["mLHIMUAlignmentYaw"] = WriteJsonVec(m_cfg.mLHIMUAlignmentYaw);
-		root["mRHIMUAlignmentPitch"] = WriteJsonVec(m_cfg.mRHIMUAlignmentPitch);
-		root["mRHIMUAlignmentYaw"] = WriteJsonVec(m_cfg.mRHIMUAlignmentYaw);
+		root["mLHIMUAlignmentTPosePitch"] = WriteJsonVec(cfg.mLHIMUAlignmentTPosePitch);
+		root["mLHIMUAlignmentOKPosePitch"] = WriteJsonVec(cfg.mLHIMUAlignmentOKPosePitch);
+		root["mLHIMUAlignmentYaw"] = WriteJsonVec(cfg.mLHIMUAlignmentYaw);
+		root["mRHIMUAlignmentTPosePitch"] = WriteJsonVec(cfg.mRHIMUAlignmentTPosePitch);
+		root["mRHIMUAlignmentOKPosePitch"] = WriteJsonVec(cfg.mRHIMUAlignmentOKPosePitch);
+		root["mRHIMUAlignmentYaw"] = WriteJsonVec(cfg.mRHIMUAlignmentYaw);
+
+		root["mLHWristOffset"] = WriteJsonQuat(cfg.mLHWristOffset);
+		root["mRHWristOffset"] = WriteJsonQuat(cfg.mRHWristOffset);
 
 		std::ofstream file_id;
 		file_id.open(current_dir);
@@ -201,6 +235,10 @@ public:
 #endif
 		file_id.close();
 		return true;
+	}
+
+	bool writeBack() {
+		return writeBack(m_cfg);
 	}
 
 public:
