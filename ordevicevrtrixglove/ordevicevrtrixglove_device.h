@@ -144,7 +144,7 @@ private:
     FBCharacter*                mMocapCharacter;
     FBCharacter*                mTargetCharacter;
 
-	DataChannel					mChannels[BoneNum];	//!< Data channels.
+	std::vector<DataChannel>	mChannels;	//!< Data channels.
 	FBPropertyBool				UseReferenceTransformation;             // !< Apply reference transformation on incoming global data.
 	bool						mHierarchyIsDefined;                    //!< True if the hierarchy is already defined
 

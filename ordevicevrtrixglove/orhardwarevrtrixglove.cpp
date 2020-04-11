@@ -16,6 +16,7 @@ static void GetTransformOnRigidBody(FBTVector& transform, VRTRIX::VRTRIXQuaterni
  ************************************************/
 ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	mChannelCount(0),
+	mHandJointCount(0),
 	m_hNextSkeletonEvent(INVALID_HANDLE_VALUE),
 	mOpened(false),
 	//mKinectMocapJointsState(NULL),
@@ -23,8 +24,7 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	mHardwareVersion(VRTRIX::PRO11),
 	m_LHOffset(Eigen::Quaterniond::Identity()), 
 	m_RHOffset(Eigen::Quaterniond::Identity()),
-	m_LHIMUData(HandBoneNum, { 0.f,0.f,0.f,0.f }),
-	m_RHIMUData(HandBoneNum, { 0.f,0.f,0.f,0.f }),
+
     mSensorFloorOffsetSet(false),
     mInitSuccessful(false),
 	m_bIsLHDataReady(false),
@@ -256,19 +256,26 @@ bool ORHardwareVRTRIXGlove::StopDataStream()
  ************************************************/
 bool ORHardwareVRTRIXGlove::GetSetupInfo()
 {
+	//The initial hand hierarchy  
+	HandHierarchySetup(mLocalTranslationR, mLocalTranslationL);
+	if (mLocalTranslationR.size() != mLocalTranslationL.size()) return false;
+	mHandJointCount = (int)mLocalTranslationR.size();
+	for (int i = 0; i < mHandJointCount; ++i) {
+		FBMult(mLocalTranslationR[i], mLocalTranslationR[i], (double)Scale);
+		m_RHIMUData.push_back({ 0.f,0.f,0.f,0.f });
+		FBMult(mLocalTranslationL[i], mLocalTranslationL[i], (double)Scale);
+		m_LHIMUData.push_back({ 0.f,0.f,0.f,0.f });
+	}
+
     //The initial skeleton hierarchy    
-	mChannelCount    = BoneNum;
 	SkeletonHierarchySetup(mChannel);
+	mChannelCount = (int)mChannel.size();
     for(int i = 0; i < mChannelCount; i++)
     {
         memcpy(mChannel[i].mDefaultT,mChannel[i].mT, sizeof(double)*3);
         memcpy(mChannel[i].mDefaultR,mChannel[i].mR, sizeof(double)*3);
     }
-	HandHierarchySetup(mLocalTranslationR, mLocalTranslationL);
-	for (int i = 0; i < HandBoneNum; ++i) {
-		FBMult(mLocalTranslationR[i], mLocalTranslationR[i] ,(double)Scale);
-		FBMult(mLocalTranslationL[i], mLocalTranslationL[i] ,(double)Scale);
-	}
+
 	//mKinectMocapJointsState = new FBMocapJointsState(mChannelCount);
     return true;
 }
@@ -461,12 +468,12 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 			m_LHPose.imuData[i] = { (float)rot.x(), (float)rot.y(), (float)rot.z(), (float)rot.w() };
 		}
 
-		if (HandBoneNum == 16) {
-			for (int i = 0; i < HandBoneNum; ++i) {
+		if (mHandJointCount == 16) {
+			for (int i = 0; i < mHandJointCount; ++i) {
 				m_LHIMUData[i] = m_LHPose.imuData[i];
 			}
 		}
-		else if (HandBoneNum == 20) {
+		else if (mHandJointCount == 20) {
 			m_LHIMUData[0] = m_LHPose.imuData[(int)VRTRIX::Wrist_Joint];
 			m_LHIMUData[1] = m_LHPose.imuData[(int)VRTRIX::Thumb_Proximal];
 			m_LHIMUData[2] = m_LHPose.imuData[(int)VRTRIX::Thumb_Intermediate];
@@ -509,12 +516,12 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 			m_RHPose.imuData[i] = { (float)rot.x(), (float)rot.y(), (float)rot.z(), (float)rot.w() };
 		}
 
-		if (HandBoneNum == 16) {
-			for (int i = 0; i < HandBoneNum; ++i) {
+		if (mHandJointCount == 16) {
+			for (int i = 0; i < mHandJointCount; ++i) {
 				m_RHIMUData[i] = m_RHPose.imuData[i];
 			}
 		}
-		else if (HandBoneNum == 20) {
+		else if (mHandJointCount == 20) {
 			m_RHIMUData[0] = m_RHPose.imuData[(int)VRTRIX::Wrist_Joint];
 			m_RHIMUData[1] = m_RHPose.imuData[(int)VRTRIX::Thumb_Proximal];
 			m_RHIMUData[2] = m_RHPose.imuData[(int)VRTRIX::Thumb_Intermediate];
@@ -650,7 +657,7 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 	bool bIsRHFetched = false, bIsLHFetched = false;
 	if (m_bIsRHDataReady) {
 
-		for (int i = 0; i < HandBoneNum; ++i) {
+		for (int i = 0; i < mHandJointCount; ++i) {
 			FBRVector rot = VRTRIXQuaternionToEuler(m_RHIMUData[i], VRTRIX::Hand_Right, (VRTRIX::Joint)i);
 	
 			mChannel[RHandIndex + i].mR[0] = rot[0];
@@ -676,7 +683,7 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 	}
 	if (m_bIsLHDataReady) {
 
-		for (int i = 0; i < HandBoneNum; ++i) {
+		for (int i = 0; i < mHandJointCount; ++i) {
 			FBRVector rot = VRTRIXQuaternionToEuler(m_LHIMUData[i], VRTRIX::Hand_Left, (VRTRIX::Joint)i);
 
 			mChannel[LHandIndex + i].mR[0] = rot[0];

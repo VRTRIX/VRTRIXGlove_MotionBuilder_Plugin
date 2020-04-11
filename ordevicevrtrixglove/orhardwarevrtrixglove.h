@@ -1,10 +1,9 @@
 #pragma once
+
 #include <VRTRIX_IMU.h>
-#include <fbsdk/fbsdk.h>
+#include <Eigen/Dense>
 #include "statushandle.h"
 #include "BoneHierarchySetup.h"
-#include <Eigen/Dense>
-#include "JsonHandler.h"
 
 class ORHardwareVRTRIXGlove
 {
@@ -33,7 +32,7 @@ public:
 
 	//--- Channel & Channel data management
 	int		GetChannelCount	()					{	return mChannelCount;						}
-	const char*	GetChannelName	(int pChannel)	{	return mChannel[pChannel].mName;	}
+	const char*	GetChannelName	(int pChannel)	{	return mChannel[pChannel].mName.c_str();	}
 	int		GetChannelParent(int pChannel)		{	return mChannel[pChannel].mParentChannel;	}
 	FBVector3d GetDefaultT	(int pChannel)		{	SkeletonNodeInfo& lSI = mChannel[pChannel]; return FBVector3d(lSI.mDefaultT[0],lSI.mDefaultT[1],lSI.mDefaultT[2]);		}
 	FBVector3d GetDefaultR	(int pChannel)		{	SkeletonNodeInfo& lSI = mChannel[pChannel]; return FBVector3d(lSI.mDefaultR[0],lSI.mDefaultR[1],lSI.mDefaultR[2]);		}
@@ -62,11 +61,12 @@ public:
 
 private:
 	IDataGloveConfig    m_cfg;
-	SkeletonNodeInfo	mChannel[BoneNum];//!< Channel data & info.
-	FBTVector	mLocalTranslationL[HandBoneNum];
-	FBTVector	mLocalTranslationR[HandBoneNum];
+	std::vector<SkeletonNodeInfo>	mChannel;//!< Channel data & info.
+	std::vector<FBTVector>	mLocalTranslationL;
+	std::vector<FBTVector>	mLocalTranslationR;
 	int			mChannelCount;								//!< Channel count.
-	
+	int			mHandJointCount;
+
 	VRTRIX::GLOVEVERSION	mHardwareVersion;
 	VRTRIX::IVRTRIXIMU*     m_pLeftHandDataGlove;
 	VRTRIX::IVRTRIXIMU*     m_pRightHandDataGlove;
