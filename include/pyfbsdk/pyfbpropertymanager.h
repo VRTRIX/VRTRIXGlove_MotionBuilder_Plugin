@@ -41,6 +41,17 @@ public:
         return lResult;
     }
 
+	void FindPropertiesByName(const char * pPropertyNamePattern, list pPropList, bool pMultilangLookup = true)
+    {
+		FBArrayTemplate<FBProperty *> lPropList;
+        mFBPropertyManager->FindPropertiesByName( pPropertyNamePattern, lPropList, pMultilangLookup );
+
+		for(int i = 0; i < lPropList.GetCount(); i++)
+        {
+            pPropList.append(FBProperty_Wrapper_Factory(lPropList[i]));
+        }
+    }
+
 	int GetCount() { return mFBPropertyManager->GetCount(  ); }
 
 	object GetFBProperty( int pIndex ) {

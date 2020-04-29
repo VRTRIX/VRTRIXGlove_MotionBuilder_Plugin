@@ -128,9 +128,9 @@ class CVRTRIXIMUEventHandler :public VRTRIX::IVRTRIXIMUEventHandler
 			event.type == VRTRIX::Hand_Left ? pGlove->m_bIsLHConnected = false : pGlove->m_bIsRHConnected = false;
 		}
 
-		if (event.stat == VRTRIX::HandStatus_Calibrated) {
-			pGlove->OnReceivedCalibratedResult(event);
-		}
+		//if (event.stat == VRTRIX::HandStatus_Calibrated) {
+		//	pGlove->OnReceivedCalibratedResult(event);
+		//}
 	}
 };
 

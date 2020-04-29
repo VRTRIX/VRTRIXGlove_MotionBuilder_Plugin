@@ -87,7 +87,7 @@ PYSDK_DLL inline void FBVectorMatrixMult_Wrapper( FBVector4d_Wrapper& pOutVector
 
 //////////////////////////////////////////////////////////////////
 //
-// GLOBAL FUNCTION: FBTranslationToMatrix FBRotationToMatrix FBScalingToMatrix FBTRSToMatrix
+// GLOBAL FUNCTION: FBTranslationToMatrix FBRotationToMatrix FBScalingToMatrix FBTRSToMatrix FBTQSToMatrix
 //
 //////////////////////////////////////////////////////////////////
 
@@ -111,6 +111,11 @@ PYSDK_DLL inline void FBTRSToMatrix_Wrapper( FBMatrix_Wrapper& pMatrix, FBVector
     FBTRSToMatrix( *pMatrix.mFBMatrix, *pTVector.mFBVector4d, *pRVector.mFBVector3d, *pSVector.mFBSVector ); 
 }
 
+PYSDK_DLL inline void FBTQSToMatrix_Wrapper( FBMatrix_Wrapper& pMatrix, FBVector4d_Wrapper& pTVector, FBVector4d_Wrapper& pQuaternion, FBSVector_Wrapper& pSVector )
+{
+	FBTQSToMatrix( *pMatrix.mFBMatrix, *pTVector.mFBVector4d, *pQuaternion.mFBVector4d, *pSVector.mFBSVector ); 
+}
+
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 //
@@ -121,7 +126,7 @@ PYSDK_DLL inline void FBTRSToMatrix_Wrapper( FBMatrix_Wrapper& pMatrix, FBVector
 
 //////////////////////////////////////////////////////////////////
 //
-// GLOBAL FUNCTION: FBMatrixToTranslation FBMatrixToRotation FBMatrixToScaling FBMatrixToTRS
+// GLOBAL FUNCTION: FBMatrixToTranslation FBMatrixToRotation FBMatrixToScaling FBMatrixToTRS FBMatrixToTQS
 //
 //////////////////////////////////////////////////////////////////
 
@@ -148,6 +153,11 @@ PYSDK_DLL inline void FBMatrixToScaling_Wrapper( FBSVector_Wrapper& pVector, FBM
 PYSDK_DLL inline void FBMatrixToTRS_Wrapper( FBVector4d_Wrapper& pTVector, FBVector3d_Wrapper& pRVector, FBSVector_Wrapper& pSVector, FBMatrix_Wrapper& pMatrix )
 {
     FBMatrixToTRS( *pTVector.mFBVector4d, *pRVector.mFBVector3d, *pSVector.mFBSVector, *pMatrix.mFBMatrix ); 
+}
+
+PYSDK_DLL inline void FBMatrixToTQS_Wrapper( FBVector4d_Wrapper& pTVector, FBVector4d_Wrapper& pQuaternion, FBSVector_Wrapper& pSVector, FBMatrix_Wrapper& pMatrix )
+{
+	FBMatrixToTQS( *pTVector.mFBVector4d, *pQuaternion.mFBVector4d, *pSVector.mFBSVector, *pMatrix.mFBMatrix ); 
 }
 
 //////////////////////////////////////////////////////////////////

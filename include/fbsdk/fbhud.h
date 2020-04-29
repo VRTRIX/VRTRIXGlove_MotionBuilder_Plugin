@@ -385,7 +385,19 @@ public:
         eTimeline
     };
 
-    FBHUDElement *CreateElement(EStockElement pType, const char *pName);
+	/** Creates a stock HUD Element.
+	*	\param  pType	View to be called for expose.
+	*	\param  pName	Name for the HUD Element to create.
+	*	\return			The created HUD Element.
+	*/
+	FBHUDElement* CreateElement( EStockElement pType, const char* pName );
+
+	/** Creates a custom HUD Element.
+	*	\param  pHUDElementClassName	The HUD Element class name (mainly, the ClassName parameter of the FBStorableCustomHUDElementImplementation macro).
+	*	\param  pName					Name for the custom HUD Element to create.
+	*	\return The created custom HUD Element.
+	*/
+	FBHUDElement* CreateCustomElement( const char* pHUDElementClassName, const char* pName );
 
 public:
     FBPropertyBool              Visibility; //!< <b>Read Write Property:</b> Indicate if the information will be displayed or not.

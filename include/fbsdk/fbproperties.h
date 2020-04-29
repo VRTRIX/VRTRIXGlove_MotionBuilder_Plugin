@@ -1150,6 +1150,14 @@ namespace FBSDKNamespace {
         */
         FBProperty* Find( const char *pPropertyName, bool pMultilangLookup=true );
 
+		/** This function will query the property list for properties fulfilling a particular name pattern
+		*	\param	pPropertyNamePattern	Indicate the name pattern to search. This pattern can contain any amount of *. (ex: *tr*mod*scene )
+		*	\param	pPropList               List that contains the resulting properties matching the pattern
+        *	\param	pMultilangLookup		When searching, indicate if the name lookup should also be done on the property name as shown in the GUI. (default = true)
+		*	\note The script FindPropertiesWithWildcard.py shows how to use this function.
+		*/
+		void FindPropertiesByName( const char* pPropertyNamePattern, FBArrayTemplate<FBProperty*>& pPropList, bool pMultilangLookup=true );
+
         /** Remove a property.
         *	\param pProperty	Property to remove.
         *	\return Index where property was found.
@@ -1559,8 +1567,9 @@ namespace FBSDKNamespace {
 
         /**	Set the animation state of the property.
         *	\param	pState	State of animation for property, true to animate, false to remove curves.
+        *	\param	pCheckLocked	Decides whether to check the locked status.
         */
-        void SetAnimated( bool pState );
+        void SetAnimated( bool pState, bool pCheckLocked = false );
 
         /**	Get the animation node for the property.
         *	\param	pTake to get the animation node from.

@@ -226,6 +226,10 @@ public:
 	FBPropertyBool              DefaultBehavior;            //!< <b>Read Write Property:</b> Using default manipulator behavior?
 	FBPropertyString            ViewerText;                 //!< <b>Read Write Property:</b> Text displayed in view.
 	FBPropertyCamera            CurrentCamera;              //!< <b>Read Only Property:</b> Current camera.
+	FBPropertyBool              ConsumeEvent;               //!< <b>Read Write Property:</b> Is manipulator consuming event? If true, this will prevent other manipulators from being called.
+															//								 Custom manipulators will be called first, before the standard MotionBuilder manipulators.
+															//								 Remark: If your manipulator consumes an event, it must consumes all the event until the transaction is finished.
+															//										 For example, if you consume the mouse down but not the mouse up, the other manipulator might be in an inconsistent state.
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

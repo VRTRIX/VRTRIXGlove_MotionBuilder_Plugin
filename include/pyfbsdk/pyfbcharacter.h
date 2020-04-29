@@ -101,6 +101,14 @@ public:
     void GetSOffset( FBBodyNodeId pBodyNodeId, FBVector3d_Wrapper& pSVector ) { mFBCharacter->GetSOffset( pBodyNodeId, (FBSVector*)pSVector.mFBVector3d ); }
     void GetTransformOffset( FBBodyNodeId pBodyNodeId, FBMatrix_Wrapper&  pOffsetMatrix ) { return mFBCharacter->GetTransformOffset(pBodyNodeId, pOffsetMatrix.mFBMatrix); }
     bool IsParentNodeOffset( FBBodyNodeId pNodeId ) { return mFBCharacter->IsParentNodeOffset(pNodeId); }
+    void CycleAnalysisCurrentCharacter(){ mFBCharacter->CycleAnalysisCurrentCharacter(); };
+    object GetCycleAnalysisNode( ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBCharacter->GetCycleAnalysisNode() ); }
+	FBVisibilityState GetIKVisibility() { return mFBCharacter->GetIKVisibility(); }
+	bool SetIKVisibility( bool pState ) { return mFBCharacter->SetIKVisibility( pState ); }
+	FBVisibilityState GetFKVisibility() { return mFBCharacter->GetFKVisibility(); }
+	bool SetFKVisibility( bool pState ) { return mFBCharacter->SetFKVisibility( pState ); }
+	FBVisibilityState GetSkeletonVisibility() { return mFBCharacter->GetSkeletonVisibility(); }
+	bool SetSkeletonVisibility( bool pState ) { return mFBCharacter->SetSkeletonVisibility( pState ); }
 
     list GetActiveBodyPart()
     {
@@ -136,5 +144,42 @@ public:
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LockX, bool );
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LockY, bool );
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LockZ, bool );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandIndexIndex,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandIndexMiddle,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandIndexRing,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandIndexPinky,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandMiddleIndex,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandMiddleMiddle,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandMiddleRing,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandMiddlePinky,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandRingIndex,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandRingMiddle,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandRingRing,			double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandRingPinky,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandPinkyIndex,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandPinkyMiddle,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandPinkyRing,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( LeftHandPinkyPinky,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandIndexIndex,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandIndexMiddle,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandIndexRing,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandIndexPinky,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandMiddleIndex,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandMiddleMiddle,	double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandMiddleRing,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandMiddlePinky,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandRingIndex,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandRingMiddle,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandRingRing,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandRingPinky,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandPinkyIndex,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandPinkyMiddle,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandPinkyRing,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( RightHandPinkyPinky,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( FKFingerMultiplier,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( FKFingerTipMultiplier,	double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( FKThumbTipMultiplier,		double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( HumanFingerLimits,		bool );
+
 };
 #endif // pyfbcharacter_h__

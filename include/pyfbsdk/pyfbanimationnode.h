@@ -52,10 +52,12 @@ public:
 	void KeyCandidate(FBTime_Wrapper& pTime) { mFBAnimationNode->KeyCandidate( *(pTime.mFBTime) ); }
 	void KeyRemove() { mFBAnimationNode->KeyRemove(  ); }
 	void KeyRemoveAt(FBTime_Wrapper& pTime) { mFBAnimationNode->KeyRemoveAt( *(pTime.mFBTime) ); }
-	bool SetCandidate(list pData);
+	bool SetCandidate(list pData, bool pCheckLocked = false);
 	void SetBufferType(bool pGlobal){ mFBAnimationNode->SetBufferType(pGlobal); }
-//	int ReadData(void * Data, FBEvaluateInfo_Wrapper* pEvaluateInfo) { return mFBAnimationNode->ReadData( Data, *(pEvaluateInfo->mFBEvaluateInfo) ); }
-//	bool ReadData(void * Data) { return mFBAnimationNode->ReadData( Data ); }
+	list ReadData_1( FBEvaluateInfo_Wrapper* pEvaluateInfo = NULL, bool pConvertGlobalToLocal = false );
+	list ReadData_2( const FBTime_Wrapper& pTime, bool pConvertGlobalToLocal = false );
+	list ReadLastEvalData();
+	FBAnimationNodeConnectorType GetConnectorType() { return mFBAnimationNode->ConnectorType; }
 	int  WriteData(list pData, FBEvaluateInfo_Wrapper* pEvaluateInfo = NULL);
     void SetFCurve( FBFCurve_Wrapper& pFCurve ) { mFBAnimationNode->FCurve = pFCurve.mFBFCurve; }
 	object GetFCurve(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBAnimationNode->FCurve ); }

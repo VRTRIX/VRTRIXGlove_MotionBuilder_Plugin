@@ -1,13 +1,13 @@
 {
    "mAdvancedMode" : false,
-   "mBendDownThreshold" : -90.0,
-   "mBendUpThreshold" : 25.0,
-   "mDistalSlerpDownValue" : [ 0.75, 0.75, 0.75, 0.75, 1.0 ],
-   "mDistalSlerpUpValue" : [ 1.0, 1.0, 1.0, 1.0, 0.0 ],
+   "mBendDownThreshold" : -160.0,
+   "mBendUpThreshold" : 100.0,
+   "mDistalSlerpDownValue" : [ 0.5, 0.5, 0.5, 0.5, 0.40000000000000002 ],
+   "mDistalSlerpUpValue" : [ 0.0, 0.0, 0.0, 0.0, 0.0 ],
    "mFinalFingerSpacing" : 2.0,
    "mFingerSpacing" : 2.0,
-   "mHardwareVersion" : 1,
-   "mLHIMUAlignmentTPosePitch" : [
+   "mHardwareVersion" : 2,
+   "mLHIMUAlignmentOKPosePitch" : [
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
@@ -25,7 +25,7 @@
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ]
    ],
-   "mLHIMUAlignmentOKPosePitch" : [
+   "mLHIMUAlignmentTPosePitch" : [
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
@@ -71,11 +71,27 @@
       [ 0.0, 8.0, 0.0 ],
       [ 0.0, 0.0, 0.0 ]
    ],
-   "mProximalSlerpDownValue" : [ 1.0, 1.0, 1.0, 1.0, 0.5 ],
-   "mProximalSlerpUpValue" : [ 1.0, 1.0, 1.0, 1.0, 0.0 ],
-   "mLHWristOffset" : [ 1.0, 0.0, 0.0, 0.0 ],
-   "mRHWristOffset" : [ 1.0, 0.0, 0.0, 0.0 ],
-   "mRHIMUAlignmentTPosePitch" : [
+   "mLHWristOffset" : [
+      -0.069614343345165253,
+      -0.017153237015008926,
+      -0.99350470304489136,
+      -0.088362596929073334
+   ],
+   "mProximalSlerpDownValue" : [
+      0.45000000000000001,
+      0.45000000000000001,
+      0.45000000000000001,
+      0.45000000000000001,
+      0.55000000000000004
+   ],
+   "mProximalSlerpUpValue" : [
+      0.90000000000000002,
+      0.90000000000000002,
+      0.90000000000000002,
+      0.90000000000000002,
+      0.0
+   ],
+   "mRHIMUAlignmentOKPosePitch" : [
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
@@ -93,7 +109,7 @@
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ]
    ],
-   "mRHIMUAlignmentOKPosePitch" : [
+   "mRHIMUAlignmentTPosePitch" : [
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
@@ -138,5 +154,11 @@
       [ 0.0, -16.0, 0.0 ],
       [ 0.0, -8.0, 0.0 ],
       [ 0.0, 0.0, 0.0 ]
+   ],
+   "mRHWristOffset" : [
+      0.95330709218978882,
+      0.12823016941547394,
+      -0.21431063115596771,
+      -0.16980442404747009
    ]
 }

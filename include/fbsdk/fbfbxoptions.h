@@ -196,7 +196,7 @@ public:
     //@{
 	FBPropertyBool				FileReference;			//!< <b>Read Write property:</b> Load/Save scene as FileReference.
     FBPropertyBool              FileReferenceEdit;      //!< <b>Read Write Property:</b> Load/Save the edits made to referenced objects or not.
-    FBPropertyString            NamespaceList;		    //!< <b>Read Write Property:</b> A list of namespaces separated by '~', On Load, duplicate the loaded objects into each namespace in the list.
+    FBPropertyString            NamespaceList;		    //!< <b>Read Write Property:</b> A list of namespaces separated by '~'. On Load, duplicate the loaded objects into each namespace in the list. If the SetMultiLoadNamespaceList method is also called, this property is ignored.
     //@}
 
     /** @name Layer merge options
@@ -350,6 +350,7 @@ public:
     //@}
 
     /** SetNamespaceList upon save or load
+	*	On Load, if the SetMultiLoadNamespaceList method is also called, the NamespaceList property is ignored.
     *   \param  pNamespaceList  namespace list to set
     */
     void SetNamespaceList(const FBStringList& pNamespaceList);
@@ -362,9 +363,45 @@ public:
 	
 	/** Sets the list of objects that will be saved. This needs to be set before 
 	*	calling FBApplication::FileSave.
+	*	The list is affecting only one save operation. Once the save is completed, the list is cleared.
     *   \param  pObjectsToSave	The objects to save.
 	*/
-	// void SetObjectsToSave( FBArrayTemplate<FBBox *> *pObjectsToSave );
+	void SetObjectsToSave( FBArrayTemplate<FBComponent *> *pObjectsToSave );
+
+	/** Sets the list of namespaces that will be used when merging multiple scenes (see FBApplication::FileMerge).
+	The number of namespaces contained in this list must match the number of files merged, otherwise the merge operation will abort.
+	The first namespace in the list will be applied on the first merged scene,
+	the second namespace in the list will be applied on the second merged scene, and so one and so forth.
+	This list is affecting only the merge operation.
+	When merging multiple scenes, if this list of namespaces is set, the FBFbxOptions::NamespaceList property value is ignored.
+	\param  pMultiLoadNamespaceList The multi load namespace list to set.
+	
+	@code
+	# This example shows how to merge multiple scenes, each scene in its own user specified namespace:
+
+	# Create an Load FBFbxOptions object
+	fbxLoadOptions = FBFbxOptions( True )
+
+	# Create a list of namespaces (2 items here, so the number of scenes to merge must also be 2)
+	# and set the list in the FBFbxOptions object
+	myNS = FBStringList( "MyFirstNS~MySecondNS" )
+	fbxLoadOptions.SetMultiLoadNamespaceList( myNS )
+
+	# Create a list of scenes to merge
+	myScenesToMerge = FBStringList( "C:\Temp\MyFirstScene.fbx~C:\Temp\AnotherScene.fbx" )
+
+	# Let's merge those scenes. The namespaces will be applied on the scenes' contents.
+	print FBApplication().FileMerge( myScenesToMerge, False, fbxLoadOptions )
+	@endcode
+	*/
+	void SetMultiLoadNamespaceList( const FBStringList& pMultiLoadNamespaceList );
+
+	/** Returns the list of namespaces that will be used when merging multiple scenes (see FBApplication::FileMerge).
+	This list is affecting only the merge operation.
+	When merging multiple scenes, if this list of namespaces is set, the FBFbxOptions::NamespaceList property value is ignored.
+	\return The multi load namespace list currently set.
+	*/
+	FBStringList GetMultiLoadNamespaceList();
 };
 
 #ifdef FBSDKUseNamespace

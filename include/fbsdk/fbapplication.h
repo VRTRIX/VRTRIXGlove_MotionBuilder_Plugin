@@ -198,7 +198,7 @@ public:
     bool				mUseConstantKeyReducer;			//!< Should we use a constant key reducer with the filter?
     bool				mConstantKeyReducerKeepOneKey;	//!< Should the constant key reducer keep at least one key?
     bool				mPlotTranslationOnRootOnly;		//!< Should we plot the translation on root only?
-    bool				mPreciseTimeDiscontinuities;	//!< Should we use precise time dicontinuities?
+    bool				mPreciseTimeDiscontinuities;	//!< Should we use precise time discontinuities?
     bool				mPlotLockedProperties;			//!< Should we plot locked properties?
 };
 
@@ -221,7 +221,7 @@ public:
 
     FBTimeSpan				TimeSpan;		//!< <b>Property:</b> Start and stop selection time to render.
     FBAudioChannelMode		ChannelMode;	//!< <b>Property:</b> Audio render channel number, 1 for Mono(left channel right channel render mixed to one channel), 2 for Stereo(left channel right channel render separately).
-    FBAudioBitDepthMode		BitDepthMode;	//!< <b>Property:</b> Bit depth for one sample of audio. 8 bits and 16 bits available for audio render, 16 bits default.
+    FBAudioBitDepthMode		BitDepthMode;	//!< <b>Property:</b> Bit depth for one sample of audio. 8, 16 and 24 bits available for audio render, 16 bits default.
     FBAudioRateMode			RateMode;		//!< <b>Property:</b> Rate mode for number of samples per second. 44100 hz default,8000, 11025,12000,16000,22050,24000,32000,44100,48000,64000,88200,96000 available for audio render.
     FBString				OutputFileName;	//!< <b>Property:</b> Audio Render destination file.
 };
@@ -261,6 +261,39 @@ enum FBOneClickApplication
 };
 #endif
 
+////////////////////////////////////////////////////////////////////////////////////
+// FBEventOverrideFileOpen
+////////////////////////////////////////////////////////////////////////////////////
+//! Event that is called before a file open/merge.
+class FBSDK_DLL FBEventOverrideFileOpen : public FBEvent 
+{
+public:
+    /**	Constructor.
+    *	\param pEvent Base event (internal) to obtain information from.
+    */
+    FBEventOverrideFileOpen( HKEventBase pEvent );
+
+    FBPropertyString	FilePath;			//!< <b>Read Only Property:</b> Path to the file that will be opened/merged.
+    FBPropertyBool		WillOverride;		//!< <b>Read Write Property:</b> Set to true for handling the file load, false by default. If the return value is false, MotionBuilder will proceed with the normal file open/merge process.
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+// FBPropertyEventOverrideFileOpen
+////////////////////////////////////////////////////////////////////////////////////
+//! \b PropertyEvent: Event when a file is about to be opened/merged.
+class FBSDK_DLL FBPropertyEventOverrideFileOpen : public FBPropertyEvent
+{
+  public:
+    /** Add/Remove a callback.
+	*	\param	pOwner		Callback owner.
+	*	\param	pHandler	Callback handler.
+	*/
+	virtual void Add	( HICallback pOwner, kICallbackHandler pHandler );
+	virtual void Remove	( HICallback pOwner, kICallbackHandler pHandler );
+};
+
+FB_FORWARD(FBMotionFileOptions);
+
 /** FBApplication is used mainly to manage files.
 It provides functionality like that in the MotionBuilder file menu, for example, open file, save file. 
 
@@ -285,6 +318,8 @@ public:
     FBPropertyEvent	OnFileSaveCompleted;	//!< <b>Event:</b> A File Save has been completed.
     FBPropertyEvent	OnFileSave;				//!< <b>Event:</b> A File Save has been requested, nothing has been saved yet.
     FBPropertyEvent	OnFileExit;				//!< <b>Event:</b> A File Exit as been requested, nothing has been destroyed yet.
+
+	FBPropertyEventOverrideFileOpen	OnOverrideFileOpen;		//!< <b>Event:</b> Called when a file is about to be opened/merged. The user can override the process with his own file import system.
 
     /**	Minimize window.
     *	\param	pBlocking	Is the minimization blocking operation (default = true).
@@ -341,12 +376,14 @@ public:
     */
     bool GetMaxFrameCount(void* pBuffer, kULong pBufferLength, kLong* pFrameCount, int pTimeScale);	
 
-    /**	Merge a file with the current scene.
+    /**	Merge one or multiple files with the current scene.
     *	Command File->Merge in the menus.
-    *	\param	pFilename	File to merge.
+    *	\param	pFilename	File(s) to merge. For multiple files, use a list of files separated by '~'.
     *	\param  pShowUIMsg  Set false if don't want to popup any UI dialog or messages (default=false).
     *	\param  pOptions    Provide finer control on file open options (default=NULL). if not null, 
     *                       Option dialog will only show if both option's ShowOptionsDialog property and pShowUIMsg are true.
+	*						It is possible to merge multiple scenes, each one within its own user specified namespace, by calling the FBFbxOptions::SetMultiLoadNamespaceList method first.
+	*						When doing so though, the FBFbxOption.NamespaceList property is then ignored.
     *	\return	true if successful.
     */
     bool FileMerge( const char* pFilename, bool pShowUIMsg = false, FBFbxOptions* pOptions = NULL );
@@ -357,18 +394,22 @@ public:
     *	\param  pShowUIMsg  Set false if don't want to popup any UI dialog or messages (default=false).
     *	\param  pOptions    Provide finer control on file open options (default=NULL). if not null, 
     *                       Option dialog will only show if both option's ShowOptionsDialog property and pShowUIMsg are true.
+    *                       It is possible to merge multiple scenes, each one within its own user specified namespace, by calling the FBFbxOptions::SetMultiLoadNamespaceList method first.
+	*						When doing so though, the FBFbxOption.NamespaceList property is then ignored.
     *	\return	true if successful.
     */
     bool FileMerge( FBStringList& pPathlist, bool pShowUIMsg = false, FBFbxOptions* pOptions = NULL );
 
-    /**	Append a file to the current scene.
+    /**	Append one or multiple files to the current scene.
     *	Same as File->Merge in the menus with all options set to append.
     *	In earlier versions of MotionBuilder, a namespace could be specified with a parameter in this function, or FBFbxOptions::CustomImportNamespace,
     *       Now this is now done with FBFbxOptions::NamespaceList.
-    *	\param	pFilename	File to merge.
+    *	\param	pFilename	File(s) to merge. For multiple files, use a list of files separated by '~'.
     *	\param  pShowUIMsg  Set false if don't want to popup any UI dialog or messages (default=false).
     *	\param  pOptions    Provide finer control on file open options (default=NULL). if not null, 
     *                       Option dialog will only show if both option's ShowOptionsDialog property and pShowUIMsg are true.
+	*						It is possible to append multiple scenes, each one within its own user specified namespace, by calling the FBFbxOptions::SetMultiLoadNamespaceList method first.
+	*						When doing so though, the FBFbxOption.NamespaceList property is then ignored.
     *	\return	true if successful.
     */
     bool FileAppend( const char* pFilename, bool pShowUIMsg = false, FBFbxOptions* pOptions = NULL );
@@ -403,6 +444,16 @@ public:
     *	\warning				The signature of this function might change in the future to support import options.
     */
     bool FileImport( FBString pFilename, bool pMatchModels = false, bool pCreateUnmatchedModels = true );
+
+    /**	Import a motion file with the ability to specify options.
+    *	Command File->Motion File Import... in the menus.
+    *	\param	pOptions	    A FBMotionFileOptions object that contains the path to the files, as well as the options to load those motion files.
+    *	\return					True if the import succeeded.
+    *	\remark					The import will only work if you open files of the same type.
+    *	\remark					For now, you cannot import custom file types.
+    *	\remark					Not all options can be applied to a particular motion file type, please use the Motion File Import UI as a reference.
+    */
+    bool FileImportWithOptions( FBMotionFileOptions* pOptions );
 
     /**	Export a motion file.
     *	Command File->Motion File Export... in the menus.
@@ -542,6 +593,60 @@ public:
     *	\return	the global object.
     */
     static FBApplication& TheOne();
+
+	/**	Return the scene title from the scene properties.
+	*/
+	const char* GetSceneTitle();
+
+	/**	Set the scene title.
+	*	\param	pTitle		The title to set in the scene properties.
+	*/
+	void SetSceneTitle(const char* pTitle);
+
+	/**	Return the scene subject from the scene properties.
+	*/
+	const char* GetSceneSubject();
+
+	/**	Set the scene subject.
+	*	\param	pSubject		The subject to set in the scene properties.
+	*/
+	void SetSceneSubject(const char* pSubject);
+
+	/**	Return the scene author from the scene properties.
+	*/
+	const char* GetSceneAuthor();
+
+	/**	Set the scene author.
+	*	\param	pAuthor		The author to set in the scene properties.
+	*/	
+	void SetSceneAuthor(const char* pAuthor);
+
+	/**	Return the scene keywords from the scene properties.
+	*/
+	const char* GetSceneKeywords();
+
+	/**	Set the scene keywords.
+	*	\param	pKeywords		The keywords to set in the scene properties.
+	*/
+	void SetSceneKeywords(const char* pKeywords);
+
+	/**	Return the scene revision number from the scene properties.
+	*/
+	const char* GetSceneRevisionNumber();
+
+	/**	Set the scene revision number.
+	*	\param	pRevNumber		The revision number to set in the scene properties.
+	*/
+	void SetSceneRevisionNumber(const char* pRevNumber);
+
+	/**	Return the scene comment from the scene properties.
+	*/
+	const char* GetSceneComment();
+	
+	/**	Set the scene comment.
+	*	\param	pComment		The comment to set in the scene properties.
+	*/	
+	void SetSceneComment(const char* pComment);
 };
 
 /** \defgroup File Merge Transaction Optimization. 
@@ -569,9 +674,32 @@ public:
 *   @{
 */
 
+/**  Call to prevent UI updates when creating/deleting/renaming objects. 
+*   Useful to speed up script operations. Previously, FBMergeTransactionBegin()/
+*	FBMergeTransactionEnd() could be used to do this kind of optimization, even
+*	if no merge operations were done. However, using FBMergeTransactionBegin()/
+*	FBMergeTransactionEnd() with non-merge operation could lead to issues, like
+*	objects with invalid namespaces. FBPreventUIUpdateBegin()/FBPreventUIUpdateEnd() 
+*   fix this issue, while giving the same speed increase. 
+*   \note The transaction need to be closed by calling FBPreventUIUpdateEnd(). 
+*         There is no need to call this function when using FBMergeTransactionBegin(), 
+*         since FBMergeTransactionBegin() already has the same optimization.
+*/
+FBSDK_DLL void FBPreventUIUpdateBegin();
+
+/**  Call to end blocking the UI updates.
+*/
+FBSDK_DLL void FBPreventUIUpdateEnd();
+
+/**  Call to tell if UI updates are blocked.
+*/
+FBSDK_DLL bool FBPreventUIUpdateIsOn();
+
 /**  Call to begin the transaction for merging multiple files. 
 *   Useful to consecutively merge multiple files into scene. 
-*   \note The transaction need to be closed by calling FBMergeTransactionEnd().
+*   \note The transaction need to be closed by calling FBMergeTransactionEnd(). There
+*         is no need to call FBPreventUIUpdateBegin() with this function, since it already
+*         contains the same optimization.
 */
 FBSDK_DLL void FBMergeTransactionBegin();
 

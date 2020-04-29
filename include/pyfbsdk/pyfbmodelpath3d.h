@@ -40,6 +40,8 @@ public:
 	FBModelPath3D_Wrapper( FBComponent* pFBComponent ) : FBModel_Wrapper( pFBComponent ) { mFBModelPath3D = (FBModelPath3D*)pFBComponent; }
 	FBModelPath3D_Wrapper( const char* pName ) : FBModel_Wrapper( new FBModelPath3D( pName )) { mFBModelPath3D = (FBModelPath3D*)mFBComponent; }
 	virtual ~FBModelPath3D_Wrapper( ) { }
+    DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS_READONLY(KeyPropertyBehavior, FBModelPath3D::EKeyPropertyBehavior);
+    DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(AutoControlNode, bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS_READONLY(PathLength,   double);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS_READONLY(PathLengthInString,   const char*);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(PathLengthUnit,    FBModelPath3D::ELengthUnitType);
@@ -50,9 +52,9 @@ public:
     DECLARE_ORSDK_PROPERTY_PYTHON_CUSTOM_TYPE_ACCESS(TextBackground, FBColorAndAlpha);
     void SetColor( FBColor_Wrapper& pColor ) { mFBModelPath3D->Color = *(pColor.mFBColor); }
     object GetColor(  ) { return WrapFBObject<FBPropertyAnimatableColor_Wrapper,FBPropertyAnimatableColor>( &mFBModelPath3D->Color ); }
-	double ConvertSegmentPercentToTotalPercent(double pPercent) { return mFBModelPath3D->ConvertSegmentPercentToTotalPercent( pPercent ); }
+	double ConvertSegmentPercentToTotalPercent(double pPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return mFBModelPath3D->ConvertSegmentPercentToTotalPercent( pPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL ); }
 	double ConvertToSegmentPercentFactor() { return mFBModelPath3D->ConvertToSegmentPercentFactor(  ); }
-	double ConvertTotalPercentToSegmentPercent(double pPercent) { return mFBModelPath3D->ConvertTotalPercentToSegmentPercent( pPercent ); }
+	double ConvertTotalPercentToSegmentPercent(double pPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return mFBModelPath3D->ConvertTotalPercentToSegmentPercent( pPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL ); }
 	double ConvertToTotalPercentFactor() { return mFBModelPath3D->ConvertToTotalPercentFactor(  ); }
 	int GetSelectedPathKeyCount() { return mFBModelPath3D->GetSelectedPathKeyCount(  ); }
 	int InsertNewEndKey() { return mFBModelPath3D->InsertNewEndKey(  ); }
@@ -68,6 +70,7 @@ public:
     FBVector4d_Wrapper* PathKeyGetLeftTangent(int pKeyIndex) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->PathKeyGetLeftTangent( pKeyIndex )); }
     FBVector4d_Wrapper* PathKeyGetRightTangent(int pKeyIndex) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->PathKeyGetRightTangent( pKeyIndex )); }
 	FBVector4d_Wrapper* PathKeyGetXYZDerivative(int pKeyIndex) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->PathKeyGetXYZDerivative( pKeyIndex )); }
+	int PathKeyInsertAfter(int pKeyIndex, FBVector4d_Wrapper& pTLocal) { return mFBModelPath3D->PathKeyInsertAfter( pKeyIndex, *pTLocal.mFBVector4d ); }
 	void PathKeyRemove(int pKeyIndex) { mFBModelPath3D->PathKeyRemove( pKeyIndex ); }
 	void PathKeyRemoveSelected() { mFBModelPath3D->PathKeyRemoveSelected(); }
 	void PathKeySet(int pKeyIndex, FBVector4d_Wrapper& pTLocal, bool pUpdate = true) { mFBModelPath3D->PathKeySet( pKeyIndex, *pTLocal.mFBVector4d, pUpdate ); }
@@ -81,19 +84,37 @@ public:
 	int PathKeyStartAdd(FBVector4d_Wrapper& pTLocal) { return mFBModelPath3D->PathKeyStartAdd( *pTLocal.mFBVector4d ); }
     double PathKeyGetLeftTangentLength(int pKeyIndex) { return mFBModelPath3D->PathKeyGetLeftTangentLength( pKeyIndex ); }
     double PathKeyGetRightTangentLength(int pKeyIndex) { return mFBModelPath3D->PathKeyGetRightTangentLength( pKeyIndex ); }
-	FBVector4d_Wrapper* Segment_GlobalPathEvaluate(double pSegmentPercent) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Segment_GlobalPathEvaluate( pSegmentPercent )); }
-	FBVector4d_Wrapper* Segment_GlobalPathEvaluateDerivative(double pSegmentPercent) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Segment_GlobalPathEvaluateDerivative( pSegmentPercent )); }
-	int Segment_IsPathKey(double pSegmentPercent) { return mFBModelPath3D->Segment_IsPathKey( pSegmentPercent ); }
-	FBVector4d_Wrapper* Segment_LocalPathEvaluate(double pSegmentPercent) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Segment_LocalPathEvaluate( pSegmentPercent )); }
-	FBVector4d_Wrapper* Segment_LocalPathEvaluateDerivative(double pSegmentPercent) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Segment_LocalPathEvaluateDerivative( pSegmentPercent )); }
-	int Segment_PathKeyAdd(double pSegmentPercent, FBVector4d_Wrapper& pTLocal) { return mFBModelPath3D->Segment_PathKeyAdd( pSegmentPercent, *pTLocal.mFBVector4d ); }
+    object PathKeyGetProperty(int pKeyIndex) { return FBProperty_Wrapper_Factory( mFBModelPath3D->PathKeyGetProperty( pKeyIndex ) ); }
+    object PathKeyGetControlNode(int pKeyIndex) { return FBModel_Wrapper_Factory( mFBModelPath3D->PathKeyGetControlNode( pKeyIndex ) ); }
+    bool PathKeySetControlNode(int pKeyIndex, FBModel_Wrapper* pControlNode) { return mFBModelPath3D->PathKeySetControlNode( pKeyIndex, pControlNode? pControlNode->mFBModel : NULL ); }
+	FBVector4d_Wrapper* Segment_GlobalPathEvaluate(double pSegmentPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Segment_GlobalPathEvaluate( pSegmentPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL )); }
+	FBVector4d_Wrapper* Segment_GlobalPathEvaluateDerivative(double pSegmentPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Segment_GlobalPathEvaluateDerivative( pSegmentPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL )); }
+	int Segment_IsPathKey(double pSegmentPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return mFBModelPath3D->Segment_IsPathKey( pSegmentPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL ); }
+	FBVector4d_Wrapper* Segment_LocalPathEvaluate(double pSegmentPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Segment_LocalPathEvaluate( pSegmentPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL )); }
+	FBVector4d_Wrapper* Segment_LocalPathEvaluateDerivative(double pSegmentPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Segment_LocalPathEvaluateDerivative( pSegmentPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL )); }
+	int Segment_PathKeyAdd(double pSegmentPercent, FBVector4d_Wrapper& pTLocal, FBEvaluateInfo_Wrapper *pEvalInfo = NULL)
+	{
+		PyErr_WarnEx( PyExc_UserWarning, "Segment_PathKeyAdd() is deprecated. Use PathKeyStartAdd(), PathKeyEndAdd(), PathKeyInsertAfter(), or PathKeySet() instead.", 1 );
+#pragma warning(push)
+#pragma warning(disable : 4996)
+		return mFBModelPath3D->Segment_PathKeyAdd( pSegmentPercent, *pTLocal.mFBVector4d, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL );
+#pragma warning(pop)
+	}
 	void ShowCurveControls(bool pShow) { mFBModelPath3D->ShowCurveControls( pShow ); }
 	void ShowCurvePoints(bool pShow) { mFBModelPath3D->ShowCurvePoints( pShow ); }
-	FBVector4d_Wrapper* Total_GlobalPathEvaluate(double pTotalPercent) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Total_GlobalPathEvaluate( pTotalPercent )); }
-	FBVector4d_Wrapper* Total_GlobalPathEvaluateDerivative(double pTotalPercent) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Total_GlobalPathEvaluateDerivative( pTotalPercent )); }
-	int Total_IsPathKey(double pTotalPercent) { return mFBModelPath3D->Total_IsPathKey( pTotalPercent ); }
-	FBVector4d_Wrapper* Total_LocalPathEvaluate(double pTotalPercent) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Total_LocalPathEvaluate( pTotalPercent )); }
-	FBVector4d_Wrapper* Total_LocalPathEvaluateDerivative(double pTotalPercent) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Total_LocalPathEvaluateDerivative( pTotalPercent )); }
-	int Total_PathKeyAdd(double pTotalPercent, FBVector4d_Wrapper& pTLocal) { return mFBModelPath3D->Total_PathKeyAdd( pTotalPercent, *pTLocal.mFBVector4d ); }
+	FBVector4d_Wrapper* Total_GlobalPathEvaluate(double pTotalPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Total_GlobalPathEvaluate( pTotalPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL )); }
+	FBVector4d_Wrapper* Total_GlobalPathEvaluateDerivative(double pTotalPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Total_GlobalPathEvaluateDerivative( pTotalPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL )); }
+	int Total_IsPathKey(double pTotalPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return mFBModelPath3D->Total_IsPathKey( pTotalPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL ); }
+	FBVector4d_Wrapper* Total_LocalPathEvaluate(double pTotalPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Total_LocalPathEvaluate( pTotalPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL )); }
+	FBVector4d_Wrapper* Total_LocalPathEvaluateDerivative(double pTotalPercent, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) { return FBVector4d_Wrapper_Factory( mFBModelPath3D->Total_LocalPathEvaluateDerivative( pTotalPercent, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL )); }
+	int Total_PathKeyAdd(double pTotalPercent, FBVector4d_Wrapper& pTLocal, FBEvaluateInfo_Wrapper *pEvalInfo = NULL)
+	{
+		PyErr_WarnEx( PyExc_UserWarning, "Total_PathKeyAdd() is deprecated. Use PathKeyStartAdd(), PathKeyEndAdd(), PathKeyInsertAfter(), or PathKeySet() instead.", 1 );
+#pragma warning(push)
+#pragma warning(disable : 4996)
+		return mFBModelPath3D->Total_PathKeyAdd( pTotalPercent, *pTLocal.mFBVector4d, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL );
+#pragma warning(pop)
+	}
+	void UpdateGeometry() { mFBModelPath3D->UpdateGeometry(); }
 };
 #endif // pyfbmodelpath3d_h__

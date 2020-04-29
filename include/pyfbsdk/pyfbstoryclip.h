@@ -141,6 +141,10 @@ public:
 		return mFBStoryClip->SetAssignSourcesToDestinationsInfo( lEffectiveDstStringList );
 	}
 
+    bool UpdateFromCurrentTake()
+    {
+        return mFBStoryClip->UpdateFromCurrentTake();
+    }    
 
 	void Match() { mFBStoryClip->Match(  ); }
 	void Match2(const char* pObjectName, FBStoryClipMatchingTimeType pTimeType, FBStoryClipMatchingTranslationType pTranslationType, FBStoryClipMatchingRotationType pRotationType)
@@ -172,6 +176,13 @@ public:
 	FBVector3d_Wrapper* GetLoopTranslation(  ) { return FBVector3d_Wrapper_Factory( mFBStoryClip->LoopTranslation ); }
 	void SetGhostManipulatorOffset( FBVector3d_Wrapper& pGhostManipulatorOffset ) { mFBStoryClip->GhostManipulatorOffset = *pGhostManipulatorOffset.mFBVector3d; }
 	FBVector3d_Wrapper* GetGhostManipulatorOffset(  ) { return FBVector3d_Wrapper_Factory( mFBStoryClip->GhostManipulatorOffset ); }
+	object GetTravellingNode(  ) { return FBWrapperFactory::TheOne().WrapFBObject( &mFBStoryClip->TravellingNode ); }
+	void SetTravellingNodeFunction( FBStoryClipNodeFunction pTravellingNodeFunction ) { mFBStoryClip->TravellingNodeFunction = pTravellingNodeFunction; }
+	FBStoryClipNodeFunction GetTravellingNodeFunction(  ) { return mFBStoryClip->TravellingNodeFunction; }
+	void SetGhostManipulatorMode( FBStoryClipGhostTimeMode pGhostManipulatorMode ) { mFBStoryClip->GhostManipulatorMode = pGhostManipulatorMode; }
+	FBStoryClipGhostTimeMode GetGhostManipulatorMode(  ) { return mFBStoryClip->GhostManipulatorMode; }
+	void SetGhostManipulatorCustomTime( FBTime_Wrapper& pGhostManipulatorCustomTime ) { mFBStoryClip->GhostManipulatorCustomTime = *pGhostManipulatorCustomTime.mFBTime; }
+	FBTime_Wrapper* GetGhostManipulatorCustomTime(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->GhostManipulatorCustomTime ); }
 	void SetMarkIn( FBTime_Wrapper& pMarkIn ) { mFBStoryClip->MarkIn = *pMarkIn.mFBTime; }
 	FBTime_Wrapper* GetMarkIn(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->MarkIn ); }
 	void SetMarkOut( FBTime_Wrapper& pMarkOut ) { mFBStoryClip->MarkOut = *pMarkOut.mFBTime; }
@@ -203,8 +214,10 @@ public:
 	bool GetShowFrontplate(  ) { return mFBStoryClip->ShowFrontplate; }
 	void SetShowGhostClipMode( FBStoryClipShowGhostMode pShowGhostClipMode ) { mFBStoryClip->ShowGhostClipMode = pShowGhostClipMode; }
 	FBStoryClipShowGhostMode GetShowGhostClipMode(  ) { return mFBStoryClip->ShowGhostClipMode; }
-	void SetSolvingMode( FBStoryClipSolveMode pSolvingMode ) { mFBStoryClip->SolvingMode = pSolvingMode; }
-	FBStoryClipSolveMode GetSolvingMode(  ) { return mFBStoryClip->SolvingMode; }
+    void SetGhostCustomTime( FBTime_Wrapper& pGhostCustomTime ) { mFBStoryClip->GhostCustomTime = *pGhostCustomTime.mFBTime; }
+    FBTime_Wrapper* GetGhostCustomTime(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->GhostCustomTime ); }
+    void SetSolvingMode( FBStoryClipSolveMode pSolvingMode ) { mFBStoryClip->SolvingMode = pSolvingMode; }
+    FBStoryClipSolveMode GetSolvingMode(  ) { return mFBStoryClip->SolvingMode; }
 	void SetSpeed( double pSpeed ) { mFBStoryClip->Speed = pSpeed; }
 	double GetSpeed(  ) { return mFBStoryClip->Speed; }
 	void SetStart( FBTime_Wrapper& pStart ) { mFBStoryClip->Start = *pStart.mFBTime; }
@@ -213,6 +226,8 @@ public:
 	FBTime_Wrapper* GetStop(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->Stop ); }
 	void SetTranslation( FBVector3d_Wrapper& pTranslation ) { mFBStoryClip->Translation = *pTranslation.mFBVector3d; }
 	FBVector3d_Wrapper* GetTranslation(  ) { return FBVector3d_Wrapper_Factory( mFBStoryClip->Translation ); }
+    bool GetReadOnly() { return mFBStoryClip->GetReadOnly( ); }
+    bool SetReadOnly(bool pMakeClipReadOnly, const char* pOutputFile = NULL) { return mFBStoryClip->SetReadOnly( pMakeClipReadOnly, pOutputFile ); }
     object GetAudioClip(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBStoryClip->AudioClip ); }
     void SetAudioClip( FBAudioClip_Wrapper& pAudioClip ) { mFBStoryClip->AudioClip = pAudioClip.mFBAudioClip; }
 	bool GetTimeWarpEnabled(  ) { return mFBStoryClip->TimeWarpEnabled; }
@@ -229,10 +244,15 @@ public:
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( ImageSequence,                 bool );
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( UseSystemFrameRate,            bool );
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( FrameRate,                     double );
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( ShowEmbeddedTimecode,          bool );
 
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( ClipAnimationPath,             const char* );
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( ClipAudioPath,                 const char* );
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( ClipVideoPath,                 const char* );
+    DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( ConnectedToTake,               bool );
+
+    DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( MirrorAnimation,      bool );
+    DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( MirrorPlane,          FBStoryClipMirrorPlane );
 
 	object OnChange();
 protected:

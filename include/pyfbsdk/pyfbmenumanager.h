@@ -77,6 +77,16 @@ public:
     {
         return mFBMenuManager->IsItemEnable(pMenuPath, pItemId);
     }
+
+    bool ExecuteMenuItem( const char* pMenuPath, int pMenuItemId )
+    {
+        return mFBMenuManager->ExecuteMenuItem( pMenuPath, pMenuItemId );
+    }
+
+    bool ExecuteMenuItemFromFullPath( const char* pMenuItemFullPath )
+    {
+        return mFBMenuManager->ExecuteMenuItemFromFullPath( pMenuItemFullPath );
+    }
 };
 
 #endif // pyfbmenumanager_h__

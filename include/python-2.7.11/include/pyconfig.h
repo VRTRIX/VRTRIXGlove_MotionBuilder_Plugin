@@ -148,7 +148,11 @@ WIN32 is still required for the locale module.
 #define COMPILER _Py_PASTE_VERSION("64 bit (Itanium)")
 #define MS_WINI64
 #elif defined(_M_X64) || defined(_M_AMD64)
+#ifdef __INTEL_COMPILER
+#define COMPILER ("[ICC v." _Py_STRINGIZE(__INTEL_COMPILER) " 64 bit (amd64) with MSC v." _Py_STRINGIZE(_MSC_VER) " CRT]")
+#else
 #define COMPILER _Py_PASTE_VERSION("64 bit (AMD64)")
+#endif /* __INTEL_COMPILER */
 #define MS_WINX64
 #else
 #define COMPILER _Py_PASTE_VERSION("64 bit (Unknown)")
@@ -204,21 +208,28 @@ typedef _W64 int ssize_t;
 
 #if defined(MS_WIN32) && !defined(MS_WIN64)
 #ifdef _M_IX86
+#ifdef __INTEL_COMPILER
+#define COMPILER ("[ICC v." _Py_STRINGIZE(__INTEL_COMPILER) " 32 bit (Intel) with MSC v." _Py_STRINGIZE(_MSC_VER) " CRT]")
+#else
 #define COMPILER _Py_PASTE_VERSION("32 bit (Intel)")
+#endif /* __INTEL_COMPILER */
 #else
 #define COMPILER _Py_PASTE_VERSION("32 bit (Unknown)")
 #endif
 #endif /* MS_WIN32 && !MS_WIN64 */
 
-// Maya doesn't like a couple of these, as we have our own
-// typedef int pid_t;
+typedef int pid_t;
 
 #include <float.h>
 #define Py_IS_NAN _isnan
 #define Py_IS_INFINITY(X) (!_finite(X) && !_isnan(X))
 #define Py_IS_FINITE(X) _finite(X)
 #define copysign _copysign
+
+/* VS 2010 and above already defines hypot as _hypot */
+#if _MSC_VER < 1600
 #define hypot _hypot
+#endif
 
 #endif /* _MSC_VER */
 
@@ -238,9 +249,7 @@ typedef _W64 int ssize_t;
 /* tested with BCC 5.5 (__BORLANDC__ >= 0x0550)
  */
 
-// Maya doesn't like a couple of these, as we have our own
-// typedef int pid_t;
-
+typedef int pid_t;
 /* BCC55 seems to understand __declspec(dllimport), it is used in its
    own header files (winnt.h, ...) - so we can do nothing and get the default*/
 
@@ -287,9 +296,7 @@ typedef _W64 int ssize_t;
    They should be complete enough to build extension modules. */
 
 #define COMPILER "[lcc-win32]"
-// Maya doesn't like a couple of these, as we have our own
-// typedef int pid_t;
-
+typedef int pid_t;
 /* __declspec() is supported here too - do nothing to get the defaults */
 
 #endif /* LCC */
@@ -369,7 +376,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #	endif
 #endif
 
-#if defined(_DEBUG) && defined (KPYTHON_DEBUG_PYTHON)
+#if defined( _DEBUG) && defined ( KPYTHON_DEBUG_PYTHON )
 #	define Py_DEBUG
 #endif
 
@@ -439,6 +446,11 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 
 /* Define to 1 if you have the `copysign' function. */
 #define HAVE_COPYSIGN 1
+
+/* Define to 1 if you have the `round' function. */
+#if _MSC_VER >= 1800
+#define HAVE_ROUND 1
+#endif
 
 /* Define to 1 if you have the `isinf' macro. */
 #define HAVE_DECL_ISINF 1

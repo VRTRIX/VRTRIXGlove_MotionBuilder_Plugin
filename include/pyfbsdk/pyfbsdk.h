@@ -162,6 +162,7 @@ namespace PYFBSDKNamespace {
 #endif
 
 #include "pyfbplayercontrol.h"
+#include "pyfbcyclecreator.h"
 #include "pyfbevaluatemanager.h"
 #include "pyfbkeycontrol.h"
 #include "pyfbboxplaceholder.h"
@@ -238,6 +239,7 @@ namespace PYFBSDKNamespace {
 #include "pyfbcharacterface.h"			// Requires FBModelList_Wrapper from pyfbarraytemplate.h
 #include "pyfbcharacterposeoptions.h"
 #include "pyfbcharacterpose.h"
+#include "pyfbcycleanalysisnode.h"
 
 #include "pyfbcontrolset.h"
 #include "pyfbmodelcube.h"
@@ -261,10 +263,12 @@ namespace PYFBSDKNamespace {
 
 #include "pyfbbatchoptions.h"
 #include "pyfbfbxoptions.h"
+#include "pyfbmotionfileoptions.h"
 #include "pyfbapplication.h"
 #include "pyfbstoryfolder.h"
 #include "pyfbstorytrack.h"
 #include "pyfbstoryclip.h"
+#include "pyfbstorygroupclip.h"
 #include "pyfbstory.h"
 #include "pyfbdirmap.h"
 

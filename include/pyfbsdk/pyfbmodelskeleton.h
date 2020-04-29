@@ -51,5 +51,15 @@ public:
 	void SetSize( double pSize ) { mFBModelSkeleton->Size = pSize; }
 	double GetSize(  ) { return mFBModelSkeleton->Size; }
     void GetSkinModelList(FBModelList_Wrapper& pFBSkinModelList) { mFBModelSkeleton->GetSkinModelList( *(pFBSkinModelList.mFBModelList) ); }
+	FBSkeletonLook GetLook( ) { return mFBModelSkeleton->Look; }
+	void SetLook( FBSkeletonLook pLook ) { mFBModelSkeleton->Look = pLook; }
+	FBSkeletonResolutionLevel GetResolution( ) { return mFBModelSkeleton->Resolution; }
+	void SetResolution( FBSkeletonResolutionLevel pResolution ) { mFBModelSkeleton->Resolution = pResolution; }
+	double GetLength( ) { return mFBModelSkeleton->Length; }
+	void SetLength( double pLength ) { mFBModelSkeleton->Length = pLength; }
+	bool GetLinkFollowGeometryOffset( ) { return mFBModelSkeleton->LinkFollowGeometryOffset; }
+	void SetLinkFollowGeometryOffset( bool pFollow ) { mFBModelSkeleton->LinkFollowGeometryOffset = pFollow; }
+	bool GetPreserveLinkEndPosition( ) { return mFBModelSkeleton->PreserveLinkEndPosition; }
+	void SetPreserveLinkEndPosition( bool pPreserve ) { mFBModelSkeleton->PreserveLinkEndPosition = pPreserve; }
 };
 #endif // pyfbmodelskeleton_h__

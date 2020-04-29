@@ -66,7 +66,7 @@ public:
 	bool SetMultipleMarkerModels(FBModelList_Wrapper& pModelList) { return mFBMarkerSet->SetMultipleMarkerModels( pModelList.mFBModelList ); }
 	void SetReferenceModel(FBModel_Wrapper& pReferenceModel) { mFBMarkerSet->SetReferenceModel( pReferenceModel.mFBModel ); }
 	void SetMarkerSetVisibility(bool pVisibility) { return mFBMarkerSet->SetMarkerSetVisibility( pVisibility ); }
-	bool GetMarkerSetVisibility() { return mFBMarkerSet->GetMarkerSetVisibility(); }
+	int GetMarkerSetVisibility() { return mFBMarkerSet->GetMarkerSetVisibility(); }
 	bool GetLinkToModelOk() { return mFBMarkerSet->GetLinkToModelOk(); }
 };
 #endif // pyfbmarkerset_h__

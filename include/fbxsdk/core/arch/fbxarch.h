@@ -47,17 +47,8 @@
 
 	#define FBXSDK_ENV_WIN 1
 
-	#if defined(WINAPI_FAMILY)
-		#if _MSC_VER >= 1800
-			// VS 2013 rewrote the winapifamily.h file 
-			#if !WINAPI_PARTITION_DESKTOP
-				#define FBXSDK_ENV_WINSTORE 1
-			#endif
-		#else
-			#if WINAPI_FAMILY_ONE_PARTITION(WINAPI_FAMILY, WINAPI_PARTITION_APP)
-				#define FBXSDK_ENV_WINSTORE 1
-			#endif
-		#endif
+	#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP)
+		#define FBXSDK_ENV_WINSTORE 1
 	#endif
 
 	#if defined(_M_X64)

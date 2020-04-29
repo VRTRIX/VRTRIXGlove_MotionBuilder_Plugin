@@ -46,6 +46,7 @@ public:
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( Visible,			bool );
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( DefaultBehavior,	bool );
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( ViewerText,		const char*);
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS( ConsumeEvent,		bool );
 };
 
 

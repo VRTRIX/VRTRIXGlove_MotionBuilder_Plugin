@@ -201,7 +201,7 @@ public:
     *   \param  pRefType    Referential of the manipulation.
     *   \return Indicate if we can handle the manipualtion. 
     */
-	virtual FBManipulationStartResult	TranslationStartManipulation( FBReferencialType pRefType ) = 0;
+	virtual FBManipulationStartResult	TranslationStartManipulation( FBReferencialType pRefType, const FBTime* pTime = NULL ) = 0;
     /** Called when the manipulation is finished.
     */
     virtual void					    TranslationStopManipulation () = 0;
@@ -344,6 +344,11 @@ public:
     */
     bool                                IsFullBody(); 
 
+    /** Determine if the character is in Full Body - No Pull keying mode.
+    *   \return Returns true if the character is in Full Body - No Pull keying mode.
+    */
+    bool                                IsFullBodyNoPull(); 
+
     /** Determine if the character is in Body Part keying mode.
     *   \return Returns true if the character is in Body Part keying mode.
     */
@@ -452,7 +457,7 @@ public:
     virtual FBManipulationSetResult	    TranslationSet( FBTVector &pT, FBReferencialType pRefType, FBSetType pSetType, FBSetWhat pSetWhat );
 	virtual FBManipulationGetResult	    TranslationGet( FBTVector &pT, FBReferencialType pRefType, FBManipPivot pPivot = FBManipPivotObjectTranslation );
 	// Manipulation
-	virtual FBManipulationStartResult	TranslationStartManipulation( FBReferencialType pRefType );
+	virtual FBManipulationStartResult	TranslationStartManipulation( FBReferencialType pRefType, const FBTime* pTime = NULL );
 	void					            TranslationStopManipulation ();
 
     //Rotation

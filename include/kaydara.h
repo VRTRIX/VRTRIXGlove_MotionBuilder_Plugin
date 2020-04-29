@@ -37,7 +37,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 **************************************************************************/
 
 // *** if you update this version, make sure to update the other version value in src/motionbuilder/motionbuilder/resource.h
-#define K_KERNEL_VERSION	16000 
+#define K_KERNEL_VERSION	18000 
 // ***
 
 #define K_NO_PROJECTSETTINGS
@@ -188,9 +188,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 
 #ifdef KARCH_ENV_WIN
-	#if _MSC_VER < 1900 
-	#define snprintf _snprintf // for stdio.h platform compatibility
-	#endif
+	//#define snprintf _snprintf // for stdio.h platform compatibility
 	#ifndef WIN32_LEAN_AND_MEAN
 		#define WIN32_LEAN_AND_MEAN  // Defined to speed up compilation
 	#endif
@@ -402,14 +400,20 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
     #define K_DEPRECATED_2014 __attribute__((deprecated))
     #define K_DEPRECATED_2015 __attribute__((deprecated))
 	#define K_DEPRECATED_2016 __attribute__((deprecated))
+	#define K_DEPRECATED_2017 __attribute__((deprecated))
+	#define K_DEPRECATED_2018 __attribute__((deprecated))
 #elif defined(KARCH_DEV_MSC) || defined(KARCH_DEV_INTEL) // Microsoft or Intel compiler
     #define K_DEPRECATED_2014 __declspec(deprecated)
     #define K_DEPRECATED_2015 __declspec(deprecated)
 	#define K_DEPRECATED_2016 __declspec(deprecated)
+	#define K_DEPRECATED_2017 __declspec(deprecated)
+	#define K_DEPRECATED_2018 __declspec(deprecated)
 #else // Unknown compiler
     #define K_DEPRECATED_2014
     #define K_DEPRECATED_2015
 	#define K_DEPRECATED_2016
+	#define K_DEPRECATED_2017
+	#define K_DEPRECATED_2018
 #endif
 
 #endif // _KAYDARA_H_

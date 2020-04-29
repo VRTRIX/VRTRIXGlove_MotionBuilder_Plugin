@@ -47,10 +47,10 @@ public:
 	void SetSecondDouble(double pTime) { mFBTime->SetSecondDouble( pTime ); }
 	void SetTime(int pHour, int pMinute = 0, int pSecond = 0, kLongLong pFrame = 0, int pField = 0, FBTimeMode pTimeMode = kFBTimeModeDefault) { mFBTime->SetTime( pHour, pMinute, pSecond, pFrame, pField, pTimeMode ); }
 	void SetTimeString(const char * pTime) { mFBTime->SetTimeString( pTime ); }
-	FBTime_Wrapper*	operator+ (const FBTime_Wrapper &pTime);
-	FBTime_Wrapper* operator+ (kLongLong pTime);
-	FBTime_Wrapper* operator- (const FBTime_Wrapper &pTime);
-	FBTime_Wrapper* operator- (kLongLong pTime);
+	FBTime_Wrapper	operator+ (const FBTime_Wrapper &pTime);
+	FBTime_Wrapper operator+ (kLongLong pTime);
+	FBTime_Wrapper operator- (const FBTime_Wrapper &pTime);
+	FBTime_Wrapper operator- (kLongLong pTime);
 
 	bool operator==(const FBTime_Wrapper& pTime)const;
 	bool operator!=(const FBTime_Wrapper& pTime)const;
@@ -82,7 +82,7 @@ public:
 	FBTimeCode* mFBTimeCode;
 public:
     FBTimeCode_Wrapper( const FBTimeCode& pFBTimeCode ) : mFBTimeCode( new FBTimeCode( pFBTimeCode ) ) {  }
-    FBTimeCode_Wrapper( float pRate=FBTimeCode::NTSC_DROP ) : mFBTimeCode( new FBTimeCode(pRate) ) {}
+    FBTimeCode_Wrapper( float pRate=FBTimeCode::FRAMES_30 ) : mFBTimeCode( new FBTimeCode(pRate) ) {}
     FBTimeCode_Wrapper( const FBTimeCode_Wrapper& pFBTimeCode ) : mFBTimeCode( new FBTimeCode( *( pFBTimeCode.mFBTimeCode ) ) )
     {
     }

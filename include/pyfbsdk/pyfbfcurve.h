@@ -40,6 +40,14 @@ public:
 	bool KeyDeleteByTimeRange(FBTime_Wrapper& pStartTime, FBTime_Wrapper& pStopTime, bool pInclusive = true){ return mFBFCurve->KeyDelete(*pStartTime.mFBTime, *pStopTime.mFBTime, pInclusive); }
 	void KeyReplaceBy( FBFCurve_Wrapper& pSource, FBTime_Wrapper& pStart = FBTime_Wrapper::MinusInfinity, FBTime_Wrapper& pStop = FBTime_Wrapper::Infinity, bool pUseExactGivenSpan = false, bool pKeyStartEndOnNoKey = true ){ mFBFCurve->KeyReplaceBy(*pSource.mFBFCurve, *pStart.mFBTime, *pStop.mFBTime, pUseExactGivenSpan, pKeyStartEndOnNoKey); }
 	float Evaluate(FBTime_Wrapper& pTime) { return mFBFCurve->Evaluate( *(pTime.mFBTime) ); }
+    FBExtrapolationMode GetPostExtrapolationMode() {return mFBFCurve->GetPostExtrapolationMode(); }
+    void SetPostExtrapolationMode(FBExtrapolationMode pExtrapolationMode) {return mFBFCurve->SetPostExtrapolationMode( pExtrapolationMode ); }
+    long GetPostExtrapolationCount() {return mFBFCurve->GetPostExtrapolationCount();}
+    void SetPostExtrapolationCount(int pCount) {return mFBFCurve->SetPostExtrapolationCount(pCount);}
+    FBExtrapolationMode GetPreExtrapolationMode() {return mFBFCurve->GetPreExtrapolationMode(); }
+    void SetPreExtrapolationMode(FBExtrapolationMode pExtrapolationMode) {return mFBFCurve->SetPreExtrapolationMode( pExtrapolationMode ); }
+    long GetPreExtrapolationCount() {return mFBFCurve->GetPreExtrapolationCount();}
+    void SetPreExtrapolationCount(int pCount) {return mFBFCurve->SetPreExtrapolationCount(pCount);}
 	object CreateInterpolatorCurve(FBInterpolatorCurveType pCurveType) { return FBWrapperFactory::TheOne().WrapFBObject( mFBFCurve->CreateInterpolatorCurve( pCurveType )); }
 	object GetKeys(  ) { return FBPropertyListFCurveKey_Wrapper_Factory( mFBFCurve->Keys ); }
 };

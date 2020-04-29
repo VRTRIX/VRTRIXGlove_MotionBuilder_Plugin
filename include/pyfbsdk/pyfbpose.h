@@ -53,5 +53,6 @@ public:
 	void SetNodeMatrix(int pIndex, FBMatrix_Wrapper& pMatrix) { mFBPose->SetNodeMatrix( pIndex, pMatrix.mFBMatrix ); }
 	void SetNodeObject(int pIndex, FBModel_Wrapper& pObject) { mFBPose->SetNodeObject( pIndex, pObject.mFBModel ); }
 	FBPoseType GetType(  ) { return mFBPose->Type; }
+	void CreatePoseThumbnail() { mFBPose->CreatePoseThumbnail(); }
 };
 #endif // pyfbpose_h__

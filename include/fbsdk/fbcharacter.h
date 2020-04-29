@@ -52,7 +52,7 @@
 #endif
 
 #include <fbsdk/fbconstraint.h>
-
+#include <fbsdk/fbcycleanalysisnode.h>
 #include <fbsdk/fbcharacterextension.h>
 
 #ifdef FBSDKUseNamespace
@@ -300,6 +300,59 @@ enum FBBodyNodeId
 	kFBNeck9NodeId,                //!<
 
     kFBHipsTranslationNodeId,       //!<
+    
+    // -- HIK 2016.5 new leaf roll nodes --
+    // this should be consistent with HipsNodeId defined in kernel\humanik.h
+    // so HIKNodeTypeFromNodeId & HIKNodeIndexFromNodeId could map to correct
+    // data.
+    // kFBLastNodeId_Old represent last id before introduction of new roll bone for
+    // previous solvers. First new roll bone id equals to ensure continuity
+    kFBLastNodeId_Old, 
+    kFBLeftHipRollNode1Id = kFBLastNodeId_Old,              //!< New leaf roll bone
+    kFBLeftKneeRollNode1Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode1Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode1Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode1Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode1Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode1Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode1Id,                               //!< New leaf roll bone
+
+    kFBLeftHipRollNode2Id,                                  //!< New leaf roll bone
+    kFBLeftKneeRollNode2Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode2Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode2Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode2Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode2Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode2Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode2Id,                               //!< New leaf roll bone
+
+    kFBLeftHipRollNode3Id,                                  //!< New leaf roll bone
+    kFBLeftKneeRollNode3Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode3Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode3Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode3Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode3Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode3Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode3Id,                               //!< New leaf roll bone
+
+    kFBLeftHipRollNode4Id,                                  //!< New leaf roll bone
+    kFBLeftKneeRollNode4Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode4Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode4Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode4Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode4Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode4Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode4Id,                               //!< New leaf roll bone
+
+    kFBLeftHipRollNode5Id,                                  //!< New leaf roll bone
+    kFBLeftKneeRollNode5Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode5Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode5Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode5Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode5Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode5Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode5Id,                               //!< New leaf roll bone
+
     kFBLastNodeId				    //!<
 };
 
@@ -427,6 +480,7 @@ enum FBCharacterKeyingMode
 	kFBCharacterKeyingFullBody, 
 	kFBCharacterKeyingBodyPart,
 	kFBCharacterKeyingSelection, 
+	kFBCharacterKeyingFullBodyNoPull, 
 };
 FB_DEFINE_ENUM( FBSDK_DLL, CharacterKeyingMode );
 
@@ -509,6 +563,16 @@ enum FBCalibrationState
     FBCalibrationSuccessfully
 };
 FB_DEFINE_ENUM( FBSDK_DLL, CalibrationState );
+
+//! Visibility state.
+enum FBVisibilityState
+{
+	kFBVisibilityAny,		//!< Any object requested is visible.
+	kFBVisibilityAll,		//!< All objects requested are visible.
+	kFBVisibilitySome,		//!< Some objects (at least one, but not all) requested are visible.
+	kFBVisibilityInvalid	//!< Invalid visibility request.
+};
+FB_DEFINE_ENUM( FBSDK_DLL, VisibilityState );
 
 /** Get the UI name associated with a body node.
 	*	\param	pBodyNodeId The body node ID.
@@ -969,6 +1033,8 @@ public:
 	FBPropertyVector3d		NeckPosition;			//!< <b>Read Write Property:</b> Body part pivot of the actor.
 	FBPropertyVector3d		HeadPosition;			//!< <b>Read Write Property:</b> Body part pivot of the actor.
 	FBPropertyBool			Visibility;				//!< <b>Read Write Property:</b> Show or Hide the Actor Body.
+	FBPropertyBool			SkeletonVisibility;		//!< <b>Read Write Property:</b> Show or Hide the Skeleton.
+	FBPropertyBool			PivotPointsVisibility;	//!< <b>Read Write Property:</b> Show or Hide the Pivot Points.
 
     FBPropertyAnimatableDouble  LeftHandIndexIndex;     //!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
 	FBPropertyAnimatableDouble  LeftHandIndexMiddle;    //!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
@@ -1010,11 +1076,147 @@ public:
 	FBPropertyAnimatableDouble  RightHandPinkyRing;     //!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
 	FBPropertyAnimatableDouble  RightHandPinkyPinky;    //!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
 
-	FBPropertyAnimatableDouble  FKFingerMultiplier;    //!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered intermediate finger phalanges.
-	FBPropertyAnimatableDouble  FKFingerTipMultiplier;    //!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered finger tip phalanges.
-	FBPropertyAnimatableDouble  FKThumbTipMultiplier;    //!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered thumb tip phalanges.
-	FBPropertyAnimatableBool  HumanFingerLimits;    //!< <b>Read Write Property:</b> Enables/Disables human finger limits during actor solve.
-    
+	FBPropertyAnimatableDouble  FKFingerMultiplier;    	//!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered intermediate finger phalanges.
+	FBPropertyAnimatableDouble  FKFingerTipMultiplier;  //!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered finger tip phalanges.
+	FBPropertyAnimatableDouble  FKThumbTipMultiplier;   //!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered thumb tip phalanges.
+	FBPropertyAnimatableBool  	HumanFingerLimits;   	//!< <b>Read Write Property:</b> Enables/Disables human finger limits during actor solve.
+	
+	FBPropertyAnimatableVector3d HeadOffsetT; 			//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d HeadOffsetR; 			//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d NeckOffsetT; 			//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d NeckOffsetR; 			//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d ChestOffsetT; 			//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d ChestOffsetR; 			//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftCollarOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftCollarOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightCollarOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightCollarOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftShoulderOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftShoulderOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightShoulderOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightShoulderOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftElbowOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftElbowOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightElbowOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightElbowOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftWristOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftWristOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightWristOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightWristOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d WaistOffsetT; 			//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d WaistOffsetR; 			//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d HipsOffsetT; 			//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d HipsOffsetR; 			//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftHipOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftHipOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightHipOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightHipOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftKneeOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftKneeOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightKneeOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightKneeOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftAnkleOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftAnkleOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightAnkleOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightAnkleOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftFootOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftFootOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightFootOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightFootOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftThumbAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftThumbAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftThumbBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftThumbBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftThumbCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftThumbCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftIndexAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftIndexAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftIndexBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftIndexBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftIndexCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftIndexCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftMiddleAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftMiddleAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftMiddleBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftMiddleBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftMiddleCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftMiddleCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftRingAOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftRingAOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftRingBOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftRingBOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftRingCOffsetT; 		//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftRingCOffsetR; 		//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d LeftPinkyAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftPinkyAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftPinkyBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftPinkyBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftPinkyCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d LeftPinkyCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightThumbAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightThumbAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightThumbBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightThumbBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightThumbCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightThumbCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightIndexAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightIndexAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightIndexBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightIndexBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightIndexCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightIndexCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightMiddleAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightMiddleAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightMiddleBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightMiddleBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightMiddleCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightMiddleCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightRingAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightRingAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightRingBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightRingBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightRingCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightRingCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyAnimatableVector3d RightPinkyAOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightPinkyAOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightPinkyBOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightPinkyBOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightPinkyCOffsetT; 	//!< <b>Read Write Property:</b> Local translation offset that is applied after the actor solve
+	FBPropertyAnimatableVector3d RightPinkyCOffsetR; 	//!< <b>Read Write Property:</b> Local rotation offset that is applied after the actor solve
+
+	FBPropertyBool 				ManipulateOffsets; 		//!< <b>Read Write Property:</b> Flag to compute offsets while manipulating. If it is set to false, the manipulator is re-snapping as before. If it is set to true, offsets properties (T and R) are computed and candidated instead.
+	
+	FBPropertyBool				IKManip; 				//!< <b>Read Write Property:</b> Access to the IK Manip mode. The IKManip property is shared for all actors.
 
 	/** Snap the marker set of the actor.
 	*	\return	True if the operation completed successfully.
@@ -1083,6 +1285,10 @@ public:
     *   \param  pReferenceModel Model to be the right glove reference.
     */
 	void SetRightGloveReferenceModel( FBModel* pReferenceModel );
+
+private:
+	FBSkeletonState*		mDefaultSkeletonState;
+	FBSkeletonState*		mCurrentSkeletonState;
 };
 
 /** Device motion capture skeleton joints state class.
@@ -1184,6 +1390,16 @@ public:
 	FBPropertyBool				    ActiveInput;	//!< <b>Read Write Property:</b> Is the character input active?
 
     FBPropertyListCharacterExtension CharacterExtensions;	//!< <b>List:</b> Character Extensions in the character.
+
+    /** Run Cycle Analysis on current character.
+	*	\param HICharacter current character.
+	*/
+    void CycleAnalysisCurrentCharacter();
+
+    /** Get the Cycle Analysis Node from the current character
+	*	\return	Cycle Analysis Node linked to the current character, or create a new node
+	*/
+    FBCycleAnalysisNode* GetCycleAnalysisNode();
 
     /** AddCharacterExtension.
 	*	\param pExt extension to be added to the character.
@@ -1456,6 +1672,44 @@ public:
     */
 	FBEffectorSetState*	GetEffectorEvaluationCache(FBEvaluateInfo* pEvaluateInfo);
 
+    /** Mirror character extensions.
+	*	\param pEvaluateInfo the evaluation info
+	*/
+    void MirrorCharacterExtensions(FBEvaluateInfo* pEvaluateInfo);
+
+	/** Get the IK visibility state.
+	*	\return The IK visibility state.
+	*/
+	FBVisibilityState GetIKVisibility();
+
+	/** Set the IK visibility state.
+	*	\param	pState The IK visibility state.
+	*	\return True if the operation is successful, false otherwise.
+	*/
+	bool SetIKVisibility( bool pState );
+
+	/** Get the FK visibility state.
+	*	\return The FK visibility state.
+	*/
+	FBVisibilityState GetFKVisibility();
+
+	/** Set the FK visibility state.
+	*	\param	pState The FK visibility state.
+	*	\return True if the operation is successful, false otherwise.
+	*/
+	bool SetFKVisibility( bool pState );
+
+	/** Get the skeleton visibility state.
+	*	\return The skeleton visibility state.
+	*/
+	FBVisibilityState GetSkeletonVisibility();
+
+	/** Set the skeleton visibility state.
+	*	\param	pState The skeleton visibility state.
+	*	\return True if the operation is successful, false otherwise.
+	*/
+	bool SetSkeletonVisibility( bool pState );
+
 	/** Used to store SetCharacterizeOn errors and warnings */
 	FBString mCharacterizeError;
 
@@ -1485,6 +1739,51 @@ public:
 	FBPropertyBool					        LockX;			//!< <b>Read Write Property:</b> Lock character skeleton in place on X axis.
 	FBPropertyBool					        LockY;			//!< <b>Read Write Property:</b> Lock character skeleton in place on Y axis.
 	FBPropertyBool					        LockZ;			//!< <b>Read Write Property:</b> Lock character skeleton in place on Z axis.
+
+	FBPropertyAnimatableDouble				LeftHandIndexIndex;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandIndexMiddle;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandIndexRing;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandIndexPinky;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+
+	FBPropertyAnimatableDouble				LeftHandMiddleIndex;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandMiddleMiddle;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandMiddleRing;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandMiddlePinky;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+
+	FBPropertyAnimatableDouble				LeftHandRingIndex;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandRingMiddle;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandRingRing;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandRingPinky;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+
+	FBPropertyAnimatableDouble				LeftHandPinkyIndex;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandPinkyMiddle;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandPinkyRing;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				LeftHandPinkyPinky;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+
+	FBPropertyAnimatableDouble				RightHandIndexIndex;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandIndexMiddle;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandIndexRing;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandIndexPinky;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+
+	FBPropertyAnimatableDouble				RightHandMiddleIndex;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandMiddleMiddle;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandMiddleRing;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandMiddlePinky;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+
+	FBPropertyAnimatableDouble				RightHandRingIndex;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandRingMiddle;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandRingRing;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandRingPinky;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+
+	FBPropertyAnimatableDouble				RightHandPinkyIndex;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandPinkyMiddle;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandPinkyRing;			//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+	FBPropertyAnimatableDouble				RightHandPinkyPinky;		//!< <b>Read Write Property:</b> Used to set blending coefficients. Each of the 4 fingers can be a blend of the 4 finger. This is not available for thumbs.
+
+	FBPropertyAnimatableDouble				FKFingerMultiplier;			//!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered intermediate finger phalanges.
+	FBPropertyAnimatableDouble				FKFingerTipMultiplier;		//!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered finger tip phalanges.
+	FBPropertyAnimatableDouble				FKThumbTipMultiplier;		//!< <b>Read Write Property:</b> Used to augment the amount of FK propagation for unmarkered thumb tip phalanges.
+	FBPropertyAnimatableBool				HumanFingerLimits;			//!< <b>Read Write Property:</b> Enables/Disables human finger limits during actor solve.
 };
 
 
@@ -1640,6 +1939,19 @@ FBSDK_DLL bool FBGetCharacterFingerTipsVisibility();
 *	\param  pShow   Specifies if finger-tips of the current character should be visible.
 */
 FBSDK_DLL void FBSetCharacterFingerTipsVisibility(bool pShow);
+
+/** Queries visibility of the marker set of the current actor.
+*	\return	True if the marker set of the current actor are visible, or false if it is hidden.
+*/
+FBSDK_DLL bool FBGetActorMarkerSetVisibility();
+
+/** Sets visibility of the marker set of the current actor.
+*	\param  pShow	Specifies if the market of the current actor should be visible.
+*	\return	True if the operation is successful, false otherwise.
+*/
+FBSDK_DLL bool FBSetActorMarkerSetVisibility(bool pShow);
+
+
 
 #ifdef FBSDKUseNamespace
 	}

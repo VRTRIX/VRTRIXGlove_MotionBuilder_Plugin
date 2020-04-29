@@ -67,6 +67,9 @@ public:
     void SetSchematicPosition(int pX,int pY){ mFBModel->SetSchematicPosition(pX,pY); }
     void SetSchematicPosition(FBVector2d_Wrapper &pVector2d){ mFBModel->SetSchematicPosition(*(pVector2d.mFBVector2d)); }
     FBVector2d_Wrapper* GetSchematicPosition(){ return FBVector2d_Wrapper_Factory( mFBModel->GetSchematicPosition() );}
+	void CollapseInSchematic() { mFBModel->CollapseInSchematic(); }
+	void ExpandInSchematic() { mFBModel->ExpandInSchematic(); }
+	bool IsCollapsedInSchematic() const { return mFBModel->IsCollapsedInSchematic(); }
     object GetAnimationNode(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBModel->AnimationNode ); }
     object GetChildren(  ) { return FBPropertyListModel_Wrapper_Factory( mFBModel->Children ); }
     void SetGeometricRotation( FBVector3d_Wrapper& pGeometricRotation ) { mFBModel->GeometricRotation = *pGeometricRotation.mFBVector3d; }

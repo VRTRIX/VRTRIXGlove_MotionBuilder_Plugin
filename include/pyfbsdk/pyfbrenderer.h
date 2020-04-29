@@ -45,6 +45,11 @@ public:
     FBRenderer_Wrapper( FBComponent* pFBComponent ) : FBComponent_Wrapper( pFBComponent ) { mFBRenderer = (FBRenderer*)pFBComponent; }
     virtual ~FBRenderer_Wrapper( ) {}
     bool FrameCurrentCameraWithModels(bool pAll) { return mFBRenderer->FrameCurrentCameraWithModels( pAll ); }
+    void ArrangeSelectedObjectsInSchematic() { return mFBRenderer->ArrangeSelectedObjectsInSchematic(); }
+	bool ArrangeObjectsInSchematicFromModel(FBModel_Wrapper& pModel) { return mFBRenderer->ArrangeObjectsInSchematicFromModel( *pModel.mFBModel ); }
+	void ArrangeAllInSchematic(FBArrangeMode pMode) { return mFBRenderer->ArrangeAllInSchematic( pMode ); }
+	tuple GetSchematicNodesBoundingBox(bool pConsiderCollapsedNodes);
+	tuple GetSchematicNodesBoundingBoxFromModel(FBModel_Wrapper& pModel, bool pConsiderCollapsedNodes);
     FBViewingOptions_Wrapper* GetViewingOptions() { return FBViewingOptions_Wrapper_Factory( mFBRenderer->GetViewingOptions(  )); }
     void KeyboardInput(FBDeviceKeyboardKey pKeyIndex, bool pKeyState, bool pIsTrigger = false) { mFBRenderer->KeyboardInput( pKeyIndex, pKeyState, pIsTrigger ); }
     bool MouseInput(int pX, int pY, FBInputType pInputType, int pButtonKey, FBInputModifier pModifier, int pWheelDeltaValue = 0, int pLayer = -1) { return mFBRenderer->MouseInput( pX, pY, pInputType, pButtonKey, pModifier, pWheelDeltaValue, pLayer ); }
@@ -62,8 +67,10 @@ public:
     void OGLModelDisplay(FBRenderOptions_Wrapper& pRenderOptions, FBModel_Wrapper& pModel) { return mFBRenderer->OGLModelDisplay(*pRenderOptions.mFBRenderOptions, *pModel.mFBModel) ; }
     bool SetViewingOptions(FBViewingOptions_Wrapper& pOptions) { return mFBRenderer->SetViewingOptions( *pOptions.mFBViewingOptions ); }
     void SetViewport(int pX, int pY, int pW, int pH) { mFBRenderer->SetViewport( pX, pY, pW, pH ); }
-    void SetCurrentCamera( FBCamera_Wrapper& pCurrentCamera ) { mFBRenderer->CurrentCamera = pCurrentCamera.mFBCamera; }
-    object GetCurrentCamera(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->CurrentCamera ); }
+    void SetCurrentCamera( FBCamera_Wrapper& pCurrentCamera );
+    object GetCurrentCamera();
+    bool GetUseCameraSwitcher();
+    void SetUseCameraSwitcher( bool pUseCameraSwitcher );
     object GetDisplayableGeometry(int pIndex) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->GetDisplayableGeometry(pIndex)); }
     object GetDisplayableLight(int pIndex) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->GetDisplayableLight(pIndex)); }
     void GetDisplayableGeometryInCameraFrustum(FBModelList_Wrapper& pFBModelList, FBCamera_Wrapper& pCamera);
@@ -71,21 +78,23 @@ public:
     void SetScene( FBScene_Wrapper& pScene ) { mFBRenderer->Scene = pScene.mFBScene; }
     object GetScene(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->Scene ); }
     object GetRendererCallbacks(  ) { return FBPropertyListRendererCallback_Wrapper_Factory( mFBRenderer->RendererCallbacks ); }
-	void SetCameraInPane(FBCamera_Wrapper& pCamera, unsigned int pPaneIndex = 0) { mFBRenderer->SetCameraInPane( pCamera.mFBCamera, pPaneIndex ); }
-	object GetCameraInPane(unsigned int pPaneIndex = 0) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->GetCameraInPane( pPaneIndex ) ); }
-	void SetPaneCount(unsigned int pPaneCount) { mFBRenderer->SetPaneCount( pPaneCount ); }
-	unsigned int GetPaneCount() { return mFBRenderer->GetPaneCount(); }
-	void SetSchematicViewInPane(unsigned int pPaneIndex, bool pActive) { mFBRenderer->SetSchematicViewInPane( pPaneIndex, pActive ); }
-	int GetSchematicViewPaneIndex() { return mFBRenderer->GetSchematicViewPaneIndex(); }
-	void SetCameraSwitcherInPane( unsigned int pPaneIndex, bool pActive ) { mFBRenderer->SetCameraSwitcherInPane( pPaneIndex, pActive ); }
-	bool IsCameraSwitcherInPane( unsigned int pPaneIndex ) { return mFBRenderer->IsCameraSwitcherInPane( pPaneIndex ); }
-    
-    DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(UseCameraSwitcher, bool);
+    void SetCameraInPane(FBCamera_Wrapper& pCamera, unsigned int pPaneIndex) { mFBRenderer->SetCameraInPane( pCamera.mFBCamera, pPaneIndex ); }
+    object GetCameraInPane(unsigned int pPaneIndex = 0) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->GetCameraInPane( pPaneIndex ) ); }
+    void SetPaneCount(unsigned int pPaneCount) { mFBRenderer->SetPaneCount( pPaneCount ); }
+    unsigned int GetPaneCount() { return mFBRenderer->GetPaneCount(); }
+	bool SetSelectedPaneIndex( unsigned int pPaneIndex ) { return mFBRenderer->SetSelectedPaneIndex( pPaneIndex ); }
+	unsigned int GetSelectedPaneIndex() { return mFBRenderer->GetSelectedPaneIndex(); }
+    void SetSchematicViewInPane(unsigned int pPaneIndex, bool pActive) { mFBRenderer->SetSchematicViewInPane( pPaneIndex, pActive ); }
+    int GetSchematicViewPaneIndex() { return mFBRenderer->GetSchematicViewPaneIndex(); }
+    void SetCameraSwitcherInPane( unsigned int pPaneIndex, bool pActive ) { mFBRenderer->SetCameraSwitcherInPane( pPaneIndex, pActive ); }
+    bool IsCameraSwitcherInPane( unsigned int pPaneIndex ) { return mFBRenderer->IsCameraSwitcherInPane( pPaneIndex ); }
+
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(AutoEvaluate,      bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(Background,        bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(ShowStats,         bool);    
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(FrustumCulling,    bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(DisplayNormals,    bool);
+    DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(PickingEnabled,   bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(IDBufferPicking,   bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(IDBufferPickingAlpha,   double);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(IDBufferDisplay,   bool);
@@ -102,5 +111,6 @@ public:
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(CurrentPaneCallbackPrefIndex,   int);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(AdvancedMaterialMode,   bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(AdvancedLightingMode,   bool);
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(HideManipulatorsOnManip,    bool);
 };
 #endif // pyfbrenderer_h__

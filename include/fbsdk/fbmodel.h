@@ -224,6 +224,16 @@ enum FBModelHiercharyTraverserType {
     kModelTraverserBreadthFirst,			//!< Breadth-first search.
 };
 
+//! Selection mode when selecting component
+enum FBSelectionAction {
+	kFBManipulatorReplace = 0,	//!< Replaces the current selection by the new selected components.
+	kFBManipulatorAdd,			//!< Add the selected components to the current selection.
+	kFBManipulatorRemove,		//!< Remove the selected components from the current selection.
+	kFBManipulatorToggle,		//!< Toggle the current selection with the unselected components.
+	kFBManipulatorAddAll,		//!< Add all components to the current selection.
+	kFBManipulatorRemoveAll,	//!< Remove all components from the current selection.
+};
+
 FB_DEFINE_ENUM( FBSDK_DLL, ModelShadingMode       ); 
 FB_DEFINE_ENUM( FBSDK_DLL, ModelTransformationType);
 FB_DEFINE_ENUM( FBSDK_DLL, ModelRotationOrder     ); 
@@ -636,6 +646,24 @@ public:
     */
     unsigned int GetHierarchyWorldMatrices(FBMatrix* pMatricesArray, unsigned int pMatricesArrayCount, FBModelHiercharyTraverserType pHiercharyTraverserType, FBEvaluateInfo* pEvaluateInfo=NULL);
 
+    /** Collapse the model in the schematic view.
+    */
+    void CollapseInSchematic();
+
+    /** Expand the model in the schematic view.
+    */
+    void ExpandInSchematic();
+
+    /** Returns if the model is collapsed or not (expanded) in the schematic view.
+    *	\return true if the model is collapsed in the schematic view, false if it is expanded.
+    */
+    bool IsCollapsedInSchematic() const;
+	
+	/** Callback for component selection in custom FBModel.
+	*	\param pAction	The selection mode the current viewport is in.
+	*	\return User defined returned value. Must return true if the user wants the system to proceed with the FBSelectionAction or false if the user doesn't want that action to be done. For example, if the specified function returns false when a "kFBManipulatorAddAll" is specified, all the components for the model will not be added to the current list of selected object. Returning true will allow MotionBuilder to add them.
+	*/
+	virtual bool ManipulatorNotify(FBSelectionAction pAction) { return true; }
 };
 
 //! typedef class FBSDK_DLL
@@ -861,6 +889,32 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////
 __FB_FORWARD( FBModelSkeleton);
 
+//! Look of the skeleton.
+enum FBSkeletonLook
+{
+	kFBSkeletonLookBone,			//!< Bone.
+	kFBSkeletonLookCube,			//!< Cube.
+	kFBSkeletonLookHardCross,		//!< Thick cross.
+	kFBSkeletonLookLightCross,		//!< Wireframe cross.
+	kFBSkeletonLookSphere,			//!< Sphere.
+	kFBSkeletonLookCapsule,			//!< Capsule.
+	kFBSkeletonLookBox,				//!< Box.
+	kFBSkeletonLookCircle,			//!< Circle.
+	kFBSkeletonLookSquare,			//!< Square.
+	kFBSkeletonLookStick,			//!< Box with a sphere on one end.
+};
+
+//! Resolution of skeleton sphere, capsule and stick (Quality).
+enum FBSkeletonResolutionLevel
+{
+	kFBSkeletonLowResolution,		//!< Lowest resolution.
+	kFBSkeletonMediumResolution,	//!< Medium resolution.
+	kFBSkeletonHighResolution		//!< Highest resolution.
+};
+
+FB_DEFINE_ENUM( FBSDK_DLL, SkeletonLook );
+FB_DEFINE_ENUM( FBSDK_DLL, SkeletonResolutionLevel );
+
 //! Root object class.
 class FBSDK_DLL FBModelSkeleton : public FBModel {
     __FBClassDeclare( FBModelSkeleton,FBModel );
@@ -871,9 +925,15 @@ public:
     */
     FBModelSkeleton(const char* pName, HIObject pObject=NULL);
 
-    FBPropertyDouble    Size;    //!< <b>Read Write Property:</b> Size (not related to scaling).
-    FBPropertyColor        Color;    //!< <b>Read Write Property:</b> Color of skeleton node.
-    FBPropertyBool        DrawLink;    //!< <b>Read Write Property:</b> Whether to draw link to parent node or not.
+    FBPropertyDouble    				Size;    					//!< <b>Read Write Property:</b> Size (not related to scaling).
+    FBPropertyColor        				Color;    					//!< <b>Read Write Property:</b> Color of skeleton node.
+    FBPropertyBool        				DrawLink;   				//!< <b>Read Write Property:</b> Whether to draw link to parent node or not.
+	
+	FBPropertySkeletonLook				Look;						//!< <b>Read Write Property:</b> Look of skeleton node.
+	FBPropertySkeletonResolutionLevel	Resolution;					//!< <b>Read Write Property:</b> Resolution of skeleton node. (Note: Only effective when the look is set to: Sphere, Capsule or Stick)
+	FBPropertyDouble					Length;						//!< <b>Read Write Property:</b> Length of skeleton node. (Note: Only effective when the look is set to: Capsule)
+	FBPropertyBool						LinkFollowGeometryOffset;	//!< <b>Read Write Property:</b> Whether link to parent node must follow skeleton node or not, when skeleton node has a geometry offset.
+	FBPropertyBool						PreserveLinkEndPosition;	//!< <b>Read Write Property:</b> Whether skeleton node must preserve its links' end position to children nodes, when skeleton node has a geometry offset. (Note: Only effective when the look is set to: Bone, Box or Stick)
 
     /**    Return the list of skin model associated with this Skeleton(Bone), which could be the deformable skins 
     *   connected via cluster, or non deformable skins which are parented directly under this bone.

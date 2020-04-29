@@ -225,6 +225,8 @@ private:
         FBPropertyTime					LastFrameTime;		//!< <b>Read Only Property:</b> Time of last frame
         FBPropertyTime					CurrentFrameTime;	//!< <b>Read Write Property:</b> Current time in clip.
 
+        FBPropertyTime					CurrentFrameTimeCode;	//!< <b>Read Only Property:</b> Embedded timecode from current frame in clip. Use the method GetEmbeddedTimecode to get the timecode of a different frame than the current frame.
+
         /**	Draw a frame of the image to the current view.
         *	\param	pX		X position of image (default=0).
         *	\param	pY		Y position of image (default=0).
@@ -253,6 +255,13 @@ private:
         *	\return	ID of the texture
         */
         int GetTextureID();
+
+		/**	Get the embedded timecode associated to a video clip frame.
+        *	\param	pFrame		Video clip frame to get timecode for.
+		*	\param	pTimeCode	The timecode object being filled by this method.
+        *	\return	True if an embedded timecode is retrieved from the video clip, false otherwise. (Python: If no embedded timecode is retrieved, returns an FBTimeCode object with its time set to FBTime::Infinity).
+        */
+		virtual bool GetEmbeddedTimecode( int pFrame, FBTimeCode& pTimeCode );
     };
 
     __FB_FORWARD( FBVideoClipImage );

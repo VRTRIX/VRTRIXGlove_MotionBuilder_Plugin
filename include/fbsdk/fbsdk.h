@@ -58,6 +58,7 @@
 #include <fbsdk/fbshader.h>
 #include <fbsdk/fbsystem.h>
 #include <fbsdk/fbplayercontrol.h>
+#include <fbsdk/fbcyclecreator.h>
 #include <fbsdk/fbevaluatemanager.h>
 #include <fbsdk/fbapplication.h>
 #include <fbsdk/fbactionmanager.h>
@@ -83,6 +84,7 @@
 	#include <fbsdk/fbcharacterface.h>
 	#include <fbsdk/fbcharacterextension.h>
     #include <fbsdk/fbcharactersolver.h>
+    #include <fbsdk/fbcycleanalysisnode.h>
 #endif
 
 #if !defined(K_NO_FOLDER)
@@ -133,6 +135,7 @@
 #include <fbsdk/fbgroup.h>
 #include <fbsdk/fbfilereference.h>
 #include <fbsdk/fbpython.h>
+#include <fbsdk/fbmotionfileoptions.h>
 
 #if !defined(K_NO_UI)
 	// User interface includes

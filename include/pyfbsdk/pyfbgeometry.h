@@ -97,7 +97,8 @@ public:
 	void ShapeClearAll();
 	void ShapeInit(int pShapeIdx, int pDiffSize, bool pWithNormal = false );
 	bool ShapeSetDiffPoint(int pShapeIdx, int pDiffIndex, int pOriIndex, const FBVertex_Wrapper& pPosDiff, const FBNormal_Wrapper& pNormalDiff = FBNormal_Wrapper());
-	bool ShapeGetDiffPoint(int pShapeIdx, int pDiffIndex, int& pOriIndex, FBVertex_Wrapper& pPosDiff, FBNormal_Wrapper& pNormalDiff);
+	K_DEPRECATED_2018 bool ShapeGetDiffPoint(int pShapeIdx, int pDiffIndex, int& pOriIndex, FBVertex_Wrapper& pPosDiff, FBNormal_Wrapper& pNormalDiff);
+	bool ShapeGetDiffPointAsList(int pShapeIdx, int pDiffIndex, list pOriIndex, FBVertex_Wrapper& pPosDiff, FBNormal_Wrapper& pNormalDiff);
 
     FBStringList_Wrapper*    GetUVSets();
     FBGeometryMappingMode    GetUVSetMappingMode  (const char* pUVSetName = NULL) const;

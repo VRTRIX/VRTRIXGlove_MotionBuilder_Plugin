@@ -47,6 +47,7 @@
 #include "pyfbcamera.h"
 #include "pyfbfbxoptions.h"
 #include "pyfbbatchoptions.h"
+#include "pyfbmotionfileoptions.h"
 
 // =======================================================================================
 // FBApplication
@@ -65,6 +66,7 @@ public:
 	void FileExit(bool pSave = false) { mFBApplication->FileExit( pSave ); }
 	bool FileExport(const char* pFilename) { return mFBApplication->FileExport( pFilename ); }
     bool FileImport(const char* pFilename, bool pMatchModels = false, bool pCreateUnmatchedModels = true) { return mFBApplication->FileImport( pFilename, pMatchModels, pCreateUnmatchedModels ); }
+	bool FileImportWithOptions(FBMotionFileOptions_Wrapper* pOptions) { return mFBApplication->FileImportWithOptions( pOptions->mFBMotionFileOptions ); }
 	bool FileExportBatch(const char* pName, FBTake_Wrapper& pTake, FBBatchOptions_Wrapper& pBatchOptions, FBModelList_Wrapper& pExportModels) { return mFBApplication->FileExportBatch( pName, pTake.mFBTake, pBatchOptions.mFBBatchOptions, *pExportModels.mFBModelList ); }
 	bool FileImportBatch(const char* pName, FBBatchOptions_Wrapper& pBatchOptions, FBModel_Wrapper& pReference) { return mFBApplication->FileImportBatch( pName, pBatchOptions.mFBBatchOptions, pReference.mFBModel ); }
     bool IsValidBatchFile(const char* pFilename) { return mFBApplication->IsValidBatchFile( pFilename ); }
@@ -98,6 +100,18 @@ public:
 	bool OneClickAddToCurrentScene() { return mFBApplication->OneClickAddToCurrentScene(); }
 	void OneClickSelectPreviouslySentObject() { mFBApplication->OneClickSelectPreviouslySentObject(); }
 	FBOneClickApplication OneClickIsConnectedTo() { return mFBApplication->OneClickIsConnectedTo(); }
+	const char* GetSceneTitle()  { return mFBApplication->GetSceneTitle(); }  
+	void SetSceneTitle(const char* pTitle) { mFBApplication->SetSceneTitle(pTitle); }
+	const char* GetSceneSubject() { return mFBApplication->GetSceneSubject(); }
+	void SetSceneSubject(const char* pSubject) { mFBApplication->SetSceneSubject(pSubject); }
+	const char* GetSceneAuthor() { return mFBApplication->GetSceneAuthor(); }
+	void SetSceneAuthor(const char* pAuthor) { mFBApplication->SetSceneAuthor(pAuthor); }
+	const char* GetSceneKeywords() { return mFBApplication->GetSceneKeywords(); }
+	void SetSceneKeywords(const char* pKeywords) { mFBApplication->SetSceneKeywords(pKeywords); }
+	const char* GetSceneRevisionNumber() { return mFBApplication->GetSceneRevisionNumber(); }
+	void SetSceneRevisionNumber(const char* pRevNumber) { mFBApplication->SetSceneRevisionNumber(pRevNumber); }
+	const char* GetSceneComment() { return mFBApplication->GetSceneComment(); }
+	void SetSceneComment(const char* pComment) { mFBApplication->SetSceneComment(pComment); }
     object OnFileNewCompleted();
     object OnFileNew();
     object OnFileOpenCompleted();
@@ -106,6 +120,7 @@ public:
     object OnFileSave();
     object OnFileExit();
     object OnFileMerge();
+    object OnOverrideFileOpen();
 
 protected:
     virtual FBPropertyEvent* GetPropertyEvent(FBEventName pEventName);

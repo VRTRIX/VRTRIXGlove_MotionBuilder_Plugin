@@ -709,9 +709,7 @@ extern int fdatasync(int);
 
 
 #if defined(__APPLE__)
-// lets not define this and see how Xcode 5.1.1 handles these
-// else we get lots of errors on usage
-//# define _PY_PORT_CTYPE_UTF8_ISSUE
+# define _PY_PORT_CTYPE_UTF8_ISSUE
 #endif
 
 #ifdef _PY_PORT_CTYPE_UTF8_ISSUE

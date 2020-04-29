@@ -44,7 +44,9 @@ public:
 	const char* GetRecordClipPath(  ) { return mFBStoryFolder->RecordClipPath; }
 	object GetTracks(  ) { return FBPropertyListStoryTrack_Wrapper_Factory( mFBStoryFolder->Tracks ); }
 	void AlignSelectedClips(FBStoryClipAlignmentType pType, FBComponent_Wrapper* pClip) { mFBStoryFolder->AlignSelectedClips( pType, pClip ? pClip->mFBComponent : NULL ); }
+	void AlignSelectedClipsGroup(FBStoryGroupClipAlignmentType pType) { mFBStoryFolder->AlignSelectedClipsGroup( pType ); }
 	void ExpandSelectedClips(bool pPerserveOverlap) { mFBStoryFolder->ExpandSelectedClips( pPerserveOverlap ); }
+	void ExpandSelectedClipsGroup(bool pPerserveOverlap) { mFBStoryFolder->ExpandSelectedClipsGroup( pPerserveOverlap ); }
 	void ConvertClipsToReadOnly( bool pSelected, char* pPath ) { mFBStoryFolder->ConvertClipsToReadOnly(pSelected,pPath); }
 
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(Collapsed,bool);

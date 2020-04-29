@@ -72,22 +72,32 @@ public:
     *
     *   Python sample code:
     *    @code
-        Script Sample.
         from pyfbsdk import *
 
         path = FBModelPath3D("Test")
+        ## After creation, a path always contain two default keys.
+        ## At this point, path.PathKeyGetCount() will be 2.
         path.Show = True
-        der = path.Total_LocalPathEvaluateDerivative(1)
-        path.PathKeySetLeftTangeant(1,FBVector4d(25,25,25,25),True)
-        ## Add keys at start and end
+        ## Reposition the two default keys
+        path.PathKeySet(0,FBVector4d(0,0,50,0))
+        path.PathKeySet(1,FBVector4d(50,0,0,0))
+        ## Add new keys at start and end of the path
         path.PathKeyStartAdd(FBVector4d(0,0,100,0))
         path.PathKeyEndAdd(FBVector4d(100,0,0,0))
-        ## Add keys within the path
-        path.Segment_PathKeyAdd(75.0,FBVector4d(25,25,25,25))
-        path.Segment_PathKeyAdd(25.0,FBVector4d(25,0,25,25))
+        ## Insert keys inbetween existing keys
+        path.PathKeyInsertAfter(1,FBVector4d(0,25,50,0))
+        path.PathKeyInsertAfter(2,FBVector4d(50,25,0,0))
     *   @endcode
     */
     FBModelPath3D(const char* pName, HIObject pObject=NULL);
+
+    //! Key property behavior.
+    enum EKeyPropertyBehavior
+    {
+        eLegacyVector4, //!< 2014, 2015, 2016. Key property type is Vector4.
+        eVector         //!< Introduced after 2016. Key property type is Vector, has improved control node behavior and support for auto control node.
+    };
+    typedef FBPropertyBaseEnum<EKeyPropertyBehavior> PropertyKeyPropertyBehavior;
 
     //! Path Length Unit enum. 
     enum ELengthUnitType 
@@ -109,6 +119,8 @@ public:
 
     typedef FBPropertyBaseEnum<EPathEndCapStyle> PropertyPathEndCapStyle;  
 
+    PropertyKeyPropertyBehavior KeyPropertyBehavior; //!< <b>Read Only Property:</b> Key property behavior.
+    FBPropertyBool   AutoControlNode;           //!< <b>Read Write Property:</b> Automatically create key control nodes.
     FBPropertyDouble PathLength;                //!< <b>Read Only Property:</b> Path Length In Centimeter.
     FBPropertyString PathLengthInString;        //!< <b>Read Only Property:</b> Path Length Display String According To The Current Unit.
     PropertyUnitType PathLengthUnit;            //!< <b>Read Write Property:</b> Path Length Unit.
@@ -278,82 +290,112 @@ public:
     */
     int        PathKeyEndAdd(FBVector4d pTLocal);
 
+    /** Adds a new key immediately after the specified key ID (with time gap of 1 sec). The following keys are all shifted by 1 sec.
+    *    \param  pKeyIndex      Key ID to insert after. If key ID < 0 then the behavior is the same as PathKeyStartAdd. If key ID >= PathKeyGetCount-1 then the behavior is the same as PathKeyEndAdd.
+    *    \param  pTLocal        Vector value for the new added Key
+    *    \return    Returns the newly inserted key ID.
+    */
+    int        PathKeyInsertAfter(int pKeyIndex, FBVector4d pTLocal);
+
+    //--- Animated Keys - Properties and Control Nodes ----------------------------------------------------------------------------------
+
+    /** Get the path key's corresponding property. Only works when KeyPropertyBehavior is eVector.
+    *    \param  pKeyIndex        Key ID to get
+    *    \return Path key's corresponding property if successful, otherwise NULL.
+    */
+    FBProperty* PathKeyGetProperty(int pKeyIndex);
+
+    /** Get the path key's control node. Only works when KeyPropertyBehavior is eVector.
+    *    \param  pKeyIndex        Key ID to get
+    *    \return Path key's corresponding control node if successful, otherwise NULL.
+    */
+    FBModel*   PathKeyGetControlNode(int pKeyIndex);
+
+    /** Set the path key's control node. Only works when KeyPropertyBehavior is eVector and AutoControlNode is disabled.
+    *    \param  pKeyIndex        Key ID to set
+    *    \param  pControlNode     Model to set as path key's control node.
+    *    \return True if successful, otherwise false.
+    */
+    bool       PathKeySetControlNode(int pKeyIndex, FBModel* pControlNode);
+
     //--- Curve -------------------------------------------------------------------------------------------------------------------------
     /** Adds a new key either at the start, end or along the path as per specified. 
     *    \param  pTotalPercent     Double value indicating where the key is to be added. If < 0, key added before start of the path,
     *                              if > 0, key added at end of path, otherwise it is added somewhere along the path depending on value specified
     *    \param  pTLocal        Vector to use to set values to Key
     *    \return  Index as integer for the path key added 
+    *    \deprecated use PathKeyStartAdd(), PathKeyEndAdd(), PathKeyInsertAfter(), or PathKeySet() instead.
     */
-    int        Total_PathKeyAdd(double pTotalPercent, FBVector4d pTLocal);
+    K_DEPRECATED_2017 int Total_PathKeyAdd(double pTotalPercent, FBVector4d pTLocal, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Query whether a percentage value has a key associated at that point in the path.
     *    \param  pTotalPercent        Double value (as percentage) at which the path would be queried for existence of key
     *    \return A valid key index in integer if key is present, otherwise -1
     */
-    int        Total_IsPathKey(double pTotalPercent);
+    int        Total_IsPathKey(double pTotalPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get the path's vector at a particular point within the curve, in global coordinates.  
     *    \param  pTotalPercent        Double value (as percentage) at which the path vector would be computed
     *    \return    Vector value at the required point in the path
     */
-    FBVector4d Total_GlobalPathEvaluate(double pTotalPercent);
+    FBVector4d Total_GlobalPathEvaluate(double pTotalPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get the path's vector at a particular point within the curve, in local coordinates.  
     *    \param  pTotalPercent        Double value (as percentage) at which the path vector would be computed
     *    \return    Vector value at the required point in the path
     */
-    FBVector4d Total_LocalPathEvaluate(double pTotalPercent);
+    FBVector4d Total_LocalPathEvaluate(double pTotalPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get the path's derivative at a particular point within the curve, in global coordinates.  
     *    \param  pTotalPercent        Double value (as percentage) at which the path derivative would be computed
     *    \return    Derivative value at the required point in the path
     */
-    FBVector4d Total_GlobalPathEvaluateDerivative(double pTotalPercent);
+    FBVector4d Total_GlobalPathEvaluateDerivative(double pTotalPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get the path's derivative at a particular point within the curve, in local coordinates.  
     *    \param  pTotalPercent        Double value (as percentage) at which the path derivative would be computed
     *    \return    Derivative value at the required point in the path
     */
-    FBVector4d Total_LocalPathEvaluateDerivative(double pTotalPercent);
+    FBVector4d Total_LocalPathEvaluateDerivative(double pTotalPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Adds a new key either at the start, end or along the path as per specified. 
     *    \param  pSegmentPercent     Double value indicating where the key is to be added. If < 0, key added before start of the path,
     *                              if > 0, key added at end of path, otherwise it is added somewhere along the path depending on value specified
     *    \param  pTLocal           Vector to use to set values to Key
     *    \return    Vector value at the required point in the path
+    *    \deprecated use PathKeyStartAdd(), PathKeyEndAdd(), PathKeyInsertAfter(), or PathKeySet() instead.
     */
-    int        Segment_PathKeyAdd(double pSegmentPercent, FBVector4d pTLocal);
+    K_DEPRECATED_2017 int Segment_PathKeyAdd(double pSegmentPercent, FBVector4d pTLocal, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Query whether a percentage value has a key associated at that point in the path.
     *    \param  pSegmentPercent        Double value (as time) at which the path would be queried for existence of key
     *    \return A valid key index in integer if key is present, otherwise -1
     */
-    int        Segment_IsPathKey(double pSegmentPercent);
+    int        Segment_IsPathKey(double pSegmentPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get the path's vector at a particular point within the curve, in global coordinates.  
     *    \param  pSegmentPercent        Double value (as time) at which the path vector would be computed
     *    \return    Vector value at the required point in the path
     */
-    FBVector4d Segment_GlobalPathEvaluate(double pSegmentPercent);
+    FBVector4d Segment_GlobalPathEvaluate(double pSegmentPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get the path's vector at a particular point within the curve, in local coordinates.  
     *    \param  pSegmentPercent        Double value (as time) at which the path vector would be computed
     *    \return    Vector value at the required point in the path
     */
-    FBVector4d Segment_LocalPathEvaluate(double pSegmentPercent);
+    FBVector4d Segment_LocalPathEvaluate(double pSegmentPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get the path's derivative at a particular point within the curve, in global coordinates.  
     *    \param  pSegmentPercent        Double value (as time) at which the path derivative would be computed
     *    \return    Vector value at the required point in the path
     */
-    FBVector4d Segment_GlobalPathEvaluateDerivative(double pSegmentPercent);
+    FBVector4d Segment_GlobalPathEvaluateDerivative(double pSegmentPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get the path's derivative at a particular point within the curve, in local coordinates.  
     *    \param  pSegmentPercent        Double value (as time) at which the path derivative would be computed
     *    \return    Vector value at the required point in the path
     */
-    FBVector4d Segment_LocalPathEvaluateDerivative(double pSegmentPercent);
+    FBVector4d Segment_LocalPathEvaluateDerivative(double pSegmentPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     //--- Key Type Converter ------------------------------------------------------------------------------------------------------------
 
@@ -361,13 +403,13 @@ public:
     *    \param  pPercent        Double value (as percentage)
     *    \return  Double value which represents the corresponding time.
     */
-    double     ConvertTotalPercentToSegmentPercent(double pPercent);
+    double     ConvertTotalPercentToSegmentPercent(double pPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Converting one key type Segment (time) to Total (percent).
     *    \param  pPercent        Double value (as time) 
     *    \return  Double value which represents the corresponding percentage
     */
-    double     ConvertSegmentPercentToTotalPercent(double pPercent);
+    double     ConvertSegmentPercentToTotalPercent(double pPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get factor for multiplying the derivative of a key for segment mode.
     *    \return  Returns the derivative multiplication factor
