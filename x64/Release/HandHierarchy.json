@@ -1,0 +1,364 @@
+{
+    "HandHierarchy": [
+        {
+            "mIndex": 0,
+            "mLocalTranslationR": [
+                -74.83180236816406,
+                160.07501220703125,
+                -1.2485101222991948
+            ],
+            "mName": "Robot_RightHand"
+        },
+        {
+            "mIndex": 1,
+            "mLocalTranslationR": [
+                -3.378700256347656,
+                0.2580108642578125,
+                4.235600471496582
+            ],
+            "mName": "Robot_RightHandThumb1"
+        },
+        {
+            "mIndex": 2,
+            "mLocalTranslationR": [
+                -4.99884033203125,
+                -0.005767822265625,
+                -0.022398710250854492
+            ],
+            "mName": "Robot_RightHandThumb2"
+        },
+        {
+            "mIndex": 3,
+            "mLocalTranslationR": [
+                -3.4723663330078125,
+                0.00286865234375,
+                -0.020205259323120117
+            ],
+            "mName": "Robot_RightHandThumb3"
+        },
+        {
+            "mIndex": 4,
+            "mLocalTranslationR": [
+                -4.37530517578125,
+                0.6900177001953125,
+                2.685340166091919
+            ],
+            "mName": "Robot_RightInHandIndex"
+        },
+        {
+            "mIndex": 5,
+            "mLocalTranslationR": [
+                -7.086906433105469,
+                -0.1240081787109375,
+                1.3564705848693848
+            ],
+            "mName": "Robot_RightHandIndex1"
+        },
+        {
+            "mIndex": 6,
+            "mLocalTranslationR": [
+                -4.906219482421875,
+                -0.2389984130859375,
+                0.008839607238769531
+            ],
+            "mName": "Robot_RightHandIndex2"
+        },
+        {
+            "mIndex": 7,
+            "mLocalTranslationR": [
+                -2.7794036865234375,
+                -0.173004150390625,
+                -0.0012519359588623047
+            ],
+            "mName": "Robot_RightHandIndex3"
+        },
+        {
+            "mIndex": 8,
+            "mLocalTranslationR": [
+                -4.592308044433594,
+                0.7020111083984375,
+                1.0279321670532229
+            ],
+            "mName": "Robot_RightInHandMiddle"
+        },
+        {
+            "mIndex": 9,
+            "mLocalTranslationR": [
+                -7.022796630859375,
+                -0.113983154296875,
+                0.42638510465621954
+            ],
+            "mName": "Robot_RightHandMiddle1"
+        },
+        {
+            "mIndex": 10,
+            "mLocalTranslationR": [
+                -5.3482818603515625,
+                -0.3639984130859375,
+                -0.0139874666929245
+            ],
+            "mName": "Robot_RightHandMiddle2"
+        },
+        {
+            "mIndex": 11,
+            "mLocalTranslationR": [
+                -3.3493423461914062,
+                -0.2590179443359375,
+                0.008589431643486023
+            ],
+            "mName": "Robot_RightHandMiddle3"
+        },
+        {
+            "mIndex": 12,
+            "mLocalTranslationR": [
+                -4.56720733642578,
+                0.735015869140625,
+                -0.17597997188568115
+            ],
+            "mName": "Robot_RightInHandRing"
+        },
+        {
+            "mIndex": 13,
+            "mLocalTranslationR": [
+                -6.295501708984375,
+                -0.029998779296875,
+                -0.6521199941635132
+            ],
+            "mName": "Robot_RightHandRing1"
+        },
+        {
+            "mIndex": 14,
+            "mLocalTranslationR": [
+                -4.6512603759765625,
+                -0.437774658203125,
+                0.012611627578735352
+            ],
+            "mName": "Robot_RightHandRing2"
+        },
+        {
+            "mIndex": 15,
+            "mLocalTranslationR": [
+                -3.2289886474609375,
+                -0.2809295654296875,
+                -0.015483856201171877
+            ],
+            "mName": "Robot_RightHandRing3"
+        },
+        {
+            "mIndex": 16,
+            "mLocalTranslationR": [
+                -4.291297912597656,
+                0.6370086669921875,
+                -1.6306998729705813
+            ],
+            "mName": "Robot_RightInHandPinky"
+        },
+        {
+            "mIndex": 17,
+            "mLocalTranslationR": [
+                -5.6183013916015625,
+                -0.0359954833984375,
+                -1.4798107147216797
+            ],
+            "mName": "Robot_RightHandPinky1"
+        },
+        {
+            "mIndex": 18,
+            "mLocalTranslationR": [
+                -3.7361907958984375,
+                -0.2039031982421875,
+                -0.01724100112915039
+            ],
+            "mName": "Robot_RightHandPinky2"
+        },
+        {
+            "mIndex": 19,
+            "mLocalTranslationR": [
+                -2.3571929931640625,
+                -0.1777496337890625,
+                0.009027957916259766
+            ],
+            "mName": "Robot_RightHandPinky3"
+        },
+        {
+            "mIndex": 0,
+            "mLocalTranslationL": [
+                74.83183336257935,
+                160.07528686523438,
+                -1.2485121488571171
+            ],
+            "mName": "Robot_LeftHand"
+        },
+        {
+            "mIndex": 1,
+            "mLocalTranslationL": [
+                3.3786697387695312,
+                0.257476806640625,
+                4.235597133636475
+            ],
+            "mName": "Robot_LeftHandThumb1"
+        },
+        {
+            "mIndex": 2,
+            "mLocalTranslationL": [
+                4.9987945556640625,
+                0.0126800537109375,
+                -0.012565851211547852
+            ],
+            "mName": "Robot_LeftHandThumb2"
+        },
+        {
+            "mIndex": 3,
+            "mLocalTranslationL": [
+                3.4724807739257812,
+                -0.007965087890625,
+                0.010122060775756836
+            ],
+            "mName": "Robot_LeftHandThumb3"
+        },
+        {
+            "mIndex": 4,
+            "mLocalTranslationL": [
+                4.3752593994140625,
+                0.689239501953125,
+                2.6853435039520264
+            ],
+            "mName": "Robot_LeftInHandIndex"
+        },
+        {
+            "mIndex": 5,
+            "mLocalTranslationL": [
+                7.0868682861328125,
+                -0.1236572265625,
+                1.3564726114273071
+            ],
+            "mName": "Robot_LeftHandIndex1"
+        },
+        {
+            "mIndex": 6,
+            "mLocalTranslationL": [
+                4.9062347412109375,
+                -0.23907470703125,
+                -0.012319087982177734
+            ],
+            "mName": "Robot_LeftHandIndex2"
+        },
+        {
+            "mIndex": 7,
+            "mLocalTranslationL": [
+                2.7793731689453125,
+                -0.173126220703125,
+                0.010981321334838867
+            ],
+            "mName": "Robot_LeftHandIndex3"
+        },
+        {
+            "mIndex": 8,
+            "mLocalTranslationL": [
+                4.5923004150390625,
+                0.702056884765625,
+                1.0279347896575928
+            ],
+            "mName": "Robot_LeftInHandMiddle"
+        },
+        {
+            "mIndex": 9,
+            "mLocalTranslationL": [
+                7.0228271484375,
+                -0.114166259765625,
+                0.4263848960399628
+            ],
+            "mName": "Robot_LeftHandMiddle1"
+        },
+        {
+            "mIndex": 10,
+            "mLocalTranslationL": [
+                5.348197937011719,
+                -0.3643341064453125,
+                -0.015678957104682922
+            ],
+            "mName": "Robot_LeftHandMiddle2"
+        },
+        {
+            "mIndex": 11,
+            "mLocalTranslationL": [
+                3.3493499755859375,
+                -0.25872802734375,
+                0.014287948608398438
+            ],
+            "mName": "Robot_LeftHandMiddle3"
+        },
+        {
+            "mIndex": 12,
+            "mLocalTranslationL": [
+                4.5672149658203125,
+                0.7352142333984375,
+                -0.17597532272338867
+            ],
+            "mName": "Robot_LeftInHandRing"
+        },
+        {
+            "mIndex": 13,
+            "mLocalTranslationL": [
+                6.295448303222656,
+                -0.0302581787109375,
+                -0.6521178483963013
+            ],
+            "mName": "Robot_LeftHandRing1"
+        },
+        {
+            "mIndex": 14,
+            "mLocalTranslationL": [
+                4.658203125,
+                -0.3573150634765625,
+                0.002321958541870117
+            ],
+            "mName": "Robot_LeftHandRing2"
+        },
+        {
+            "mIndex": 15,
+            "mLocalTranslationL": [
+                3.2327880859375,
+                -0.232513427734375,
+                0.001880645751953125
+            ],
+            "mName": "Robot_LeftHandRing3"
+        },
+        {
+            "mIndex": 16,
+            "mLocalTranslationL": [
+                4.29132080078125,
+                0.6371307373046875,
+                -1.6307002305984497
+            ],
+            "mName": "Robot_LeftInHandPinky"
+        },
+        {
+            "mIndex": 17,
+            "mLocalTranslationL": [
+                5.618247985839844,
+                -0.03662109375,
+                -1.479806900024414
+            ],
+            "mName": "Robot_LeftHandPinky1"
+        },
+        {
+            "mIndex": 18,
+            "mLocalTranslationL": [
+                3.736122131347656,
+                -0.204681396484375,
+                0.010684967041015623
+            ],
+            "mName": "Robot_LeftHandPinky2"
+        },
+        {
+            "mIndex": 19,
+            "mLocalTranslationL": [
+                2.3572311401367188,
+                -0.177947998046875,
+                -0.01187753677368164
+            ],
+            "mName": "Robot_LeftHandPinky3"
+        }
+    ]
+}

@@ -96,6 +96,10 @@ bool ORDeviceVRTRIXGlove::Init()
         return false;
     }
 
+	for (int i = 0; i < GetChannelCount(); ++i) {
+		DataChannel channel;
+		mChannels.push_back(channel);
+	}
 	SetOperationState(eAskForCreateModelBinding);
     mHierarchyIsDefined = false;
     Bind();

@@ -86,6 +86,8 @@ public:
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type) { return mHardware.SetModelOffset(xAxis, yAxis, zAxis, type); }
 	//--- Perform T Pose calibration on start
 	void OnTPoseCalibration() { return mHardware.OnTPoseCalibration(); }
+	//--- Perform OK Pose calibration on start
+	void OnOKPoseCalibration() { return mHardware.OnOKPoseCalibration(); }
 	//--- Algorithm Tuning for hardware.
 	void OnAvancedModeEnabled(bool isEnabled) { return mHardware.OnAvancedModeEnabled(isEnabled); }
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value) { return mHardware.OnSetAlgorithmParameters(finger, type, value); }
@@ -142,7 +144,7 @@ private:
     FBCharacter*                mMocapCharacter;
     FBCharacter*                mTargetCharacter;
 
-	DataChannel					mChannels[BoneNum];	//!< Data channels.
+	std::vector<DataChannel>	mChannels;	//!< Data channels.
 	FBPropertyBool				UseReferenceTransformation;             // !< Apply reference transformation on incoming global data.
 	bool						mHierarchyIsDefined;                    //!< True if the hierarchy is already defined
 

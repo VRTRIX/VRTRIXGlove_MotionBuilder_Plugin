@@ -1,9 +1,15 @@
 from pyfbsdk import *
-
+import json
+import io
+try:
+    to_unicode = unicode
+except NameError:
+    to_unicode = str
+    
 lModels = FBModelList()
 FBGetSelectedModels(lModels)
 
-def SetupHierarchy(pModel, pParentIdx, pNextIndex):
+def SetupHierarchy(pModel, pParentIdx, pNextIndex, result):
     lIdx = pNextIndex
     pNextIndex += 1
     lT = FBVector3d()
@@ -20,11 +26,22 @@ def SetupHierarchy(pModel, pParentIdx, pNextIndex):
     print 'mChannel['+str(lIdx)+'].mR[1] = ' +  str(lR[1]) + ';'
     print 'mChannel['+str(lIdx)+'].mR[2] = ' +  str(lR[2]) + ';'
     print ''
+    temp_dict = {}
+    temp_dict['mName'] = pModel.Name
+    temp_dict['mParentChannel'] = pParentIdx
+    temp_dict['mPose'] = [lT[0], lT[1], lT[2], lR[0], lR[1], lR[2]]
+    result.append(temp_dict)
     for lChild in pModel.Children:
         if len(lChild.Children)==0 and lChild.Name != 'Head':
             continue;
-        pNextIndex = SetupHierarchy(lChild,lIdx,pNextIndex)
+        pNextIndex = SetupHierarchy(lChild,lIdx,pNextIndex,result)
     return pNextIndex
 
 if len(lModels) == 1:
-    SetupHierarchy(lModels[0],-1,0)
+    SkeletonHierarchy = []
+    data = {'SkeletonHierarchy': SkeletonHierarchy}
+    SetupHierarchy(lModels[0],-1,0, SkeletonHierarchy)
+    
+    with io.open('./SkeletonHierarchy.json', 'w', encoding='utf8') as f:
+        str_ = json.dumps(data,indent=4, sort_keys=True,separators=(',', ': '), ensure_ascii=False)
+        f.write(to_unicode(str_))

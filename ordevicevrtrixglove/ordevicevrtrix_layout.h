@@ -54,6 +54,7 @@ public:
 	void	EventRHModelOffsetChange				( HISender pSender, HKEvent pEvent );
 
 	void	EventButtonTPoseCalibrationClick		( HISender pSender, HKEvent pEvent);
+	void    EventButtonOKPoseCalibrationClick		(HISender pSender, HKEvent pEvent);
 	void	EventButtonSaveParameter				( HISender pSender, HKEvent pEvent);
 
 private:
@@ -120,8 +121,9 @@ private:
 			FBLabel				mLabelZAxisOffsetR;
 			FBEditVector		mEditZAxisOffsetR;
 
-			//T Pose Calibration Button
+			//T Pose & OK Pose Calibration Button
 			FBButton			mButtonTPoseCalibration;
+			FBButton			mButtonOKPoseCalibration;
 
 private:
 	VRTRIX::HandType		mHandType;					//!< Hand Type
