@@ -83,7 +83,14 @@ namespace VRTRIX {
 		HandStatus_None,
 		HandStatus_Connected,
 		HandStatus_Disconnected,
+		HandStatus_PortOpened,
+		HandStatus_PortClosed,
+		HandStatus_PortInterrupted,
 		HandStatus_ChannelHopping,
+		HandStatus_SetRadioLimit,
+		HandStatus_InsufficientDataPacket,
+		HandStatus_ErrorDataPacket,
+		HandStatus_NewChannelSelected,
 		HandStatus_LowBattery,
 		HandStatus_BatteryFull,
 		HandStatus_Paired,
@@ -205,6 +212,12 @@ namespace VRTRIX {
 	struct HandEvent {
 		HandStatus stat; //!< Glove hardware status
 		HandType type;	//!< Glove hand type
+		int dataRate; //!< Glove data rate (Hz)
+		int channel; //!< Glove radio channel (1-99)
+		int upperBound; //!< Glove radio channel upperBound(1-99)
+		int lowerBound; //!< Glove radio channel lowerBound(1-99)
+		int byteReceived; //!< Glove byte received last 500ms
+		int errorCount;	//!< Glove data error count during transmission
 	};
 
     //!  VRTRIX IMU event handler class. 
