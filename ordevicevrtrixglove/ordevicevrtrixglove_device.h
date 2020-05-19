@@ -88,6 +88,8 @@ public:
 	void OnTPoseCalibration() { return mHardware.OnTPoseCalibration(); }
 	//--- Perform OK Pose calibration on start
 	void OnOKPoseCalibration() { return mHardware.OnOKPoseCalibration(); }
+	//--- Perform save hardware calibration
+	void OnSaveHardwareCalibration() { return mHardware.OnSaveHardwareCalibration(); }
 	//--- Algorithm Tuning for hardware.
 	void OnAvancedModeEnabled(bool isEnabled) { return mHardware.OnAvancedModeEnabled(isEnabled); }
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value) { return mHardware.OnSetAlgorithmParameters(finger, type, value); }

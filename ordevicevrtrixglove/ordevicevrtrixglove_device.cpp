@@ -410,8 +410,11 @@ void ORDeviceVRTRIXGlove::Bind()
             mChannels[i].mModelTemplate->Bindings.Add(mChannels[i].mRAnimNode);
 
             // Setting global values makes weird value when not live
-            // mChannels[i].mModelTemplate->DefaultTranslation = mHardware.GetDefaultT(i);
-            // mChannels[i].mModelTemplate->DefaultRotation = mHardware.GetDefaultR(i);
+			FBVector3d globalTranslation = mHardware.GetDefaultT(i);
+			FBVector3d globalTranslationParent = mHardware.GetDefaultT(mHardware.GetChannelParent(i));
+			FBVector3d localTranslation(globalTranslation.mValue[0]- globalTranslationParent.mValue[0], globalTranslation.mValue[1] - globalTranslationParent.mValue[1], globalTranslation.mValue[2] - globalTranslationParent.mValue[2]);
+             mChannels[i].mModelTemplate->DefaultTranslation = localTranslation;
+             mChannels[i].mModelTemplate->DefaultRotation = mHardware.GetDefaultR(i);
         }
     }
 

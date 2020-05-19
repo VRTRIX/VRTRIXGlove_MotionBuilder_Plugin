@@ -93,7 +93,7 @@ void ORDeviceVRTRIXLayout::UICreate()
 
 	// Assign regions
 	SetControl	( "TabPanel",	mTabPanel		);
-	SetControl	( "MainLayout",	mLayoutMarkers	);
+	SetControl	( "MainLayout", mLayoutOrientationAlign);
 
 	// Create sub layouts
 	UICreateLayoutDisplay();
@@ -473,12 +473,17 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 													0,		kFBAttachWidth,		"LabelZAxisOffsetR",	1.00,
 													0,		kFBAttachHeight,	"LabelZAxisOffsetR",	1.00 );
 	
-	mLayoutOrientationAlign.AddRegion("ButtonOKPoseCalibration", "ButtonOKPoseCalibration",
+	//mLayoutOrientationAlign.AddRegion("ButtonOKPoseCalibration", "ButtonOKPoseCalibration",
+	//												0, kFBAttachLeft, "ButtonTPoseCalibration", 1.00,
+	//												lS, kFBAttachBottom, "ButtonTPoseCalibration", 1.00,
+	//												0, kFBAttachWidth, "ButtonTPoseCalibration", 1.00,
+	//												0, kFBAttachHeight, "ButtonTPoseCalibration", 1.00);
+
+	mLayoutOrientationAlign.AddRegion("ButtonSaveHardwareCalibration", "ButtonSaveHardwareCalibration",
 													0, kFBAttachLeft, "ButtonTPoseCalibration", 1.00,
 													lS, kFBAttachBottom, "ButtonTPoseCalibration", 1.00,
 													0, kFBAttachWidth, "ButtonTPoseCalibration", 1.00,
 													0, kFBAttachHeight, "ButtonTPoseCalibration", 1.00);
-
 
 	// Assign regions
 	mLayoutOrientationAlign.SetControl( "LabelHardwareVersion",				mLabelHardwareVersion);
@@ -500,7 +505,8 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 	mLayoutOrientationAlign.SetControl( "EditZAxisOffsetR",				mEditZAxisOffsetR);
 
 	mLayoutOrientationAlign.SetControl( "ButtonTPoseCalibration",				mButtonTPoseCalibration);
-	mLayoutOrientationAlign.SetControl( "ButtonOKPoseCalibration", mButtonOKPoseCalibration);
+	//mLayoutOrientationAlign.SetControl( "ButtonOKPoseCalibration", mButtonOKPoseCalibration);
+	mLayoutOrientationAlign.SetControl( "ButtonSaveHardwareCalibration", mButtonSaveHardwareCalibration);
 
 }
 
@@ -512,7 +518,7 @@ void ORDeviceVRTRIXLayout::UIConfigure()
 {
 	SetBorder ("MainLayout", kFBStandardBorder, false,true, 1, 0,90,0);
 
-	mTabPanel.Items.SetString("Joints~Setup~Algorithm");
+	mTabPanel.Items.SetString("Setup~Algorithm~Joints");
 	mTabPanel.OnChange.Add( this, (FBCallback)&ORDeviceVRTRIXLayout::EventTabPanelChange );
 
 	UIConfigureLayout0();
@@ -705,9 +711,13 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 	mButtonTPoseCalibration.Style		= kFBPushButton;
 	mButtonTPoseCalibration.OnClick.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventButtonTPoseCalibrationClick );
 
-	mButtonOKPoseCalibration.Caption = "OK Pose Calibration";
-	mButtonOKPoseCalibration.Style = kFBPushButton;
-	mButtonOKPoseCalibration.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick);
+	//mButtonOKPoseCalibration.Caption = "OK Pose Calibration";
+	//mButtonOKPoseCalibration.Style = kFBPushButton;
+	//mButtonOKPoseCalibration.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick);
+
+	mButtonSaveHardwareCalibration.Caption = "Save Hardware Calibration";
+	mButtonSaveHardwareCalibration.Style = kFBPushButton;
+	mButtonSaveHardwareCalibration.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonSaveHardwareCalibrationClick);
 }
 /************************************************
  *	Refresh the UI.
@@ -808,10 +818,9 @@ void ORDeviceVRTRIXLayout::EventTabPanelChange( HISender pSender, HKEvent pEvent
 {
 	switch( mTabPanel.ItemIndex )
 	{
-		case 0:	SetControl("MainLayout", mLayoutMarkers			);	break;
-		case 1:	SetControl("MainLayout", mLayoutOrientationAlign		);	break;
-		case 2:	SetControl("MainLayout", mLayoutSetup		);	break;
-
+		case 0:	SetControl("MainLayout", mLayoutOrientationAlign		);	break;
+		case 1:	SetControl("MainLayout", mLayoutSetup		);	break;
+		case 2:	SetControl("MainLayout", mLayoutMarkers);	break;
 	}
 }
 
@@ -1145,6 +1154,11 @@ void ORDeviceVRTRIXLayout::EventButtonTPoseCalibrationClick(HISender pSender, HK
 void ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick(HISender pSender, HKEvent pEvent)
 {
 	mDevice->OnOKPoseCalibration();
+}
+
+void ORDeviceVRTRIXLayout::EventButtonSaveHardwareCalibrationClick(HISender pSender, HKEvent pEvent)
+{
+	mDevice->OnSaveHardwareCalibration();
 }
 
 

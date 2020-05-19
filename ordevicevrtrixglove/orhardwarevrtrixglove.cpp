@@ -435,6 +435,17 @@ void ORHardwareVRTRIXGlove::OnOKPoseCalibration()
 	}
 }
 
+void ORHardwareVRTRIXGlove::OnSaveHardwareCalibration()
+{
+	VRTRIX::EIMUError error;
+	if (m_bIsLHConnected) {
+		m_pLeftHandDataGlove->HardwareCalibrate(error);
+	}
+	if (m_bIsRHConnected) {
+		m_pRightHandDataGlove->HardwareCalibrate(error);
+	}
+}
+
 void ORHardwareVRTRIXGlove::OnAvancedModeEnabled(bool bIsEnabled)
 {
 	VRTRIX::EIMUError error;

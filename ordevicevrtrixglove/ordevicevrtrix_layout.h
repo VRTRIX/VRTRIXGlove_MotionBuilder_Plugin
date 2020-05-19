@@ -55,6 +55,7 @@ public:
 
 	void	EventButtonTPoseCalibrationClick		( HISender pSender, HKEvent pEvent);
 	void    EventButtonOKPoseCalibrationClick		(HISender pSender, HKEvent pEvent);
+	void    EventButtonSaveHardwareCalibrationClick		(HISender pSender, HKEvent pEvent);
 	void	EventButtonSaveParameter				( HISender pSender, HKEvent pEvent);
 
 private:
@@ -124,6 +125,7 @@ private:
 			//T Pose & OK Pose Calibration Button
 			FBButton			mButtonTPoseCalibration;
 			FBButton			mButtonOKPoseCalibration;
+			FBButton			mButtonSaveHardwareCalibration;
 
 private:
 	VRTRIX::HandType		mHandType;					//!< Hand Type

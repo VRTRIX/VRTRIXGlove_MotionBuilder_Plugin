@@ -48,6 +48,7 @@ public:
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
 	void OnTPoseCalibration();
 	void OnOKPoseCalibration();
+	void OnSaveHardwareCalibration();
 	void OnAvancedModeEnabled(bool bIsEnabled);
 	void OnReceivedNewPose(VRTRIX::Pose pose);
 	void OnReceivedCalibratedResult(VRTRIX::HandEvent event);
