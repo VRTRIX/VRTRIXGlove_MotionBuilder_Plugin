@@ -1164,6 +1164,7 @@ void ORDeviceVRTRIXLayout::EventButtonSaveHardwareCalibrationClick(HISender pSen
 
 void ORDeviceVRTRIXLayout::EventButtonSaveParameter(HISender pSender, HKEvent pEvent)
 {
+	mDevice->GetConfig(m_jHandler->m_cfg);
 	m_jHandler->m_cfg.mAdvancedMode = mIsAdvancedModeEnabled;
 	m_jHandler->m_cfg.mHardwareVersion = mHardwareVersion;
 	m_jHandler->m_cfg.mFingerSpacing = mFingerSpacing;
@@ -1183,6 +1184,7 @@ void ORDeviceVRTRIXLayout::EventButtonSaveParameter(HISender pSender, HKEvent pE
 		m_jHandler->m_cfg.mLHModelOffset[i] = mLHModelOffset[i];
 		m_jHandler->m_cfg.mRHModelOffset[i] = mRHModelOffset[i];
 	}
+	mDevice->SetConfig(m_jHandler->m_cfg);
 	if (m_jHandler->writeBack()) {
 		FBMessageBox("Parameter Saving", "Data glove parameters have been saved!", "OK" );
 	}

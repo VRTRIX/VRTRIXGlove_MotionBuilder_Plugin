@@ -44,6 +44,7 @@ public:
 	double	GetDataRZ		(int pChannel)		{	return mChannel[pChannel].mR[2];		}
 
 	void SetConfig(IDataGloveConfig config);
+	void GetConfig(IDataGloveConfig& config);
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version);
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
 	void OnTPoseCalibration();

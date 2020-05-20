@@ -382,6 +382,11 @@ void ORHardwareVRTRIXGlove::SetConfig(IDataGloveConfig config)
 	m_cfg = config;
 }
 
+void ORHardwareVRTRIXGlove::GetConfig(IDataGloveConfig & config)
+{
+	config = m_cfg;
+}
+
 void ORHardwareVRTRIXGlove::SetHardwareVersion(VRTRIX::GLOVEVERSION version)
 {
 	mHardwareVersion = version;
