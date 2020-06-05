@@ -84,6 +84,9 @@ namespace VRTRIX {
 		HandStatus_None,
 		HandStatus_Connected,
 		HandStatus_Disconnected,
+		HandStatus_PortOpened,
+		HandStatus_PortClosed,
+		HandStatus_PortInterrupted,
 		HandStatus_ChannelHopping,
 		HandStatus_LowBattery,
 		HandStatus_BatteryFull,
@@ -111,7 +114,7 @@ namespace VRTRIX {
 	{
 		IMUError_None,
 		IMUError_Unknown,
-		IMUError_ConnectionAorted,
+		IMUError_ConnectionAborted,
 		IMUError_ConnectionInterrupted,
 		IMUError_ConnectionBusy,
 		IMUError_NotConnected,
