@@ -149,7 +149,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fbsdk.lib;opengl32.lib;glu32.lib;Msdmo.lib;dmoguids.lib;amstrmid.lib;avrt.lib;VRTRIXIMU.lib;jsoncpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fbsdk.lib;opengl32.lib;glu32.lib;Msdmo.lib;dmoguids.lib;amstrmid.lib;avrt.lib;VRTRIXDataGloveClient.lib;jsoncpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -31,6 +31,7 @@ public:
 	void	EventUIIdle								( HISender pSender, HKEvent pEvent );
 	void	EventTabPanelChange						( HISender pSender, HKEvent pEvent );
 	
+	void    EventServerIPChange						(HISender pSender, HKEvent pEvent);
 	void    EventHardwareTypeChange					( HISender pSender, HKEvent pEvent );
 	void	EventButtonAdvancedModeEnableClick		( HISender pSender, HKEvent pEvent );
 	void	EventHandTypeChange						( HISender pSender, HKEvent pEvent );

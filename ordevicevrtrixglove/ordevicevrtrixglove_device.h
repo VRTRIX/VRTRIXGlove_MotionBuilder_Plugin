@@ -82,6 +82,8 @@ public:
 	void SetConfig(IDataGloveConfig config) { return mHardware.SetConfig(config); }	
 	//--- Get Configuration from json file
 	void GetConfig(IDataGloveConfig& config) { return mHardware.GetConfig(config); }
+	//--- Set Server IP
+	void SetServerIP(std::string IP) { return mHardware.SetServerIP(IP); }
 	//--- Set Hardware version on start
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version) { return mHardware.SetHardwareVersion(version); }
 	//--- Set model offset on start

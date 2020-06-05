@@ -1,6 +1,6 @@
 #pragma once
 
-#include <VRTRIX_IMU.h>
+#include "VRTRIXDataGloveClient.h"
 #include <Eigen/Dense>
 #include "statushandle.h"
 #include "BoneHierarchySetup.h"
@@ -45,6 +45,7 @@ public:
 
 	void SetConfig(IDataGloveConfig config);
 	void GetConfig(IDataGloveConfig& config);
+	void SetServerIP(std::string IP);
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version);
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
 	void OnTPoseCalibration();
@@ -52,16 +53,17 @@ public:
 	void OnSaveHardwareCalibration();
 	void OnAvancedModeEnabled(bool bIsEnabled);
 	void OnReceivedNewPose(VRTRIX::Pose pose);
-	void OnReceivedCalibratedResult(VRTRIX::HandEvent event);
+	//void OnReceivedCalibratedResult(VRTRIX::HandEvent event);
 	void OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value);
 	void OnSetFingerSpacing(double value);
 	void OnSetFinalFingerSpacing(double value);
 	void OnSetBendUpThreshold(double value);
 	void OnSetBendDownThreshold(double value);
 	void OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
-	void OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type);
+	//void OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type);
 
 private:
+	std::string m_serverIP;
 	IDataGloveConfig    m_cfg;
 	std::vector<SkeletonNodeInfo>	mChannel;//!< Channel data & info.
 	std::vector<FBTVector>	mLocalTranslationL;
@@ -70,8 +72,8 @@ private:
 	int			mHandJointCount;
 
 	VRTRIX::GLOVEVERSION	mHardwareVersion;
-	VRTRIX::IVRTRIXIMU*     m_pLeftHandDataGlove;
-	VRTRIX::IVRTRIXIMU*     m_pRightHandDataGlove;
+	VRTRIX::IVRTRIXDataGloveClient*     m_pLeftHandDataGlove;
+	VRTRIX::IVRTRIXDataGloveClient*     m_pRightHandDataGlove;
 	VRTRIX::IVRTRIXIMUEventHandler* pLHEventHandler;
 	VRTRIX::IVRTRIXIMUEventHandler* pRHEventHandler;
 	VRTRIX::PortInfo		m_LHportInfo;
@@ -130,9 +132,9 @@ class CVRTRIXIMUEventHandler :public VRTRIX::IVRTRIXIMUEventHandler
 			event.type == VRTRIX::Hand_Left ? pGlove->m_bIsLHConnected = false : pGlove->m_bIsRHConnected = false;
 		}
 
-		if (event.stat == VRTRIX::HandStatus_Calibrated) {
-			pGlove->OnReceivedCalibratedResult(event);
-		}
+		//if (event.stat == VRTRIX::HandStatus_Calibrated) {
+		//	pGlove->OnReceivedCalibratedResult(event);
+		//}
 	}
 };
 

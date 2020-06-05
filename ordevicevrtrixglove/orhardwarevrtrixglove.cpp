@@ -5,6 +5,7 @@
 #include <math.h>
 #define RADTODEGREE 180.0f/M_PI
 #define DEGREETORAD M_PI/180.0f
+#define PORT_TCP   11002
 
 static FBMatrix VRTRIXQuaternionToFBMatrix(VRTRIX::VRTRIXQuaternion_t quat);
 static Eigen::Quaterniond CalculateStaticOffset(Eigen::Quaterniond target, Eigen::Quaterniond rot);
@@ -21,7 +22,7 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	mOpened(false),
 	//mKinectMocapJointsState(NULL),
 	mAverageSensorFloorOffset(0.0),
-	mHardwareVersion(VRTRIX::PRO11),
+	mHardwareVersion(VRTRIX::DK2),
 	m_LHOffset(Eigen::Quaterniond::Identity()), 
 	m_RHOffset(Eigen::Quaterniond::Identity()),
 
@@ -95,34 +96,17 @@ bool ORHardwareVRTRIXGlove::Open()
 	VRTRIX::EIMUError eIMUError;
 	//Prepare PortInfo struct and open the data streaming serial port of glove.
 	m_LHportInfo.type = VRTRIX::Hand_Left;
-	m_pLeftHandDataGlove->OpenPort(eIMUError, m_LHportInfo);
-
-	if (eIMUError == VRTRIX::IMUError_None) {
-		//Print out full port information
-		std::cout << "PORT DESCIPTION: " << m_LHportInfo.description << std::endl;
-		std::cout << "PORT HARDWARE ID: " << m_LHportInfo.hardware_id << std::endl;
-		std::cout << "PORT INSTANCE ID: " << m_LHportInfo.instance_id << std::endl;
-		std::cout << "PORT NAME: " << m_LHportInfo.port << std::endl;
-		std::cout << "PORT BAUD RATE: " << m_LHportInfo.baud_rate << std::endl;
-	}
-	else {
-		return false;
-	}
+	m_LHportInfo.IP = m_serverIP;
+	m_LHportInfo.port = std::to_string(PORT_TCP);
+	m_pLeftHandDataGlove->ConnectDataGlove(eIMUError, m_LHportInfo);
+	if (eIMUError != VRTRIX::IMUError_None) return false;
 
 	m_RHportInfo.type = VRTRIX::Hand_Right;
-	m_pRightHandDataGlove->OpenPort(eIMUError, m_RHportInfo);
+	m_RHportInfo.IP = m_serverIP;
+	m_RHportInfo.port = std::to_string(PORT_TCP);
+	m_pRightHandDataGlove->ConnectDataGlove(eIMUError, m_RHportInfo);
+	if (eIMUError != VRTRIX::IMUError_None) return false;
 
-	if (eIMUError == VRTRIX::IMUError_None) {
-		//Print out full port information
-		std::cout << "PORT DESCIPTION: " << m_RHportInfo.description << std::endl;
-		std::cout << "PORT HARDWARE ID: " << m_RHportInfo.hardware_id << std::endl;
-		std::cout << "PORT INSTANCE ID: " << m_RHportInfo.instance_id << std::endl;
-		std::cout << "PORT NAME: " << m_RHportInfo.port << std::endl;
-		std::cout << "PORT BAUD RATE: " << m_RHportInfo.baud_rate << std::endl;
-	}
-	else {
-		return false;
-	}
 	return true;
 }
 
@@ -134,18 +118,6 @@ bool ORHardwareVRTRIXGlove::StartDataStream()
     if (!mOpened)
     {
 		VRTRIX::EIMUError eIMUError;
-		m_pLeftHandDataGlove->StartDataStreaming(eIMUError, m_LHportInfo);
-		if (eIMUError != VRTRIX::IMUError_None) {
-			m_pLeftHandDataGlove->ClosePort(eIMUError);
-			UnInit(m_pLeftHandDataGlove);
-			return false;
-		}
-		m_pRightHandDataGlove->StartDataStreaming(eIMUError, m_RHportInfo);
-        if (eIMUError != VRTRIX::IMUError_None) {
-			m_pRightHandDataGlove->ClosePort(eIMUError);
-			UnInit(m_pRightHandDataGlove);
-			return false;
-		}
 		mOpened = true;
 
 		OnAvancedModeEnabled(m_cfg.mAdvancedMode);
@@ -196,8 +168,8 @@ bool ORHardwareVRTRIXGlove::StartDataStream()
 		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[3]);
 		//OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[4]);
 
-		OnLoadAlignParam(m_cfg, VRTRIX::Hand_Left);
-		OnLoadAlignParam(m_cfg, VRTRIX::Hand_Right);
+		//OnLoadAlignParam(m_cfg, VRTRIX::Hand_Left);
+		//OnLoadAlignParam(m_cfg, VRTRIX::Hand_Right);
 
 		m_LHOffset = Eigen::Quaterniond(m_cfg.mLHWristOffset.qw, m_cfg.mLHWristOffset.qx, m_cfg.mLHWristOffset.qy, m_cfg.mLHWristOffset.qz);
 		m_RHOffset = Eigen::Quaterniond(m_cfg.mRHWristOffset.qw, m_cfg.mRHWristOffset.qx, m_cfg.mRHWristOffset.qy, m_cfg.mRHWristOffset.qz);
@@ -214,14 +186,14 @@ bool ORHardwareVRTRIXGlove::Close()
     if (NULL != m_pLeftHandDataGlove)
     {
 		VRTRIX::EIMUError eIMUError;
-		m_pLeftHandDataGlove->ClosePort(eIMUError);
+		m_pLeftHandDataGlove->DisconnectDataGlove(eIMUError);
 		UnInit(m_pLeftHandDataGlove);
     }
 
     if (NULL != m_pRightHandDataGlove)
     {
 		VRTRIX::EIMUError eIMUError;
-		m_pRightHandDataGlove->ClosePort(eIMUError);
+		m_pRightHandDataGlove->DisconnectDataGlove(eIMUError);
 		UnInit(m_pRightHandDataGlove);
     }
 	mOpened = false;
@@ -237,14 +209,14 @@ bool ORHardwareVRTRIXGlove::StopDataStream()
     if (NULL != m_pLeftHandDataGlove)
     {
 		VRTRIX::EIMUError eIMUError;
-		m_pLeftHandDataGlove->ClosePort(eIMUError);
+		m_pLeftHandDataGlove->DisconnectDataGlove(eIMUError);
 		UnInit(m_pLeftHandDataGlove);
     }
 
     if (NULL != m_pRightHandDataGlove)
     {
 		VRTRIX::EIMUError eIMUError;
-		m_pRightHandDataGlove->ClosePort(eIMUError);
+		m_pRightHandDataGlove->DisconnectDataGlove(eIMUError);
 		UnInit(m_pRightHandDataGlove);
     }
 	mOpened = false;
@@ -369,13 +341,13 @@ void ORHardwareVRTRIXGlove::SetSensorFloorOffsetSet()
 void ORHardwareVRTRIXGlove::SetConfig(IDataGloveConfig config)
 {
 	if (config.mHardwareVersion == 0) {
-		mHardwareVersion = VRTRIX::PRO7;
+		mHardwareVersion = VRTRIX::DK1;
 	}
 	else if(config.mHardwareVersion == 1){
-		mHardwareVersion = VRTRIX::PRO11;
+		mHardwareVersion = VRTRIX::DK2;
 	}
 	else {
-		mHardwareVersion = VRTRIX::PRO12;
+		mHardwareVersion = VRTRIX::PRO;
 	}
 	SetModelOffset(config.mLHModelOffset[0], config.mLHModelOffset[1], config.mLHModelOffset[2], VRTRIX::Hand_Left);
 	SetModelOffset(config.mRHModelOffset[0], config.mRHModelOffset[1], config.mRHModelOffset[2], VRTRIX::Hand_Right);
@@ -385,6 +357,11 @@ void ORHardwareVRTRIXGlove::SetConfig(IDataGloveConfig config)
 void ORHardwareVRTRIXGlove::GetConfig(IDataGloveConfig & config)
 {
 	config = m_cfg;
+}
+
+void ORHardwareVRTRIXGlove::SetServerIP(std::string IP)
+{
+	m_serverIP = IP;
 }
 
 void ORHardwareVRTRIXGlove::SetHardwareVersion(VRTRIX::GLOVEVERSION version)
@@ -433,10 +410,10 @@ void ORHardwareVRTRIXGlove::OnOKPoseCalibration()
 {
 	VRTRIX::EIMUError error;
 	if (m_bIsLHConnected) {
-		m_pLeftHandDataGlove->OKPoseAlign(error);
+		//m_pLeftHandDataGlove->OKPoseAlign(error);
 	}
 	if (m_bIsRHConnected) {
-		m_pRightHandDataGlove->OKPoseAlign(error);
+		//m_pRightHandDataGlove->OKPoseAlign(error);
 	}
 }
 
@@ -564,24 +541,24 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 
 }
 
-void ORHardwareVRTRIXGlove::OnReceivedCalibratedResult(VRTRIX::HandEvent event)
-{
-	for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
-		if (event.type == VRTRIX::Hand_Left) {
-			m_cfg.mLHIMUAlignmentTPosePitch[i] = event.param.IMUAlignmentTPosePitch[i];
-			m_cfg.mLHIMUAlignmentOKPosePitch[i] = event.param.IMUAlignmentOKPosePitch[i];
-			m_cfg.mLHIMUAlignmentYaw[i] = event.param.IMUAlignmentYaw[i];
-		}
-		else if (event.type == VRTRIX::Hand_Right) {
-			m_cfg.mRHIMUAlignmentTPosePitch[i] = event.param.IMUAlignmentTPosePitch[i];
-			m_cfg.mRHIMUAlignmentOKPosePitch[i] = event.param.IMUAlignmentOKPosePitch[i];
-			m_cfg.mRHIMUAlignmentYaw[i] = event.param.IMUAlignmentYaw[i];
-		}
-	}
-	JsonHandler * m_jHandler = new JsonHandler();
-	m_jHandler->writeBack(m_cfg);
-	delete m_jHandler;
-}
+//void ORHardwareVRTRIXGlove::OnReceivedCalibratedResult(VRTRIX::HandEvent event)
+//{
+//	for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
+//		if (event.type == VRTRIX::Hand_Left) {
+//			m_cfg.mLHIMUAlignmentTPosePitch[i] = event.param.IMUAlignmentTPosePitch[i];
+//			m_cfg.mLHIMUAlignmentOKPosePitch[i] = event.param.IMUAlignmentOKPosePitch[i];
+//			m_cfg.mLHIMUAlignmentYaw[i] = event.param.IMUAlignmentYaw[i];
+//		}
+//		else if (event.type == VRTRIX::Hand_Right) {
+//			m_cfg.mRHIMUAlignmentTPosePitch[i] = event.param.IMUAlignmentTPosePitch[i];
+//			m_cfg.mRHIMUAlignmentOKPosePitch[i] = event.param.IMUAlignmentOKPosePitch[i];
+//			m_cfg.mRHIMUAlignmentYaw[i] = event.param.IMUAlignmentYaw[i];
+//		}
+//	}
+//	JsonHandler * m_jHandler = new JsonHandler();
+//	m_jHandler->writeBack(m_cfg);
+//	delete m_jHandler;
+//}
 
 void ORHardwareVRTRIXGlove::OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value)
 {	
@@ -638,33 +615,35 @@ void ORHardwareVRTRIXGlove::OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTR
 	}
 	}
 }
-void ORHardwareVRTRIXGlove::OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type)
-{
-	if (!mInitSuccessful) return;
-	VRTRIX::EIMUError eIMUError;
-	VRTRIX::AlignmentParameter param;
 
-	switch (type) {
-	case(VRTRIX::Hand_Left): {
-		for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
-			param.IMUAlignmentTPosePitch[i] = config.mLHIMUAlignmentTPosePitch[i];
-			param.IMUAlignmentOKPosePitch[i] = config.mLHIMUAlignmentOKPosePitch[i];
-			param.IMUAlignmentYaw[i] = config.mLHIMUAlignmentYaw[i];
-		}
-		m_pLeftHandDataGlove->LoadAlignmentParam(eIMUError, param);
-		break;
-	}
-	case(VRTRIX::Hand_Right): {
-		for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
-			param.IMUAlignmentTPosePitch[i] = config.mRHIMUAlignmentTPosePitch[i];
-			param.IMUAlignmentOKPosePitch[i] = config.mRHIMUAlignmentOKPosePitch[i];
-			param.IMUAlignmentYaw[i] = config.mRHIMUAlignmentYaw[i];
-		}
-		m_pRightHandDataGlove->LoadAlignmentParam(eIMUError, param);
-		break;
-	}
-	}
-}
+//void ORHardwareVRTRIXGlove::OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type)
+//{
+//	if (!mInitSuccessful) return;
+//	VRTRIX::EIMUError eIMUError;
+//	VRTRIX::AlignmentParameter param;
+//
+//	switch (type) {
+//	case(VRTRIX::Hand_Left): {
+//		for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
+//			param.IMUAlignmentTPosePitch[i] = config.mLHIMUAlignmentTPosePitch[i];
+//			param.IMUAlignmentOKPosePitch[i] = config.mLHIMUAlignmentOKPosePitch[i];
+//			param.IMUAlignmentYaw[i] = config.mLHIMUAlignmentYaw[i];
+//		}
+//		m_pLeftHandDataGlove->LoadAlignmentParam(eIMUError, param);
+//		break;
+//	}
+//	case(VRTRIX::Hand_Right): {
+//		for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
+//			param.IMUAlignmentTPosePitch[i] = config.mRHIMUAlignmentTPosePitch[i];
+//			param.IMUAlignmentOKPosePitch[i] = config.mRHIMUAlignmentOKPosePitch[i];
+//			param.IMUAlignmentYaw[i] = config.mRHIMUAlignmentYaw[i];
+//		}
+//		m_pRightHandDataGlove->LoadAlignmentParam(eIMUError, param);
+//		break;
+//	}
+//	}
+//}
+
 /************************************************
  *    Fetch one frame skeleton data from the Kinect.
  ************************************************/

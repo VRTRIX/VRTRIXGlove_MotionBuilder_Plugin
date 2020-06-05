@@ -45,6 +45,7 @@ bool ORDeviceVRTRIXLayout::FBCreate()
 	// Get a handle on the device.
 	mDevice = ((ORDeviceVRTRIXGlove *)(FBDevice *)Device);
 	mDevice->SetConfig(m_jHandler->m_cfg);
+
 	// Create/configure UI
 	UICreate	();
 	UIConfigure	();
@@ -684,8 +685,9 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 	mListHardwareVersion.Style = kFBDropDownList;
 	mListHardwareVersion.ItemIndex = mHardwareVersion;
 	if (mHardwareVersion == 1) {
-		mDevice->SetHardwareVersion(VRTRIX::PRO11);
+		mDevice->SetHardwareVersion(VRTRIX::DK2);
 	}
+	mEditServerIP.OnChange.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventServerIPChange);
 	mListHardwareVersion.OnChange.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventHardwareTypeChange );
 
 	mLabelXAxisOffsetL.Caption = "Left Hand Model X Axis:";
@@ -841,17 +843,22 @@ void ORDeviceVRTRIXLayout::EventTabPanelChange( HISender pSender, HKEvent pEvent
 	}
 }
 
+void ORDeviceVRTRIXLayout::EventServerIPChange(HISender pSender, HKEvent pEvent)
+{
+	mDevice->SetServerIP(mEditServerIP.Text.AsString());
+}
+
 void ORDeviceVRTRIXLayout::EventHardwareTypeChange(HISender pSender, HKEvent pEvent)
 {
 	mHardwareVersion = mListHardwareVersion.ItemIndex;
 	if (mListHardwareVersion.ItemIndex == 0) {
-		mDevice->SetHardwareVersion(VRTRIX::PRO7);
+		mDevice->SetHardwareVersion(VRTRIX::DK1);
 	}
 	else if (mListHardwareVersion.ItemIndex == 1) {
-		mDevice->SetHardwareVersion(VRTRIX::PRO11);
+		mDevice->SetHardwareVersion(VRTRIX::DK2);
 	}
 	else {
-		mDevice->SetHardwareVersion(VRTRIX::PRO12);
+		mDevice->SetHardwareVersion(VRTRIX::PRO);
 	}
 }
 
