@@ -103,6 +103,8 @@ private:
 
 	FBLayout			mLayoutOrientationAlign;
 			//FBLayout			mLayoutAlign;
+			FBLabel				mLabelServerIP;
+			FBEdit				mEditServerIP;
 			FBLabel				mLabelHardwareVersion;
 			FBList				mListHardwareVersion;
 			

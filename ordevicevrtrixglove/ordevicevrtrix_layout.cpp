@@ -389,17 +389,29 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 	int lSlby	= 12;
 	int lWlb	= (80 + 50)*2;
 
+	mLayoutOrientationAlign.AddRegion("LabelServerIP", "LabelServerIP",
+													lS, kFBAttachLeft, "", 1.00,
+													lS, kFBAttachTop, "", 1.00,
+													lW, kFBAttachNone, NULL, 1.00,
+													lH, kFBAttachNone, NULL, 1.00);
+
+	mLayoutOrientationAlign.AddRegion("EditServerIP", "EditServerIP",
+													lS, kFBAttachRight, "LabelServerIP", 1.00,
+													0, kFBAttachTop, "LabelServerIP", 1.00,
+													lW, kFBAttachNone, NULL, 1.00,
+													lH, kFBAttachNone, NULL, 1.00);
+
 	mLayoutOrientationAlign.AddRegion( "LabelHardwareVersion",		"LabelHardwareVersion",
-													lS,	kFBAttachLeft,		"",	1.00,
-													lS,	kFBAttachTop,		"",	1.00,
-													lW,	kFBAttachNone,		NULL,					1.00,
-													lH,		kFBAttachNone,		NULL,					1.00 );
+													0,		kFBAttachLeft,		"LabelServerIP",		1.00,
+													lS,		kFBAttachBottom,		"LabelServerIP",		1.00,
+													0,		kFBAttachWidth,		"LabelServerIP",		1.00,
+													0,		kFBAttachHeight,		"LabelServerIP",		1.00 );
 	
 	mLayoutOrientationAlign.AddRegion( "EditHardwareVersion",		"EditHardwareVersion",
 													lS,		kFBAttachRight,		"LabelHardwareVersion",	1.00,
 													0,		kFBAttachTop,		"LabelHardwareVersion",	1.00,
 													lW,		kFBAttachNone,		NULL,					1.00,
-													lH,		kFBAttachNone,		NULL,					1.00 );
+													0,		kFBAttachHeight,		"LabelHardwareVersion",	1.00 );
 
 
 	mLayoutOrientationAlign.AddRegion( "LabelXAxisOffsetL",	"LabelXAxisOffsetL",
@@ -486,6 +498,9 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 													0, kFBAttachHeight, "ButtonTPoseCalibration", 1.00);
 
 	// Assign regions
+	mLayoutOrientationAlign.SetControl("LabelServerIP", mLabelServerIP);
+	mLayoutOrientationAlign.SetControl("EditServerIP", mEditServerIP);
+	
 	mLayoutOrientationAlign.SetControl( "LabelHardwareVersion",				mLabelHardwareVersion);
 	mLayoutOrientationAlign.SetControl( "EditHardwareVersion",				mListHardwareVersion);
 
@@ -662,6 +677,8 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
  ************************************************/
 void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 {
+	mLabelServerIP.Caption = "Server IP";
+	mEditServerIP.Text = "127.0.0.1";
 	mLabelHardwareVersion.Caption = "Hardware Version";
 	mListHardwareVersion.Items.SetString("PRO7~PRO11~PRO12");	
 	mListHardwareVersion.Style = kFBDropDownList;
