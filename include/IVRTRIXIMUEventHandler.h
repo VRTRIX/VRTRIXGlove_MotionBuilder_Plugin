@@ -10,7 +10,6 @@
 #include <iomanip>
 #include <string>
 
-#define IMU_NUM 6
 #define BUF_SIZE 100
 
 namespace VRTRIX {
@@ -30,7 +29,8 @@ namespace VRTRIX {
 	{
 		InitMode_None,
 		InitMode_Normal,
-		InitMode_Advanced
+		InitMode_Advanced,
+		InitMode_GloveStatusChecking,
 	};
 
 
@@ -39,7 +39,10 @@ namespace VRTRIX {
 	enum GLOVEVERSION {
 		DK1,
 		DK2,
-		PRO
+		PRO,
+		PRO7,
+		PRO11,
+		PRO12
 	};
 
     //! Joint enum.
@@ -83,10 +86,24 @@ namespace VRTRIX {
 		HandStatus_Connected,
 		HandStatus_ConnectServerError,
 		HandStatus_Disconnected,
+		HandStatus_PortOpened,
+		HandStatus_PortClosed,
+		HandStatus_PortInterrupted,
+		HandStatus_ChannelHopping,
+		HandStatus_SetRadioLimit,
+		HandStatus_InsufficientDataPacket,
+		HandStatus_ErrorDataPacket,
+		HandStatus_NewChannelSelected,
+		HandStatus_Pairing,
+		HandStatus_RSSIScanning,
+		HandStatus_PortNotOpened,
 		HandStatus_LowBattery,
 		HandStatus_BatteryFull,
 		HandStatus_Paired,
 		HandStatus_MagAbnormal,
+		HandStatus_PairingTimeOut,
+		HandStatus_PairingException,
+		HandStatus_Calibrated,
 	};
 
 
@@ -108,7 +125,7 @@ namespace VRTRIX {
 	{
 		IMUError_None,
 		IMUError_Unknown,
-		IMUError_ConnectionAorted,
+		IMUError_ConnectionAborted,
 		IMUError_ConnectionInterrupted,
 		IMUError_ConnectionBusy,
 		IMUError_NotConnected,
@@ -132,7 +149,8 @@ namespace VRTRIX {
 		AlgorithmConfig_FingerBendDownThreshold,
 		AlgorithmConfig_ThumbOffset,
 		AlgorithmConfig_FinalFingerSpacing,
-		AlgorithmConfig_Max = 9,
+		AlgorithmConfig_ThumbSlerpOffset,
+		AlgorithmConfig_Max = 10,
 	};
 
 	//! Server port information need for data streaming.
@@ -190,11 +208,24 @@ namespace VRTRIX {
 		double battery; //!< Glove battery percentage
 	};
 
+	//! Saved current alignment params.
+	struct AlignmentParameter {
+		VRTRIXQuaternion_t IMUAlignmentYaw[Joint_MAX]; //!<Finger yaw alignment param
+		VRTRIXQuaternion_t IMUAlignmentTPosePitch[Joint_MAX]; //!<Finger t-pose pitch alignment param
+		VRTRIXQuaternion_t IMUAlignmentOKPosePitch[Joint_MAX]; //!<Finger ok-pose pitch alignment param
+	};
 
 	//! Glove hand event data structure used in C++ API.
 	struct HandEvent {
 		HandStatus stat; //!< Glove hardware status
 		HandType type;	//!< Glove hand type
+		AlignmentParameter param; //!< Glove calibration parameters
+		int dataRate; //!< Glove data rate (Hz)
+		int channel; //!< Glove radio channel (1-99)
+		int upperBound; //!< Glove radio channel upperBound(1-99)
+		int lowerBound; //!< Glove radio channel lowerBound(1-99)
+		int byteReceived; //!< Glove byte received last 500ms
+		int errorCount;	//!< Glove data error count during transmission
 	};
 
     //!  VRTRIX IMU event handler class. 

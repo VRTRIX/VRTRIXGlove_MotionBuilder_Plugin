@@ -32,6 +32,7 @@ public:
 	void	EventTabPanelChange						( HISender pSender, HKEvent pEvent );
 	
 	void    EventServerIPChange						(HISender pSender, HKEvent pEvent);
+	void    EventDeviceIDChange						(HISender pSender, HKEvent pEvent);
 	void    EventHardwareTypeChange					( HISender pSender, HKEvent pEvent );
 	void	EventButtonAdvancedModeEnableClick		( HISender pSender, HKEvent pEvent );
 	void	EventHandTypeChange						( HISender pSender, HKEvent pEvent );
@@ -106,6 +107,8 @@ private:
 			//FBLayout			mLayoutAlign;
 			FBLabel				mLabelServerIP;
 			FBEdit				mEditServerIP;
+			FBLabel				mLabelDeviceID;
+			FBList				mListDeviceID;
 			FBLabel				mLabelHardwareVersion;
 			FBList				mListHardwareVersion;
 			
@@ -134,6 +137,7 @@ private:
 	VRTRIX::HandType		mHandType;					//!< Hand Type
 	int						mFingerIndex;				//!< Finger Index
 	int						mHardwareVersion;			//!< Hardware version of data glove
+	int						mDeviceID;					//!< Data Glove device ID
 	bool					mIsParamSyncEnabled;		//!< Whether apply parameters for all fingers.
 	bool					mIsAdvancedModeEnabled;		//!< Whether the advanced mode is enabled.
 	double					mFingerSpacing;				//!< Finger spacing when advanced mode is NOT enabled.

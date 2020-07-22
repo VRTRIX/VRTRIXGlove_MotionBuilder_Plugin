@@ -84,6 +84,8 @@ public:
 	void GetConfig(IDataGloveConfig& config) { return mHardware.GetConfig(config); }
 	//--- Set Server IP
 	void SetServerIP(std::string IP) { return mHardware.SetServerIP(IP); }
+	//--- Set Glove Device ID
+	void SetDeviceID(int deviceID) { return mHardware.SetDeviceID(deviceID); }
 	//--- Set Hardware version on start
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version) { return mHardware.SetHardwareVersion(version); }
 	//--- Set model offset on start
