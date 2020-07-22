@@ -103,7 +103,7 @@ public:
     @endcode
 
     There are 4 ways to insert new item in a menu. Each method needs the name of the menuitem as well
-    as it's unique id. You can also optionnally sets a new menu for a specific item.    
+    as it's unique id. You can also optionally sets a new menu for a specific item.    
 
     @code
     embeededMenu = FBGenericMenu()
@@ -118,6 +118,16 @@ public:
         item = menu.GetNextItem(item)
     @endcode
 
+    @code
+    # This example shows how to list the Caption/Id of all the menu items of the Edit menu
+    menuManager = FBMenuManager() 
+    editMenu = menuManager.GetMenu( "Edit" )
+    item = editMenu.GetFirstItem()
+    while item:
+        print "'" + item.Caption + "' (id: " + str( item.Id ) + ")"
+        item = editMenu.GetNextItem( item )
+    @endcode
+
     You can also delete a Menu item: this will remove the item from the menu as well as freeing its memory.
 
     To be notified when a menuitem is clicked, you can register using OnMenuActivate. This will send a FBEventMenu
@@ -126,7 +136,7 @@ public:
 class  FBSDK_DLL FBGenericMenu : public FBComponent {
     __FBClassDeclare( FBGenericMenu, FBComponent );
 public:
-    /** Default constructor. Used to create embedded menu (inside aniother menu item) or pop-up menu.
+    /** Default constructor. Used to create embedded menu (inside another menu item) or pop-up menu.
     */
     FBGenericMenu(HIObject pObject=NULL);
 
@@ -167,7 +177,7 @@ public:
     /** Inserts a new menu Item at the first position in the menu list. 
     \param pItemName Caption of the newly added item.
     \param pItemId Unique id of this menu item.
-    \param pMenu Optionnal. If this Item leads to another menu (embddedd) it can be specified here.
+    \param pMenu Optional. If this Item leads to another menu (embedded) it can be specified here.
     \return Will return the menu item created from this insertion.
     */
     FBGenericMenuItem* InsertFirst(const char*  pItemName, int pItemId, FBGenericMenu* pMenu = NULL);
@@ -175,7 +185,7 @@ public:
     /** Inserts a new menu Item at the last position in the menu list. 
     \param pItemName Caption of the newly added item.
     \param pItemId Unique id of this menu item.
-    \param pMenu Optionnal. If this Item leads to another menu (embddedd) it can be specified here.
+    \param pMenu Optional. If this Item leads to another menu (embedded) it can be specified here.
     \return Will return the menu item created from this insertion.
     */
     FBGenericMenuItem* InsertLast(const char*  pItemName, int pItemId, FBGenericMenu* pMenu = NULL);
@@ -184,7 +194,7 @@ public:
     \param pBeforeItem The reference item. We will create a new item AFTER this one.
     \param pItemName Caption of the newly added item.
     \param pItemId Unique id of this menu item.
-    \param pMenu Optionnal. If this Item leads to another menu (embddedd) it can be specified here.
+    \param pMenu Optional. If this Item leads to another menu (embedded) it can be specified here.
     \return Will return the menu item created from this insertion.
     */
     FBGenericMenuItem* InsertAfter(FBGenericMenuItem* pBeforeItem, const char*  pItemName, int pItemId, FBGenericMenu* pMenu = NULL);
@@ -193,7 +203,7 @@ public:
     \param pAfterItem The reference item. We will create a new item BEFORE this one.
     \param pItemName Caption of the newly added item.
     \param pItemId Unique id of this menu item.
-    \param pMenu Optionnal. If this Item leads to another menu (embddedd) it can be specified here.
+    \param pMenu Optional. If this Item leads to another menu (embedded) it can be specified here.
     \return Will return the menu item created from this insertion.
     */
     FBGenericMenuItem* InsertBefore(FBGenericMenuItem* pAfterItem, const char*  pItemName, int pItemId, FBGenericMenu* pMenu = NULL);
@@ -206,8 +216,8 @@ public:
     /** Starts the menu as a pop-up menu at a specific location on screen. It returns the item that was clicked
     by the user.
     \param pX X location in pixel on screen where the menu is to be popped.
-    \param pY Y location in pixel on screen where the menu is to be poppded.
-    \param pRightAlign All menu item will be align to the right justified (if true) or left justifed (if false)    
+    \param pY Y location in pixel on screen where the menu is to be popped.
+    \param pRightAlign All menu item will be align to the right justified (if true) or left justified (if false)    
     \return The selected item by the user. Null if the user clicks outside the menu.
     */
     FBGenericMenuItem* Execute(int pX, int pY, bool pRightAlign = true);
@@ -254,8 +264,8 @@ public:
     FBMenuManager();
     
     /** Get the Menu (NOT menu item) corresponding to a menu path. Don't forget that most menu path already in MotionBuilder
-    have a "&"as the first letter of their name. You have to use / as a separator in the specified
-    menu path (ex: "Settings/&Preferences...").
+    have a "&" character as the first letter of their name. You have to use the "/" character as a separator in the specified
+    menu path (ex: "Help/&Communities").
     \param pPath Path of the menu to retrieve
     \return the FBGenericMenu at this path./
     */
@@ -306,6 +316,33 @@ public:
     bool IsItemEnable(const char*  pMenuPath, int pItemId);
 private:
     FBGenericMenuItem* GetMenuItem(const char*  pMenuPath, const char*  pMenuName, int pId );
+
+public:
+    /** Execute a particular menu item. The menu path specifies the menu containing
+    the menu item to execute. The ID specifies which menu item to execute in the menu.
+    \param pMenuPath Path containing the menu item to execute.
+    \param pMenuItemID Unique ID of the menu item to execute.
+    \return True if the menu item has been executed, false otherwise. It could returns false
+    if the menu item cannot be found or if the menu item is found but is disabled or is a separator.
+    */
+    bool ExecuteMenuItem( const char* pMenuPath, int pMenuItemID );
+
+    /** Execute a particular menu item. The menu path specifies the menu item (NOT menu) to execute.
+    Don't forget that most menu path already in MotionBuilder have a "&" as the first letter of their name.
+    You have to use the "/" character as a separator in the specified menu path (ex: "Settings/&Preferences..."),
+    and exactly what is written in the menu item (ex: "Edit/D&eselect\tShift+D").
+    \param pMenuItemPath Path of the menu item to execute.
+    \return True if the menu item has been executed, false otherwise. It could returns false
+    if the menu item cannot be found or if the menu item is found but is disabled or is a separator.
+
+    @code
+    # This example shows how to display the About Box, as if the user opened it via the main menu Help > About MotionBuilder:
+    menuManager = FBMenuManager()
+    aboutBoxFullPath = "Help/&About MotionBuilder"
+    menuManager.ExecuteMenuItemFromFullPath( aboutBoxFullPath )
+    @endcode
+    */
+    bool ExecuteMenuItemFromFullPath( const char* pMenuItemFullPath );
 };
 
 

@@ -161,6 +161,10 @@ public:
 	*/
   	int Find( FBString pNodeName );
 
+	/** Create an image thumbnail for the current pose.
+	*/
+	void CreatePoseThumbnail();
+
 public:
 	FBPropertyPoseType			Type;			//!< <b>Read Only Property:</b> Type of the pose (bind pose or rest pose)
 };

@@ -51,6 +51,7 @@ enum PYSDK_DLL FBEventName
     kFBEventFileChangeMainScene,
     kFBEventFileChangeAnimationClip,
     kFBEventFileChangeFileReference,
+    kFBEventFileChangePythonEditorScript,
     kFBEventConnectionNotify,
     kFBEventConnectionDataNotify,
     kFBEventConnectionStateNotify,
@@ -95,6 +96,7 @@ enum PYSDK_DLL FBEventName
     // Normal FB event to which corresponds an event class
     kFBEventClipChange,
     kFBEventPlayerControlChange,
+	kFBEventOverrideFileOpen,
 };
 
 /** 
@@ -442,4 +444,15 @@ public:
 	FBPlayerControlChangeType mType;		//!< Player Control OnChange event's type.
 };
 
+class PYSDK_DLL FBEventOverrideFileOpen_Wrapper : public FBEvent_Wrapper
+{
+public:
+	FBEventOverrideFileOpen_Wrapper()
+		: FBEvent_Wrapper( kFBEventOverrideFileOpen )        
+	{
+	}
+
+	str	            FilePath;        //!< <b>Read Only Property:</b> Path to the file that will be opened/merged.
+    bool			WillOverride;    //!< <b>Read/Write Property:</b> Set to true for handling the file load, false by default. If the return value is false, MotionBuilder will proceed with the normal file open/merge process.
+};
 #endif // pyfbcallback_h__

@@ -275,6 +275,14 @@ public:
 	/**	Returns true when control rig has Double Solve property on.
 	*/
 	bool GetDoubleSolve();
+
+	/** Returns true means consider blending auxiliary with effector when evaluate control rig
+	*/
+	bool GetBlendAuxiliaryWithEffector();
+
+	/** Set true means consider blending auxiliary with effector when evaluate an control rig
+	*/
+	void SetBlendAuxiliaryWithEffector(bool pBlendAux);
 };
 
 

@@ -45,5 +45,6 @@ public:
 	void SetCurrentCameraIndex( int pCameraIndex ) { mFBCameraSwitcher->CurrentCameraIndex = pCameraIndex; }
 	int GetCurrentCameraIndex(  ) { return mFBCameraSwitcher->CurrentCameraIndex; }
 	void UseEvaluateSwitch() { mFBCameraSwitcher->CurrentCamera = NULL; }
+	bool PlotToCamera( FBCamera_Wrapper& pCamera ) { return mFBCameraSwitcher->PlotToCamera( pCamera.mFBCamera ); }
 };
 #endif // pyfbcameraswitcher_h__

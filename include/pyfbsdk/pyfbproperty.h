@@ -421,7 +421,7 @@ public:
     void Key();
     void KeyAt( FBTime_Wrapper& pTime );
 	void KeyRemoveAt( FBTime_Wrapper& pTime );
-    void SetAnimated( bool pValue );
+    void SetAnimated( bool pValue, bool pCheckLocked = false );
     void SetFocus( bool pValue );
 
     bool AllowsMuting() const;
@@ -721,6 +721,8 @@ public:
 
     virtual object GetData() const;
     virtual void SetData( object pData );
+
+	FBPropertyAnimatableTimeCode* GetProperty() { return mFBPropertyTimeCode; }
 };
 PYSDK_DLL object FBPropertyAnimatableTimeCode_Wrapper_Factory( FBPropertyTimeCode& pFBPropertyTimeCode );
 void FBPropertyAnimatableTimeCode_Init();

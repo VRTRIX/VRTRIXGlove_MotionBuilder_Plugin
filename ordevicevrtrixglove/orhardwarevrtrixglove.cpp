@@ -18,11 +18,12 @@ static void GetTransformOnRigidBody(FBTVector& transform, VRTRIX::VRTRIXQuaterni
 ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	mChannelCount(0),
 	mHandJointCount(0),
+	m_deviceID(0),
 	m_hNextSkeletonEvent(INVALID_HANDLE_VALUE),
 	mOpened(false),
 	//mKinectMocapJointsState(NULL),
 	mAverageSensorFloorOffset(0.0),
-	mHardwareVersion(VRTRIX::DK2),
+	mHardwareVersion(VRTRIX::PRO),
 	m_LHOffset(Eigen::Quaterniond::Identity()), 
 	m_RHOffset(Eigen::Quaterniond::Identity()),
 
@@ -97,13 +98,13 @@ bool ORHardwareVRTRIXGlove::Open()
 	//Prepare PortInfo struct and open the data streaming serial port of glove.
 	m_LHportInfo.type = VRTRIX::Hand_Left;
 	m_LHportInfo.IP = m_serverIP;
-	m_LHportInfo.port = std::to_string(PORT_TCP);
+	m_LHportInfo.port = std::to_string(PORT_TCP + m_deviceID);
 	m_pLeftHandDataGlove->ConnectDataGlove(eIMUError, m_LHportInfo);
 	if (eIMUError != VRTRIX::IMUError_None) return false;
 
 	m_RHportInfo.type = VRTRIX::Hand_Right;
 	m_RHportInfo.IP = m_serverIP;
-	m_RHportInfo.port = std::to_string(PORT_TCP);
+	m_RHportInfo.port = std::to_string(PORT_TCP + m_deviceID);
 	m_pRightHandDataGlove->ConnectDataGlove(eIMUError, m_RHportInfo);
 	if (eIMUError != VRTRIX::IMUError_None) return false;
 
@@ -117,7 +118,7 @@ bool ORHardwareVRTRIXGlove::StartDataStream()
 {
     if (!mOpened)
     {
-		VRTRIX::EIMUError eIMUError;
+		//VRTRIX::EIMUError eIMUError;
 		mOpened = true;
 
 		OnAvancedModeEnabled(m_cfg.mAdvancedMode);
@@ -167,9 +168,6 @@ bool ORHardwareVRTRIXGlove::StartDataStream()
 		OnSetAlgorithmParameters(VRTRIX::Ring_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[2]);
 		OnSetAlgorithmParameters(VRTRIX::Pinky_Intermediate, VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[3]);
 		//OnSetAlgorithmParameters(VRTRIX::Thumb_Distal , VRTRIX::AlgorithmConfig_DistalSlerpDown, m_cfg.mDistalSlerpDownValue[4]);
-
-		//OnLoadAlignParam(m_cfg, VRTRIX::Hand_Left);
-		//OnLoadAlignParam(m_cfg, VRTRIX::Hand_Right);
 
 		m_LHOffset = Eigen::Quaterniond(m_cfg.mLHWristOffset.qw, m_cfg.mLHWristOffset.qx, m_cfg.mLHWristOffset.qy, m_cfg.mLHWristOffset.qz);
 		m_RHOffset = Eigen::Quaterniond(m_cfg.mRHWristOffset.qw, m_cfg.mRHWristOffset.qx, m_cfg.mRHWristOffset.qy, m_cfg.mRHWristOffset.qz);
@@ -340,15 +338,7 @@ void ORHardwareVRTRIXGlove::SetSensorFloorOffsetSet()
 
 void ORHardwareVRTRIXGlove::SetConfig(IDataGloveConfig config)
 {
-	if (config.mHardwareVersion == 0) {
-		mHardwareVersion = VRTRIX::DK1;
-	}
-	else if(config.mHardwareVersion == 1){
-		mHardwareVersion = VRTRIX::DK2;
-	}
-	else {
-		mHardwareVersion = VRTRIX::PRO;
-	}
+	mHardwareVersion = VRTRIX::GLOVEVERSION(config.mHardwareVersion);
 	SetModelOffset(config.mLHModelOffset[0], config.mLHModelOffset[1], config.mLHModelOffset[2], VRTRIX::Hand_Left);
 	SetModelOffset(config.mRHModelOffset[0], config.mRHModelOffset[1], config.mRHModelOffset[2], VRTRIX::Hand_Right);
 	m_cfg = config;
@@ -362,6 +352,11 @@ void ORHardwareVRTRIXGlove::GetConfig(IDataGloveConfig & config)
 void ORHardwareVRTRIXGlove::SetServerIP(std::string IP)
 {
 	m_serverIP = IP;
+}
+
+void ORHardwareVRTRIXGlove::SetDeviceID(int deviceID)
+{
+	m_deviceID = deviceID;
 }
 
 void ORHardwareVRTRIXGlove::SetHardwareVersion(VRTRIX::GLOVEVERSION version)
@@ -408,7 +403,7 @@ void ORHardwareVRTRIXGlove::OnTPoseCalibration()
 
 void ORHardwareVRTRIXGlove::OnOKPoseCalibration()
 {
-	VRTRIX::EIMUError error;
+	//VRTRIX::EIMUError error;
 	if (m_bIsLHConnected) {
 		//m_pLeftHandDataGlove->OKPoseAlign(error);
 	}
@@ -537,28 +532,7 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 			m_RHIMUData[19] = m_RHPose.imuData[(int)VRTRIX::Pinky_Distal];
 		}
 	}
-
-
 }
-
-//void ORHardwareVRTRIXGlove::OnReceivedCalibratedResult(VRTRIX::HandEvent event)
-//{
-//	for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
-//		if (event.type == VRTRIX::Hand_Left) {
-//			m_cfg.mLHIMUAlignmentTPosePitch[i] = event.param.IMUAlignmentTPosePitch[i];
-//			m_cfg.mLHIMUAlignmentOKPosePitch[i] = event.param.IMUAlignmentOKPosePitch[i];
-//			m_cfg.mLHIMUAlignmentYaw[i] = event.param.IMUAlignmentYaw[i];
-//		}
-//		else if (event.type == VRTRIX::Hand_Right) {
-//			m_cfg.mRHIMUAlignmentTPosePitch[i] = event.param.IMUAlignmentTPosePitch[i];
-//			m_cfg.mRHIMUAlignmentOKPosePitch[i] = event.param.IMUAlignmentOKPosePitch[i];
-//			m_cfg.mRHIMUAlignmentYaw[i] = event.param.IMUAlignmentYaw[i];
-//		}
-//	}
-//	JsonHandler * m_jHandler = new JsonHandler();
-//	m_jHandler->writeBack(m_cfg);
-//	delete m_jHandler;
-//}
 
 void ORHardwareVRTRIXGlove::OnSetAlgorithmParameters(VRTRIX::Joint finger, VRTRIX::AlgorithmConfig type, double value)
 {	
@@ -615,34 +589,6 @@ void ORHardwareVRTRIXGlove::OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTR
 	}
 	}
 }
-
-//void ORHardwareVRTRIXGlove::OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type)
-//{
-//	if (!mInitSuccessful) return;
-//	VRTRIX::EIMUError eIMUError;
-//	VRTRIX::AlignmentParameter param;
-//
-//	switch (type) {
-//	case(VRTRIX::Hand_Left): {
-//		for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
-//			param.IMUAlignmentTPosePitch[i] = config.mLHIMUAlignmentTPosePitch[i];
-//			param.IMUAlignmentOKPosePitch[i] = config.mLHIMUAlignmentOKPosePitch[i];
-//			param.IMUAlignmentYaw[i] = config.mLHIMUAlignmentYaw[i];
-//		}
-//		m_pLeftHandDataGlove->LoadAlignmentParam(eIMUError, param);
-//		break;
-//	}
-//	case(VRTRIX::Hand_Right): {
-//		for (int i = 0; i < VRTRIX::Joint_MAX; ++i) {
-//			param.IMUAlignmentTPosePitch[i] = config.mRHIMUAlignmentTPosePitch[i];
-//			param.IMUAlignmentOKPosePitch[i] = config.mRHIMUAlignmentOKPosePitch[i];
-//			param.IMUAlignmentYaw[i] = config.mRHIMUAlignmentYaw[i];
-//		}
-//		m_pRightHandDataGlove->LoadAlignmentParam(eIMUError, param);
-//		break;
-//	}
-//	}
-//}
 
 /************************************************
  *    Fetch one frame skeleton data from the Kinect.

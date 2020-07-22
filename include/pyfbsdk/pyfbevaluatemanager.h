@@ -37,6 +37,7 @@ public:
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(FrameSkipOptimization, bool);    
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS_DEPRECATED(ParallelScheduleType, FBParallelScheduleType);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(ParallelEvaluation, bool);
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(DualQuaternionSkinning, bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(NodeCount,   int);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(DeviceCount, int);
 

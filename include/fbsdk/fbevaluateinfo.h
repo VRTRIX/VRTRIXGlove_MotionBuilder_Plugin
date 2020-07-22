@@ -124,6 +124,11 @@ public:
 	*	\return recursion level.
 	*/
 	int	GetRecursionLevel(FBBox* pConstraint);
+
+	/** Change local time 
+	*	\param pTime	Assigned local time
+	*/
+	void Goto( FBTime pTime );
 };
 
 /** Get the displays evaluation information structure.

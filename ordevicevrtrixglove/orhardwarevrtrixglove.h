@@ -46,6 +46,7 @@ public:
 	void SetConfig(IDataGloveConfig config);
 	void GetConfig(IDataGloveConfig& config);
 	void SetServerIP(std::string IP);
+	void SetDeviceID(int deviceID);
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version);
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
 	void OnTPoseCalibration();
@@ -64,6 +65,7 @@ public:
 
 private:
 	std::string m_serverIP;
+	int m_deviceID;
 	IDataGloveConfig    m_cfg;
 	std::vector<SkeletonNodeInfo>	mChannel;//!< Channel data & info.
 	std::vector<FBTVector>	mLocalTranslationL;

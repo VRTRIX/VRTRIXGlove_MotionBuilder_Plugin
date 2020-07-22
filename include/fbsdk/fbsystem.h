@@ -183,6 +183,10 @@ namespace FBSDKNamespace {;
 		FBPropertyBool							SuspendMessageBoxes;		//!< <b>Read Write Property:</b> While true, all the message boxes, that would normally be displayed, are suspended.
 																			//!< This property should be used as a temporary solution for unwanted message boxes, while running a script for example.
 																			//!< For system wide usage, the -suspendMessages argument, set when launching MotionBuilder, should be used instead.
+																			//!< To test if the system is suspending the message boxes either temporarily or permanently, the AreMessageBoxesSuspended property should be used instead.
+
+		FBPropertyBool							AreMessageBoxesSuspended;	//!< <b>Read Only Property:</b> While true, the system is suspending the messages boxes that would normally be displayed.
+																			//!< It will return true if either the -suspendMessages argument is set when launching MotionBuilder or if the SuspendMessageBoxes property, used as a temporary solution, is currently set to true.
 
 
         FBPropertyTime							SystemTime;					//!< <b>Read Only Property:</b> System time.
@@ -452,6 +456,7 @@ namespace FBSDKNamespace {;
         kFBFileMonitoring_MAINSCENE,    //!< Main Scene change monitoring.
         kFBFileMonitoring_ANIMATIONCLIP,//!< Animation clip change monitoring.
         kFBFileMonitoring_FILEREFERENCE,//!< File Reference change monitoring.
+        kFBFileMonitoring_PYTHONEDITORSCRIPT, //!< Python Editor Script change monitoring.
     };
 
     FB_DEFINE_ENUM( FBSDK_DLL, FileMonitoringType );
@@ -499,19 +504,21 @@ namespace FBSDKNamespace {;
         */
         void RemoveFileFromMonitor(FBString pFilePath);
 
-        /**	Pause file from monitoring.
-        *	\param	pPause	Pause the file monitoring, or resume.
+        /**	Pause file from monitoring, except for Python Editor script files loaded.
+        *	\param	pPause	True to pause the file monitoring, false to resume.
         */
         void PauseFileMonitoring(bool pPause = true);
 
         /**	Clean files and directories currently been monitored.
+        *	\param	pIncludePythonEditorScripts	True to also clean the monitoring of Python Editor script files loaded, false otherwise.
         */
-        void CleanFileMonitoring();
+        void CleanFileMonitoring(bool pIncludePythonEditorScripts = true);
 
     public:
         FBPropertyEvent    OnFileChangeMainScene;			//!< <b>Event:</b> Main scene file change event.
         FBPropertyEvent    OnFileChangeAnimationClip;		//!< <b>Event:</b> Animation clip file change event.
         FBPropertyEvent    OnFileChangeFileReference;		//!< <b>Event:</b> File Reference file change event.
+        FBPropertyEvent    OnFileChangePythonEditorScript;	//!< <b>Event:</b> Python Editor Script file change event.
         /**	Get the global object for this class
         *	\return	the global object.
         */

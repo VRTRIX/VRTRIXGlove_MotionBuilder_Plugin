@@ -334,10 +334,22 @@ public:
 	*	\param pExpressionId Index of the expression to modify.
 	*	\param pGrpId Index of the blendshape or cluster group containing the shape of interest.
 	*	\param pShapeId Index of the blendshape or cluster shape to weight.
-	*	\param pValue Weight of the shape to assign to this expression. Valid range of [0.0, 1.0].
+	*	\param pValue Weight of the shape to assign to this expression.
+	*				  A weight of 0.0 represents 0%, while a weight of 1.5 represents 150%.
+	*				  The weight cannot be less than 0.0; if so, the weight will be clamped to 0.0.
 	*	\return True if the operation completed successfully.
 	*/
 	bool ExpressionSetShapeWeight( int pExpressionId, int pGrpId, int pShapeId, float pValue = 0.0f );
+
+	/** Retrieve the weight of a shape to an expression
+	*	\param pExpressionId Index of the expression.
+	*	\param pGrpId Index of the blendshape or cluster group containing the shape of interest.
+	*	\param pShapeId Index of the blendshape or cluster shape.
+	*	\return Weight of the desired shape to an expression.
+	*			A weight of 0.0 represents 0%, while a weight of 1.0 represents 100%.
+	*			Returns 0.0 if the weight cannot be found.
+	*/
+	double ExpressionGetShapeWeight( int pExpressionId, int pGrpId, int pShapeId );
 };
 
 

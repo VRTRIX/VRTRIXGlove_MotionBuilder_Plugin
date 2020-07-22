@@ -71,7 +71,8 @@ enum FBCharacterPoseFlag
 	kFBCharacterPoseMatchTZ				= 1<<4,
 	kFBCharacterPoseMatchR				= 1<<5,
 	kFBCharacterPoseMatchPivot			= 1<<6,
-    kFBCharacterPoseUseKeyingGroup		= 1<<7
+    kFBCharacterPoseUseKeyingGroup		= 1<<7,
+	kFBCharacterPoseMatchFKTranslation	= 1<<8
 };
 
 //! Mirror Plane Type.

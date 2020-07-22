@@ -325,6 +325,28 @@ private:
 
         IObject_Declare(K_IMPLEMENTATION);	// Interface to IObject.
 
+		/** Get the number of animation node outputs for this box.
+		*	\return The number of animation node outputs for this box.
+		*/
+		virtual int GetOutConnectorCount() const;
+
+		/** Get the number of animation node inputs for this box.
+		*	\return The number of animation node inputs for this box.
+		*/
+		virtual int GetInConnectorCount() const;
+
+		/** Get the animation node output associated with the given index.
+		*	\param	pIndex	The animation node output associated with the given index.
+		*	\return The animation node output, or NULL if the pIndex value is invalid.
+		*/
+		virtual FBAnimationNode* GetOutConnector( int pIndex ) const;
+
+		/** Get the animation node input associated with the given index.
+		*	\param	pIndex	The animation node input associated with the given index.
+		*	\return The animation node input, or NULL if the pIndex value is invalid.
+		*/
+		virtual FBAnimationNode* GetInConnector( int pIndex ) const;
+
         FBPropertyBool Animatable;          //!< <b>Read Write Property:</b> Is the box animatable.
         FBPropertyBool Live;				//!< <b>Read Write Property:</b> Is live?
         FBPropertyBool RecordMode;			//!< <b>Read Write Property:</b> Is recording?

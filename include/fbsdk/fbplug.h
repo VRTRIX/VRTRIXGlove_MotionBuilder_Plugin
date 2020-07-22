@@ -132,6 +132,7 @@ enum FBConnectionAction
     kFBKeyingDeleteKey,		//!< Component keying delete event.
     kFBKeyingCandidate,		//!< Component keying candidate event.
     kFBKeyingCurveChange,	//!< Component curve has changed.
+	kFBKeyingCurveEndChange,	//!< Component curve changes in Dopesheet completed.
 
     // for backward compatibility
     kFBConnect = kFBConnectSrc,

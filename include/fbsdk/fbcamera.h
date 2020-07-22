@@ -475,8 +475,15 @@ public:
     */
     FBCameraSwitcher();
 
-    FBPropertyCamera    CurrentCamera;        //!< <b>Read Write Property:</b> Camera currently being used by the switcher. Set to NULL to turn on evalute switch, otherwise manual switch.
+    FBPropertyCamera    CurrentCamera;        //!< <b>Read Write Property:</b> Camera currently being used by the switcher. Set to NULL to turn on evaluate switch, otherwise manual switch.
     FBPropertyInt       CurrentCameraIndex; //!< <b>Read Write Property:</b> Camera index currently being used by the switcher. Set to -1 to turn on evaluate switch.
+
+	/** Plot the Camera Switcher animation onto a destination camera.
+	*	The destination camera cannot be a system camera nor a camera currently used by the Camera Switcher.
+	*	\param	pCamera		Destination camera to plot on.
+	*	\return True if the plot operation has been processed successfully, false otherwise.
+	*/
+	bool PlotToCamera( FBCamera* pCamera );
 };
 
 

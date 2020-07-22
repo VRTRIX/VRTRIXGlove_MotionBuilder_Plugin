@@ -49,6 +49,7 @@ public:
     bool IsInSelectionBufferPicking() const { return mFBViewingOptions->IsInSelectionBufferPicking(); }
     bool IsInColorBufferPicking() const { return mFBViewingOptions->IsInColorBufferPicking(); }
     unsigned int RenderCallbackPrefIndex() const { return mFBViewingOptions->RenderCallbackPrefIndex(); }
+    int GetPaneIndex() const { return mFBViewingOptions->PaneIndex(); }
 };
 
 PYSDK_DLL inline FBViewingOptions_Wrapper* FBViewingOptions_Wrapper_Factory( FBViewingOptions* pFBViewingOptions )

@@ -164,6 +164,98 @@ private:
 */
 FBSDK_DLL bool FBPopNormalTool( const char* pToolName, bool pSetFocus = true );
 
+/**	This function will show a specific tool in the GUI.
+*   \param pToolName    The name of the tool as shown in the Open Reality menu.
+*   \param pResizeWnd   Adjust the size of the tool window if needed (if started too close to the end of the screen for example).
+*   \return             A pointer to the FBTool object, NULL otherwise.
+*/
+FBSDK_DLL FBTool* FBShowToolByName( const char* pToolName, bool pResizeWnd = true );
+
+/**	This function will show a specific tool in the GUI.
+*   \param pTool	    A pointer to the tool to show.
+*   \param pResizeWnd   Adjust the size of the tool window if needed (if started too close to the end of the screen for example).
+*   \return             A pointer to the FBTool object, NULL otherwise.
+*/
+FBSDK_DLL FBTool* FBShowTool( FBTool* pTool, bool pResizeWnd = true );
+
+/**	This function will close a specific tool in the GUI.
+*   \param pToolName    The name of the tool as shown in the Open Reality menu.
+*   \return             True if the tool was closed successfully, false otherwise.
+*/
+FBSDK_DLL bool FBCloseToolByName( const char* pToolName );
+
+/**	This function will close a specific tool in the GUI.
+*   \param pTool	    A pointer to the tool to close.
+*   \return             True if the tool was closed successfully, false otherwise.
+*/
+FBSDK_DLL bool FBCloseTool( FBTool* pTool );
+
+/**	This function will destroy a specific tool in the GUI.
+*   \param pToolName    The name of the tool as shown in the Open Reality menu.
+*/
+FBSDK_DLL void FBDestroyToolByName( const char* pToolName );
+
+/**	This function will destroy a specific tool in the GUI.
+*   \param pTool	    A pointer to the tool to destroy.
+*/
+FBSDK_DLL void FBDestroyTool( FBTool* pTool );
+
+/**	This function will set the size of a specific tool in the GUI.
+*   \param pToolName	The name of the tool as shown in the Open Reality menu.
+*   \param pWidth       New width of the tool.
+*   \param pHeight      New height of the tool.
+*/
+FBSDK_DLL void FBSetToolSizeByName( const char* pToolName, int pWidth, int pHeight );
+
+/**	This function will set the size of a specific tool in the GUI.
+*   \param pTool	    A pointer to the tool.
+*   \param pWidth       New width of the tool.
+*   \param pHeight      New height of the tool.
+*/
+FBSDK_DLL void FBSetToolSize( FBTool* pTool, int pWidth, int pHeight );
+
+/**	This function will get the size of a specific tool in the GUI.
+*   \param pToolName	The name of the tool as shown in the Open Reality menu.
+*   \param pWidth       Current width of the tool.
+*   \param pHeight      Current height of the tool.
+*/
+FBSDK_DLL void FBGetToolSizeByName( const char* pToolName, int &pWidth, int &pHeight );
+
+/**	This function will get the size of a specific tool in the GUI.
+*   \param pTool	    A pointer to the tool.
+*   \param pWidth       Current width of the tool.
+*   \param pHeight      Current height of the tool.
+*/
+FBSDK_DLL void FBGetToolSize( FBTool* pTool, int &pWidth, int &pHeight );
+
+/**	This function will set the position of a specific tool.
+*   \param pToolName	The name of the tool as shown in the Open Reality menu.
+*   \param pPosX        New position in X for the tool.
+*   \param pPosY        New position in Y for the tool.
+*/
+FBSDK_DLL void FBSetToolPositionByName( const char* pToolName, int pPosX, int pPosY );
+
+/**	This function will set the position of a specific tool.
+*   \param pTool	    A pointer to the tool.
+*   \param pPosX        New position in X for the tool.
+*   \param pPosY        New position in Y for the tool.
+*/
+FBSDK_DLL void FBSetToolPosition( FBTool* pTool, int pPosX, int pPosY );
+
+/**	This function will get the position of a specific tool.
+*   \param pToolName	The name of the tool as shown in the Open Reality menu.
+*   \param pPosX        Current position in X of the tool.
+*   \param pPosY        Current position in Y of the tool.
+*/
+FBSDK_DLL void FBGetToolPositionByName( const char* pToolName, int &pPosX, int &pPosY );
+
+/**	This function will get the position of a specific tool.
+*   \param pTool	    A pointer to the tool.
+*   \param pPosX        Current position in X of the tool.
+*   \param pPosY        Current position in Y of the tool.
+*/
+FBSDK_DLL void FBGetToolPosition( FBTool* pTool, int &pPosX, int &pPosY );
+
 #ifdef FBSDKUseNamespace
 }
 #endif

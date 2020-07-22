@@ -74,6 +74,15 @@ public:
 	FBTime_Wrapper* GetTimeOffset(  ) { return FBTime_Wrapper_Factory( mFBVideoClip->TimeOffset ); }
 	int GetWidth(  ) { return mFBVideoClip->Width; }
     int GetTextureID( ) { return mFBVideoClip->GetTextureID(); }
+	FBTime_Wrapper* GetCurrentFrameTimeCode(  ) { return FBTime_Wrapper_Factory( mFBVideoClip->CurrentFrameTimeCode ); }
+	FBTimeCode_Wrapper* GetEmbeddedTimecode( int pFrame )
+	{
+		FBTimeCode lTimeCode;
+		bool lSuccess = mFBVideoClip->GetEmbeddedTimecode( pFrame, lTimeCode );
+		if( lSuccess == false )
+			lTimeCode.SetTime( FBTime::Infinity );
+		return FBTimeCode_Wrapper_Factory( lTimeCode );
+	}
 
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(FrameRate,double);
 };

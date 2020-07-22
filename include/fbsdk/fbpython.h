@@ -134,6 +134,16 @@ public:
     */
     static bool EvalLine(FBPythonContext* pPythonContext = NULL);
 
+    /** Submit a script for parsing and execution. 
+	 *   \param   pScript		 String to evaluate.   
+	 *   \param   pPythonContext Context in which the execution will occur.
+	 *   \return  \b false       If there were no interpreter or there were errors/unhandled exceptions.
+	 *                           (consult stderr for more infos)
+	 *   \return  \b true        If there was a Python interpreter and the code ran succesfully.
+	 *                           (consult stdout for output, if any)
+	 */
+    static bool EvalLines(const char *pScript, FBPythonContext* pPythonContext = NULL);
+
     /**	Execute a python script file within the given context.
 	*	\param   pFilename		The script file to execute.
     *   \param   pPythonContext Context in which the parse will occur.

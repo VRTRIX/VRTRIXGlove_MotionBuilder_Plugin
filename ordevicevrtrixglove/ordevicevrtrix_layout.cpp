@@ -17,6 +17,7 @@ bool ORDeviceVRTRIXLayout::FBCreate()
 {
 	mIsParamSyncEnabled = false;
 	mHandType = VRTRIX::Hand_Left;
+	mDeviceID = 0;
 	mFingerIndex = 0;
 
 	//Loading config file
@@ -402,11 +403,23 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 													lW, kFBAttachNone, NULL, 1.00,
 													lH, kFBAttachNone, NULL, 1.00);
 
+	mLayoutOrientationAlign.AddRegion("LabelDeviceID", "LabelDeviceID",
+													0, kFBAttachLeft, "LabelServerIP", 1.00,
+													lS, kFBAttachBottom, "LabelServerIP", 1.00,
+													0, kFBAttachWidth, "LabelServerIP", 1.00,
+													0, kFBAttachHeight, "LabelServerIP", 1.00);
+
+	mLayoutOrientationAlign.AddRegion("EditDeviceID", "EditDeviceID",
+													lS, kFBAttachRight, "LabelDeviceID", 1.00,
+													0, kFBAttachTop, "LabelDeviceID", 1.00,
+													lW, kFBAttachNone, NULL, 1.00,
+													0, kFBAttachHeight, "LabelDeviceID", 1.00);
+
 	mLayoutOrientationAlign.AddRegion( "LabelHardwareVersion",		"LabelHardwareVersion",
-													0,		kFBAttachLeft,		"LabelServerIP",		1.00,
-													lS,		kFBAttachBottom,		"LabelServerIP",		1.00,
-													0,		kFBAttachWidth,		"LabelServerIP",		1.00,
-													0,		kFBAttachHeight,		"LabelServerIP",		1.00 );
+													0,		kFBAttachLeft,		"LabelDeviceID",		1.00,
+													lS,		kFBAttachBottom,		"LabelDeviceID",		1.00,
+													0,		kFBAttachWidth,		"LabelDeviceID",		1.00,
+													0,		kFBAttachHeight,		"LabelDeviceID",		1.00 );
 	
 	mLayoutOrientationAlign.AddRegion( "EditHardwareVersion",		"EditHardwareVersion",
 													lS,		kFBAttachRight,		"LabelHardwareVersion",	1.00,
@@ -502,6 +515,9 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 	mLayoutOrientationAlign.SetControl("LabelServerIP", mLabelServerIP);
 	mLayoutOrientationAlign.SetControl("EditServerIP", mEditServerIP);
 	
+	mLayoutOrientationAlign.SetControl("LabelDeviceID", mLabelDeviceID);
+	mLayoutOrientationAlign.SetControl("EditDeviceID", mListDeviceID);
+
 	mLayoutOrientationAlign.SetControl( "LabelHardwareVersion",				mLabelHardwareVersion);
 	mLayoutOrientationAlign.SetControl( "EditHardwareVersion",				mListHardwareVersion);
 
@@ -680,14 +696,21 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 {
 	mLabelServerIP.Caption = "Server IP";
 	mEditServerIP.Text = "127.0.0.1";
+
+	mLabelDeviceID.Caption = "Device ID";
+	mListDeviceID.Items.SetString("Device 0~Device 1~Device 2~Device 3~Device 4~Device 5");
+	mListDeviceID.Style = kFBDropDownList;
+	mListDeviceID.ItemIndex = mDeviceID;
+	mDevice->SetDeviceID(mDeviceID);
+
 	mLabelHardwareVersion.Caption = "Hardware Version";
-	mListHardwareVersion.Items.SetString("PRO7~PRO11~PRO12");	
+	mListHardwareVersion.Items.SetString("DK1~DK2~PRO~PRO7~PRO11~PRO12");	
 	mListHardwareVersion.Style = kFBDropDownList;
 	mListHardwareVersion.ItemIndex = mHardwareVersion;
-	if (mHardwareVersion == 1) {
-		mDevice->SetHardwareVersion(VRTRIX::DK2);
-	}
+	mDevice->SetHardwareVersion(VRTRIX::GLOVEVERSION(mHardwareVersion));
+
 	mEditServerIP.OnChange.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventServerIPChange);
+	mListDeviceID.OnChange.Add(this, (FBCallback) &ORDeviceVRTRIXLayout::EventDeviceIDChange);
 	mListHardwareVersion.OnChange.Add( this,(FBCallback) &ORDeviceVRTRIXLayout::EventHardwareTypeChange );
 
 	mLabelXAxisOffsetL.Caption = "Left Hand Model X Axis:";
@@ -848,18 +871,16 @@ void ORDeviceVRTRIXLayout::EventServerIPChange(HISender pSender, HKEvent pEvent)
 	mDevice->SetServerIP(mEditServerIP.Text.AsString());
 }
 
+void ORDeviceVRTRIXLayout::EventDeviceIDChange(HISender pSender, HKEvent pEvent)
+{
+	mDeviceID = mListDeviceID.ItemIndex;
+	mDevice->SetDeviceID(mListDeviceID.ItemIndex);
+}
+
 void ORDeviceVRTRIXLayout::EventHardwareTypeChange(HISender pSender, HKEvent pEvent)
 {
 	mHardwareVersion = mListHardwareVersion.ItemIndex;
-	if (mListHardwareVersion.ItemIndex == 0) {
-		mDevice->SetHardwareVersion(VRTRIX::DK1);
-	}
-	else if (mListHardwareVersion.ItemIndex == 1) {
-		mDevice->SetHardwareVersion(VRTRIX::DK2);
-	}
-	else {
-		mDevice->SetHardwareVersion(VRTRIX::PRO);
-	}
+	mDevice->SetHardwareVersion(VRTRIX::GLOVEVERSION(mHardwareVersion));
 }
 
 void ORDeviceVRTRIXLayout::EventButtonAdvancedModeEnableClick(HISender pSender, HKEvent pEvent)

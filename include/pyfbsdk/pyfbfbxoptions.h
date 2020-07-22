@@ -220,26 +220,36 @@ public:
     const char* GetTakeDestinationName(int pTakeIndex) const { return mFBFbxOptions->GetTakeDestinationName(pTakeIndex); }
     void SetTakeDestinationName(int pTakeIndex,  const char* pDestinationName) { mFBFbxOptions->SetTakeDestinationName(pTakeIndex, pDestinationName); }
 
-	//void SetObjectsToSave( list pList )
-	//{ 
-	//	FBArrayTemplate<FBBox *> lObjectsToSave;
-	//	for ( int itr = 0; itr < len(pList); ++itr ) {
-	//		object lObject = (pList)[itr];
-	//		extract<FBBox_Wrapper*> lExtractor(lObject);
+	void SetObjectsToSave( list pObjectsToSave )
+	{ 
+		FBArrayTemplate<FBComponent *> lObjectsToSave;
+		for ( int itr = 0; itr < len(pObjectsToSave); ++itr ) {
+			object lObject = (pObjectsToSave)[itr];
+			extract<FBComponent_Wrapper*> lExtractor(lObject);
 
-	//		// Make sure this is a valid object, and that it is not a "None" object
-	//		if ( lExtractor.check() && lExtractor() ) 
-	//		{
-	//			FBBox *lBBox = lExtractor()->mFBBox;
-	//			if ( lBBox ) 
-	//			{
-	//				lObjectsToSave.Add( lBBox );
-	//			}
-	//		}
-	//	}
+			// Make sure this is a valid object, and that it is not a "None" object
+			if ( lExtractor.check() && lExtractor() ) 
+			{
+				FBComponent *lComponent = lExtractor()->mFBComponent;
+				if ( lComponent ) 
+				{
+					lObjectsToSave.Add( lComponent );
+				}
+			}
+		}
 
-	//	mFBFbxOptions->SetObjectsToSave( &lObjectsToSave );
-	//}
+		mFBFbxOptions->SetObjectsToSave( &lObjectsToSave );
+	}
+
+	void SetMultiLoadNamespaceList( const FBStringList_Wrapper& pMultiLoadNamespaceList )
+	{
+		mFBFbxOptions->SetMultiLoadNamespaceList( *pMultiLoadNamespaceList.mFBStringList );
+	}
+
+	FBStringList_Wrapper* GetMultiLoadNamespaceList()
+	{
+		return FBStringList_Wrapper_Factory( mFBFbxOptions->GetMultiLoadNamespaceList() );
+	}
 
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(UpdateRecentFiles, bool);
 

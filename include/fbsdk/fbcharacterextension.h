@@ -67,12 +67,30 @@ enum FBPlotAllowed
 	kFBPlotAllowed_ControlRig,/*!< kFBPlotAllowed_ControlRig */  
 	kFBPlotAllowed_Both/*!< kFBPlotAllowed_Both */  
 };
+FB_DEFINE_ENUM( FBSDK_DLL, PlotAllowed );
 
-FB_DEFINE_ENUM		( FBSDK_DLL, PlotAllowed );
+/*! Sync mode for Constraints' Activeness and Models' visibility belonging to the Character Extension. */
+enum FBSyncActivationAndVisibilityMode
+{
+	kFBSyncMode_None,						/*!< No particular sync activity. Default mode. */
+	kFBSyncMode_WithContolRig,				/*!< Enable Constraints' Activeness and Models' visibility when the attached character is driven by its control rig, otherwise disable/hide them. */
+	kFBSyncMode_WithOthersThanControlRig,	/*!< Enable Constraints' Activeness and Models' visibility when the attached character is driven by something else than its control rig, otherwise disable/hide them. */
+};
+FB_DEFINE_ENUM( FBSDK_DLL, SyncActivationAndVisibilityMode );
+
+
 FB_DEFINE_COMPONENT( FBSDK_DLL, CharacterExtension );
 FB_DEFINE_LIST( FBSDK_DLL, CharacterExtension );
 FB_FORWARD(FBPropertyListCharacterExtension);
 
+/*! Character extension Retarget Mode */
+enum FBCharacterExtensionRetargetMode
+{
+    kFBRetargetModeOff,/*!< Off. */  
+    kFBRetargetModeAuto,/*!< Auto Mapping. */
+    kFBRetargetModeManual/*!< Manually Assign. */
+};
+FB_DEFINE_ENUM( FBSDK_DLL, CharacterExtensionRetargetMode );
 
 
 /** Character extension property list.
@@ -120,25 +138,130 @@ public:
 	FBPropertyInt				MirrorLabel;	            //!< <b>Read Write Property:</b> Enum that indicate which extension is used as mirror, 0 is none, 1 is self, 2-n represent the (ith - 2)character extension in the attached character excluding self.
 	FBPropertyPlotAllowed		PlotAllowed;	            //!< <b>Read Write Property:</b> Controls if objects in the set are transformable.
     FBPropertyModel             ReferenceModel;             //!< <b>Read Write Property:</b> Controls the referential of the extension.
+    FBPropertyCharacterExtensionRetargetMode		RetargetMode;	     //!< <b>Read Write Property:</b> Character extension retarget mode.
+	FBPropertySyncActivationAndVisibilityMode		SyncActivationAndVisibilityMode;		//!< <b>Read Write Property:</b> The "Sync Activation & Visibility" mode.
 	
 	
-	void UpdateStancePose(); //! Update the stance pose to the current position of the character extension element.
-	void GoToStancePose(); //! Reset object position to the stance.
-    FBObjectPose* GetStancePose(); //! Return stance pose.
+	/** Update the stance pose to the current position of the character extension element.
+	*/
+	void UpdateStancePose();
+
+	/** Reset object position to the stance.
+	*/
+    void GoToStancePose();
+
+	/** Return stance pose.
+	*	\return stance pose.
+	*/
+    FBObjectPose* GetStancePose();
 
 
-	FBCharacterExtension* GetMirrorExtension(); //! return the character extension determined by MirrorLabel
-	FBCharacter*      GetCharacter();  //! Return the attached Character 
+	/** Return the character extension determined by MirrorLabel.
+	*	\return character extension determined by MirrorLabel.
+	*/
+	FBCharacterExtension* GetMirrorExtension();
+
+	/** Return the attached Character.
+	*	\return attached Character.
+	*/
+	FBCharacter*      GetCharacter();
 
 
-	void	AddObjectProperties( FBComponent* pObj );		//! Add TR Properties from Object.
-	void	RemoveObjectAndProperties( FBComponent* pObj );	//! Remove TR Properties from Object.
+	/** Add TR Properties from Object.
+	*	\param pObj Object to add TR properties.
+	*/
+	void	AddObjectProperties( FBComponent* pObj );
 
-	bool	IsElementSelected();  //! return true if one object in object dependency list is selected.
-    bool    IsPropertyIncluded( FBProperty* pProp ); //! return true if the property is in character extension.
+	/** Remove TR Properties from Object.
+	*	\param pObj Object to remove TR properties.
+	*/
+	void	RemoveObjectAndProperties( FBComponent* pObj );
 
-	void			GetLabelNameWithExtensionObject( FBString& pLabelName, FBComponent* pObj, bool pReturnObjectNameIfNotFound = false );	//! Find the label name that was used to store object pose.
-	FBComponent*	GetExtensionObjectWithLabelName( const FBString& pLabelName );	//! Find stored object based on label name.
+
+	/** Return true if one object in object dependency list is selected.
+	*	\return true if one object in object dependency list is selected.
+	*/
+	bool	IsElementSelected();
+
+	/** Return true if the property is in character extension.
+    *	\param pProp Property to check.
+	*	\return true if the property is in character extension.
+	*/
+    bool    IsPropertyIncluded( FBProperty* pProp );
+
+
+	/** Find the label name that was used to store object pose.
+	*	\param pLabelName	                The label name that was used to store object pose.
+    *	\param pObj	                        The extension object.
+    *	\param pReturnObjectNameIfNotFound	If the value is true, if the object is not found, pLabelName will be set to the object name; otherwise pLabelName will be set to empty string. By default the value is false.
+	*/
+	void			GetLabelNameWithExtensionObject( FBString& pLabelName, FBComponent* pObj, bool pReturnObjectNameIfNotFound = false );
+
+	/** Find stored object based on label name.
+	*	\param pLabelName	The label name.
+	*	\return			    The extension object.
+	*/
+	FBComponent*	GetExtensionObjectWithLabelName( const FBString& pLabelName );
+
+
+	/** Return the character extension that is used to drive this extension during retargeting.
+	*	\return			The character extension that is used to drive this extension during retargeting.
+	*/
+    FBCharacterExtension* GetSourceExtension();
+
+	/** Set the character extension to drive this extension during retargeting. Only applicable if RetargetMode is Assign.
+    *   \remarks Only applicable if RetargetMode is Assign.
+	*	\param pSourceExtension	The source extension to drive this extension during retargeting. 
+	*/
+    void    SetSourceExtension( FBCharacterExtension* pSourceExtension );
+
+	/** Return the enum that indicate which extension is used as a source during retargeting, 0 is none, 1-n represent the (ith - 1)character extension in the source character. 
+	*	\return			The enum that indicate which extension is used as a source during retargeting, 0 is none, 1-n represent the (ith - 1)character extension in the source character. 
+	*/
+    int     GetSourceExtensionIndex();
+
+	/** Set the enum that indicate which extension is used as a source during retargeting, 0 is none, 1-n represent the (ith - 1)character extension in the source character. Only applicable if RetargetMode is Manually Assign.
+    *   \remarks Only applicable if RetargetMode is Manually Assign.
+	*	\param pSrcExtIndex	Enum that indicate which extension is used as a source during retargeting, 0 is none, 1-n represent the (ith - 1)character extension in the source character.
+	*/
+    void    SetSourceExtensionIndex( int pSrcExtIndex ); 
+
+
+	/** Return the total number of retarget properties.
+	*	\return			The total number of retarget properties.
+	*/
+    int         GetRetargetPropertyCount();
+
+	/** Return the reference property of the given index.
+	*	\param pPropIndex	Index to query.
+	*	\return			    Reference property of the given index.
+	*/
+    FBProperty* GetRetargetReferenceProperty( int pPropIndex );
+
+	/** Return the source property of the given index (the source property is the property that drives the reference property during retargeting).
+	*	\param pPropIndex	Index to query.
+	*	\return			    Source property (the property that drives the reference property during retargeting) of the given index.
+	*/
+    FBProperty* GetRetargetSourceProperty( int pPropIndex ); 
+
+	/** Set the source property for retargeting. Only applicable if RetargetMode is Manually Assign.
+    *   \remarks Only applicable if RetargetMode is Manually Assign.
+	*	\param pPropIndex	Index to set.
+    *	\param pSourceProp	Source property to set.
+	*/
+    void        SetRetargetSourceProperty( int pPropIndex, FBProperty* pSourceProp );
+
+	/** Remove the source property for retargeting. Only applicable if RetargetMode is Manually Assign.
+    *   \remarks Only applicable if RetargetMode is Manually Assign.
+    *	\param pPropIndex	Index to remove.
+	*/
+    void        RemoveRetargetSourceProperty( int pPropIndex );
+
+
+	/** RetargetAnimation
+	*	\param pEvalInfo	Evaluate info.
+	*/
+	void	    RetargetAnimation( FBEvaluateInfo* pEvalInfo );
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

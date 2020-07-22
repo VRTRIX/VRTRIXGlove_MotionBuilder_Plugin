@@ -46,5 +46,9 @@ public:
 	bool GetRecordMode(  ) { return mFBBox->RecordMode; }
 	void SetUniqueName( const char* pUniqueName ) { mFBBox->UniqueName = pUniqueName; }
 	const char* GetUniqueName(  ) { return mFBBox->UniqueName; }
+	int GetOutConnectorCount() { return mFBBox->GetOutConnectorCount(); }
+	int GetInConnectorCount() { return mFBBox->GetInConnectorCount(); }
+	object GetOutConnector( int pIndex ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBBox->GetOutConnector( pIndex ) ); }
+	object GetInConnector( int pIndex ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBBox->GetInConnector( pIndex ) ); }
 };
 #endif // pyfbbox_h__

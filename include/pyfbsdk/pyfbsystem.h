@@ -83,6 +83,7 @@ public:
     const char* CurrentDirectory() { static FBString lValue = mFBSystem->CurrentDirectory(); return (char*)lValue; }
     const char* MakeFullPath(const char* pRelativeFilePath) { static FBString lValue = mFBSystem->MakeFullPath(pRelativeFilePath); return (char*)lValue; }
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(SuspendMessageBoxes,   bool);
+	bool AreMessageBoxesSuspended(  ) { return mFBSystem->AreMessageBoxesSuspended; }
 
 #if !defined(K_NO_MANIPULATOR)
 	DECLARE_ORSDK_PROPERTY_PYTHON_CUSTOM_TYPE_ACCESS_READONLY( Manipulators, FBPropertyListManipulator )
