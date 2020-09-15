@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pyfbsdk import *
 #选取数据对象  
 lModelList = FBModelList()
