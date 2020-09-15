@@ -59,7 +59,7 @@ def SetupRHandHierachy(pModel, pParentIdx, pNextIndex, pHierarchy):
     return pNextIndex
 
 lModels = FBModelList()
-FBGetSelectedModels(lModels)
+FBGetSelectedModels( lModels, None, True, True )
 
 if len(lModels) == 2:
     HandHierarchy = []
