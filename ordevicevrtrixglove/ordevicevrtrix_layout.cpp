@@ -658,21 +658,21 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mEditDistalSlerpUp.Value	= mDistalSlerpUpValue[mFingerIndex];
 	mEditDistalSlerpUp.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventDistalSlerpUpChange );
 
-	mLabelBendUpThreshold.Caption	= "Finger Bend Up Threshold:";
-	mEditBendUpThreshold.Min	= 0;
-	mEditBendUpThreshold.Max = 50;
+	mLabelBendUpThreshold.Caption = "Finger Bend Up Threshold:";
+	mEditBendUpThreshold.Min = 30;
+	mEditBendUpThreshold.Max = 120;
 	mEditBendUpThreshold.SmallStep = 0.04;
 	mEditBendUpThreshold.LargeStep = 0.2;
-	mEditBendUpThreshold.Value	= mBendUpThreshold;
-	mEditBendUpThreshold.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventBendUpThresholdChange );
+	mEditBendUpThreshold.Value = mBendUpThreshold;
+	mEditBendUpThreshold.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventBendUpThresholdChange);
 
-	mLabelBendDownThreshold.Caption		= "Finger Bend Down Threshold:";
-	mEditBendDownThreshold.Min		= -120;
-	mEditBendDownThreshold.Max		= -50;
+	mLabelBendDownThreshold.Caption = "Finger Bend Down Threshold:";
+	mEditBendDownThreshold.Min = -170;
+	mEditBendDownThreshold.Max = -100;
 	mEditBendDownThreshold.SmallStep = 0.04;
 	mEditBendDownThreshold.LargeStep = 0.2;
-	mEditBendDownThreshold.Value	= mBendDownThreshold;
-	mEditBendDownThreshold.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventBendDownThresholdChange );
+	mEditBendDownThreshold.Value = mBendDownThreshold;
+	mEditBendDownThreshold.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventBendDownThresholdChange);
 
 	mLabelThumbProximalOffset.Caption = "Thumb Proximal Offset:";
 	mEditThumbProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[0] : mRHThumbOffset[0];

@@ -1,12 +1,12 @@
 {
    "mAdvancedMode" : false,
-   "mBendDownThreshold" : -90.0,
-   "mBendUpThreshold" : 25.0,
-   "mDistalSlerpDownValue" : [ 0.75, 0.75, 0.75, 0.75, 1.0 ],
-   "mDistalSlerpUpValue" : [ 1.0, 1.0, 1.0, 1.0, 0.0 ],
+   "mBendDownThreshold" : -160.0,
+   "mBendUpThreshold" : 100.0,
+   "mDistalSlerpDownValue" : [ 0.5, 0.5, 0.5, 0.5, 0.40000000000000002 ],
+   "mDistalSlerpUpValue" : [ 0.0, 0.0, 0.0, 0.0, 0.0 ],
    "mFinalFingerSpacing" : 2.0,
    "mFingerSpacing" : 2.0,
-   "mHardwareVersion" : 4,
+   "mHardwareVersion" : 2,
    "mLHIMUAlignmentOKPosePitch" : [
       [ 1.0, 0.0, 0.0, 0.0 ],
       [ 1.0, 0.0, 0.0, 0.0 ],
@@ -67,8 +67,8 @@
       [ 0.0, 0.0, 1.0 ]
    ],
    "mLHThumbOffset" : [
-      [ 0.0, 16.0, 0.0 ],
-      [ 0.0, 8.0, 0.0 ],
+      [ 0.0, 0.0, 0.0 ],
+      [ 0.0, 0.0, 0.0 ],
       [ 0.0, 0.0, 0.0 ]
    ],
    "mLHWristOffset" : [ 1.0, 0.0, 0.0, 0.0 ],
@@ -134,8 +134,8 @@
       [ 0.0, 0.0, -1.0 ]
    ],
    "mRHThumbOffset" : [
-      [ 0.0, -16.0, 0.0 ],
-      [ 0.0, -8.0, 0.0 ],
+      [ 0.0, 0.0, 0.0 ],
+      [ 0.0, 0.0, 0.0 ],
       [ 0.0, 0.0, 0.0 ]
    ],
    "mRHWristOffset" : [ 1.0, 0.0, 0.0, 0.0 ]
