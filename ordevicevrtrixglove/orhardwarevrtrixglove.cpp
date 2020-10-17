@@ -10,6 +10,9 @@
 static FBMatrix VRTRIXQuaternionToFBMatrix(VRTRIX::VRTRIXQuaternion_t quat);
 static Eigen::Quaterniond CalculateStaticOffset(Eigen::Quaterniond target, Eigen::Quaterniond rot);
 static Eigen::Quaterniond MBEuler2Quat(FBVector3d euler);
+static VRTRIX::VRTRIXQuaternion_t MBEuler2VRTRIXQuat(FBVector3d euler);
+static FBRVector VRTRIXQuaternionToEuler(VRTRIX::VRTRIXQuaternion_t quat);
+static FBRVector EigenQuaternionToEuler(Eigen::Quaterniond quat);
 static Eigen::Vector3d QuatRotation(Eigen::Vector3d orig, Eigen::Quaterniond rot);
 static void GetTransformOnRigidBody(FBTVector& transform, VRTRIX::VRTRIXQuaternion_t rotation, FBTVector offset, VRTRIX::HandType type);
 /************************************************
@@ -235,6 +238,8 @@ bool ORHardwareVRTRIXGlove::GetSetupInfo()
 		m_RHIMUData.push_back({ 0.f,0.f,0.f,0.f });
 		FBMult(mLocalTranslationL[i], mLocalTranslationL[i], (double)Scale);
 		m_LHIMUData.push_back({ 0.f,0.f,0.f,0.f });
+		m_LHFingerOffset.push_back({ 0.f,0.f,0.f });
+		m_RHFingerOffset.push_back({ 0.f,0.f,0.f });
 	}
 
     //The initial skeleton hierarchy    
@@ -590,21 +595,63 @@ void ORHardwareVRTRIXGlove::OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTR
 	}
 }
 
+void ORHardwareVRTRIXGlove::OnSetFingerOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type)
+{
+	if (mHandJointCount == 16) {
+		(type == VRTRIX::Hand_Left) ? m_LHFingerOffset[joint] = offset : m_RHFingerOffset[joint] = offset;
+	}
+	else if (mHandJointCount == 20) {
+		switch (joint) {
+		case(VRTRIX::Wrist_Joint) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[0] = offset : m_RHFingerOffset[0] = offset;
+		case(VRTRIX::Thumb_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[1] = offset : m_RHFingerOffset[1] = offset;
+		case(VRTRIX::Thumb_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[2] = offset : m_RHFingerOffset[2] = offset;
+		case(VRTRIX::Thumb_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[3] = offset : m_RHFingerOffset[3] = offset;
+		case(VRTRIX::Index_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[5] = offset : m_RHFingerOffset[5] = offset;
+		case(VRTRIX::Index_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[6] = offset : m_RHFingerOffset[6] = offset;
+		case(VRTRIX::Index_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[7] = offset : m_RHFingerOffset[7] = offset;
+		case(VRTRIX::Middle_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[9] = offset : m_RHFingerOffset[9] = offset;
+		case(VRTRIX::Middle_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[10] = offset : m_RHFingerOffset[10] = offset;
+		case(VRTRIX::Middle_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[11] = offset : m_RHFingerOffset[11] = offset;
+		case(VRTRIX::Ring_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[13] = offset : m_RHFingerOffset[13] = offset;
+		case(VRTRIX::Ring_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[14] = offset : m_RHFingerOffset[14] = offset;
+		case(VRTRIX::Ring_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[15] = offset : m_RHFingerOffset[15] = offset;
+		case(VRTRIX::Pinky_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[17] = offset : m_RHFingerOffset[17] = offset;
+		case(VRTRIX::Pinky_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[18] = offset : m_RHFingerOffset[18] = offset;
+		case(VRTRIX::Pinky_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[19] = offset : m_RHFingerOffset[19] = offset;
+		}
+	}
+}
+
 /************************************************
  *    Fetch one frame skeleton data from the Kinect.
  ************************************************/
 bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 {
+	if (mHandJointCount != 16 && mHandJointCount != 20) return false;
+
 	bool bIsRHFetched = false, bIsLHFetched = false;
 	if (m_bIsRHDataReady) {
 
 		for (int i = 0; i < mHandJointCount; ++i) {
-			FBRVector rot = VRTRIXQuaternionToEuler(m_RHIMUData[i], VRTRIX::Hand_Right, (VRTRIX::Joint)i);
-	
+			FBRVector rot = VRTRIXQuaternionToEuler(m_RHIMUData[i]);
+			if (mHandJointCount == 20 && i % 4 == 0) {
+				Eigen::Quaterniond wrist(m_RHIMUData[VRTRIX::Wrist_Joint].qw, m_RHIMUData[VRTRIX::Wrist_Joint].qx, m_RHIMUData[VRTRIX::Wrist_Joint].qy, m_RHIMUData[VRTRIX::Wrist_Joint].qz);
+				Eigen::Quaterniond wrist_default = MBEuler2Quat(mChannel[RHandIndex].mDefaultR);
+				Eigen::Quaterniond metaFinger_default = MBEuler2Quat(mChannel[RHandIndex + i].mDefaultR);
+				Eigen::Quaterniond metaFinger = wrist * wrist_default.inverse() * metaFinger_default;
+				rot = EigenQuaternionToEuler(metaFinger);
+			}
+			else if (i > 3) {
+				Eigen::Quaterniond finger(m_RHIMUData[i].qw, m_RHIMUData[i].qx, m_RHIMUData[i].qy, m_RHIMUData[i].qz);
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				rot = EigenQuaternionToEuler(finger);
+			}
 			mChannel[RHandIndex + i].mR[0] = rot[0];
 			mChannel[RHandIndex + i].mR[1] = rot[1];
 			mChannel[RHandIndex + i].mR[2] = rot[2];
-	
+
 			if (i == 0) {
 				mChannel[RHandIndex].mT[0] = mChannel[RHandIndex].mDefaultT[0];
 				mChannel[RHandIndex].mT[1] = mChannel[RHandIndex].mDefaultT[1];
@@ -612,21 +659,37 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 			}
 			else {
 				int parent = mChannel[RHandIndex + i].mParentChannel;
-				FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
-				GetTransformOnRigidBody(translation, m_RHIMUData[parent-RHandIndex], mLocalTranslationR[i], VRTRIX::Hand_Right);
+				FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1 };
+				VRTRIX::VRTRIXQuaternion_t parent_rot = MBEuler2VRTRIXQuat(mChannel[parent].mR);
+				GetTransformOnRigidBody(translation, parent_rot, mLocalTranslationR[i], VRTRIX::Hand_Right);
 				mChannel[RHandIndex + i].mT[0] = translation[0];
 				mChannel[RHandIndex + i].mT[1] = translation[1];
 				mChannel[RHandIndex + i].mT[2] = translation[2];
 			}
 		}
+
 		m_bIsRHDataReady = false;
 		bIsRHFetched = true;
 	}
+
 	if (m_bIsLHDataReady) {
 
 		for (int i = 0; i < mHandJointCount; ++i) {
-			FBRVector rot = VRTRIXQuaternionToEuler(m_LHIMUData[i], VRTRIX::Hand_Left, (VRTRIX::Joint)i);
-
+			FBRVector rot = VRTRIXQuaternionToEuler(m_LHIMUData[i]);
+			if (mHandJointCount == 20 && i % 4 == 0) {
+				Eigen::Quaterniond wrist(m_LHIMUData[VRTRIX::Wrist_Joint].qw, m_LHIMUData[VRTRIX::Wrist_Joint].qx, m_LHIMUData[VRTRIX::Wrist_Joint].qy, m_LHIMUData[VRTRIX::Wrist_Joint].qz);
+				Eigen::Quaterniond wrist_default = MBEuler2Quat(mChannel[LHandIndex].mDefaultR);
+				Eigen::Quaterniond metaFinger_default = MBEuler2Quat(mChannel[LHandIndex + i].mDefaultR);
+				Eigen::Quaterniond metaFinger = wrist * wrist_default.inverse() * metaFinger_default;
+				rot = EigenQuaternionToEuler(metaFinger);
+			}
+			else if (i > 3) {
+				Eigen::Quaterniond finger(m_LHIMUData[i].qw, m_LHIMUData[i].qx, m_LHIMUData[i].qy, m_LHIMUData[i].qz);
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				rot = EigenQuaternionToEuler(finger);
+			}
 			mChannel[LHandIndex + i].mR[0] = rot[0];
 			mChannel[LHandIndex + i].mR[1] = rot[1];
 			mChannel[LHandIndex + i].mR[2] = rot[2];
@@ -639,13 +702,13 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 			else {
 				int parent = mChannel[LHandIndex + i].mParentChannel;
 				FBTVector translation = { mChannel[parent].mT[0], mChannel[parent].mT[1], mChannel[parent].mT[2], 1};
-				GetTransformOnRigidBody(translation, m_LHIMUData[parent-LHandIndex], mLocalTranslationL[i], VRTRIX::Hand_Left);
+				VRTRIX::VRTRIXQuaternion_t parent_rot = MBEuler2VRTRIXQuat(mChannel[parent].mR);
+				GetTransformOnRigidBody(translation, parent_rot, mLocalTranslationL[i], VRTRIX::Hand_Left);
 				mChannel[LHandIndex + i].mT[0] = translation[0];
 				mChannel[LHandIndex + i].mT[1] = translation[1];
 				mChannel[LHandIndex + i].mT[2] = translation[2];
 			}
 		}
-
 
 		m_bIsLHDataReady = false;
 		bIsLHFetched = true;
@@ -659,7 +722,7 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 	* @param quat: VRTRIX Quaternion
 	* @returns euler angle in FBRVector
 	*/
-FBRVector ORHardwareVRTRIXGlove::VRTRIXQuaternionToEuler(VRTRIX::VRTRIXQuaternion_t quat, VRTRIX::HandType type, VRTRIX::Joint joint)
+FBRVector VRTRIXQuaternionToEuler(VRTRIX::VRTRIXQuaternion_t quat)
 {
 	double r_w = quat.qw, r_x = quat.qx, r_y = quat.qy, r_z = quat.qz;
 
@@ -684,12 +747,36 @@ FBRVector ORHardwareVRTRIXGlove::VRTRIXQuaternionToEuler(VRTRIX::VRTRIXQuaternio
 
 }
 
+FBRVector EigenQuaternionToEuler(Eigen::Quaterniond quat)
+{
+	double r_w = quat.w(), r_x = quat.x(), r_y = quat.y(), r_z = quat.z();
+
+	//Get Euler Angle(case zyx) from quaternions
+	double sinr = 2.0f * (r_y * r_z + r_w * r_x);
+	double cosr = 1.0f - 2.0f * (r_x * r_x + r_y * r_y);
+	double roll = atan2(sinr, cosr) * 180 / M_PI;
+
+	double sinp = 2.0f * (r_w * r_y - r_x * r_z);
+	double pitch;
+	if (fabs(sinp) >= 1) {
+		pitch = copysign(M_PI / 2, sinp) * 180 / M_PI;
+	}
+	else {
+		pitch = asin(sinp) * 180 / M_PI;
+	}
+	double siny = 2.0f * (r_x * r_y + r_w * r_z);
+	double cosy = 1.0f - 2.0f * (r_y * r_y + r_z * r_z);
+	double yaw = atan2(siny, cosy) * 180 / M_PI;
+
+	return FBRVector(roll, pitch, yaw);
+}
+
 /** Convert VRTRIX Quat to Matrix.(Absolute Pose Output)
 	*
 	* @param quat: VRTRIX Quaternion
 	* @returns matrix in FBMatrix
 	*/
-static FBMatrix VRTRIXQuaternionToFBMatrix(VRTRIX::VRTRIXQuaternion_t quat)
+FBMatrix VRTRIXQuaternionToFBMatrix(VRTRIX::VRTRIXQuaternion_t quat)
 {
     FBMatrix lMatrix;
     lMatrix(0,0) =  1-2*quat.qy*quat.qy-2*quat.qz*quat.qz;
@@ -708,7 +795,7 @@ static FBMatrix VRTRIXQuaternionToFBMatrix(VRTRIX::VRTRIXQuaternion_t quat)
     return lMatrix;
 }
 
-static Eigen::Quaterniond CalculateStaticOffset(Eigen::Quaterniond target, Eigen::Quaterniond rot)
+Eigen::Quaterniond CalculateStaticOffset(Eigen::Quaterniond target, Eigen::Quaterniond rot)
 {
     return target * rot.inverse();
 }
@@ -732,6 +819,25 @@ Eigen::Quaterniond MBEuler2Quat(FBVector3d euler)
     return q;
 }
 
+VRTRIX::VRTRIXQuaternion_t MBEuler2VRTRIXQuat(FBVector3d euler)
+{
+	// Abbreviations for the various angular functions
+	double cy = cos(euler[2] * 0.5 * DEGREETORAD);
+	double sy = sin(euler[2] * 0.5 * DEGREETORAD);
+	double cp = cos(euler[1] * 0.5 * DEGREETORAD);
+	double sp = sin(euler[1] * 0.5 * DEGREETORAD);
+	double cr = cos(euler[0] * 0.5 * DEGREETORAD);
+	double sr = sin(euler[0] * 0.5 * DEGREETORAD);
+
+	VRTRIX::VRTRIXQuaternion_t q;
+	q.qw = cy * cp * cr + sy * sp * sr;
+	q.qx = cy * cp * sr - sy * sp * cr;
+	q.qy = sy * cp * sr + cy * sp * cr;
+	q.qz = sy * cp * cr - cy * sp * sr;
+
+	return q;
+}
+
 /** Calculate transform of a rigid body given its original pose and the transform from the original points to the points need to be calculated
 *
 * @param transform: input/output transform of the tracked object.
@@ -739,7 +845,7 @@ Eigen::Quaterniond MBEuler2Quat(FBVector3d euler)
 * @param offset: input offset of the tracked object that need to be performed.
 * @returns void
 */
-static void GetTransformOnRigidBody(FBTVector& transform, VRTRIX::VRTRIXQuaternion_t rotation, FBTVector offset, VRTRIX::HandType type) 
+void GetTransformOnRigidBody(FBTVector& transform, VRTRIX::VRTRIXQuaternion_t rotation, FBTVector offset, VRTRIX::HandType type) 
 {
 	Eigen::Quaterniond rot(rotation.qw, rotation.qx, rotation.qy, rotation.qz);
 	Eigen::Vector3d transformOffset(offset[0], offset[1], offset[2]);
@@ -756,7 +862,7 @@ static void GetTransformOnRigidBody(FBTVector& transform, VRTRIX::VRTRIXQuaterni
 * @param rot: the given rotation in quaternion
 * @returns the rotated vector.
 */
-static Eigen::Vector3d QuatRotation(Eigen::Vector3d orig, Eigen::Quaterniond rot) {
+Eigen::Vector3d QuatRotation(Eigen::Vector3d orig, Eigen::Quaterniond rot) {
 	Eigen::Quaterniond p;
 	p.w() = 0;
 	p.vec() = orig;

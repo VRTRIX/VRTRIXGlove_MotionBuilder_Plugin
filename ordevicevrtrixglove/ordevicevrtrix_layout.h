@@ -48,6 +48,11 @@ public:
 	void	EventBendUpThresholdChange				( HISender pSender, HKEvent pEvent );
 	void	EventBendDownThresholdChange				( HISender pSender, HKEvent pEvent );
 	
+	void	EventIndexOffsetChange						( HISender pSender, HKEvent pEvent );
+	void	EventMiddleOffsetChange						( HISender pSender, HKEvent pEvent );
+	void	EventRingOffsetChange						( HISender pSender, HKEvent pEvent );
+	void	EventPinkyOffsetChange						( HISender pSender, HKEvent pEvent );
+
 	void	EventThumbProximalOffsetChange				( HISender pSender, HKEvent pEvent );
 	void	EventThumbMiddleOffsetChange				( HISender pSender, HKEvent pEvent );
 	void	EventThumbDistalOffsetChange				( HISender pSender, HKEvent pEvent );
@@ -95,7 +100,9 @@ private:
 			FBEditNumber		mEditBendUpThreshold;
 			FBLabel				mLabelBendDownThreshold;
 			FBEditNumber		mEditBendDownThreshold;
-
+			
+			FBLabel				mLabelProximalOffset;
+			FBEditVector		mEditProximalOffset;
 			FBLabel				mLabelThumbProximalOffset;
 			FBEditVector		mEditThumbProximalOffset;
 			FBLabel				mLabelThumbMiddleOffset;
@@ -148,6 +155,18 @@ private:
 	double					mDistalSlerpDownValue[5];		//!< Distal joint slerp-down value array.
 	double					mProximalSlerpUpValue[5];		//!< Proximal joint slerp-up value array.
 	double					mDistalSlerpUpValue[5];		//!< Distal joint slerp value-up array.
+
+	FBVector3d				mLHIndexOffset[3];
+	FBVector3d				mRHIndexOffset[3];
+
+	FBVector3d				mLHMiddleOffset[3];
+	FBVector3d				mRHMiddleOffset[3];
+
+	FBVector3d				mLHRingOffset[3];
+	FBVector3d				mRHRingOffset[3];
+
+	FBVector3d				mLHPinkyOffset[3];
+	FBVector3d				mRHPinkyOffset[3];
 
 	FBVector3d				mLHThumbOffset[3];			//!< Left Hand Thumb offset vector array
 	FBVector3d				mRHThumbOffset[3];			//!< Right Hand Thumb offset vector array

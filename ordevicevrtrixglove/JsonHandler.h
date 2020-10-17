@@ -14,6 +14,14 @@ struct IDataGloveConfig {
 	double mFinalFingerSpacing;
 	double mBendUpThreshold;
 	double mBendDownThreshold;
+	FBVector3d mLHIndexOffset[3];
+	FBVector3d mRHIndexOffset[3];
+	FBVector3d mLHMiddleOffset[3];
+	FBVector3d mRHMiddleOffset[3];
+	FBVector3d mLHRingOffset[3];
+	FBVector3d mRHRingOffset[3];
+	FBVector3d mLHPinkyOffset[3];
+	FBVector3d mRHPinkyOffset[3];
 	FBVector3d mLHThumbOffset[3];
 	FBVector3d mRHThumbOffset[3];
 	FBVector3d mLHModelOffset[3];
@@ -170,6 +178,14 @@ public:
 		m_cfg.mFinalFingerSpacing = round_nplaces(cfg_root["mFinalFingerSpacing"].asDouble(), 1);
 		m_cfg.mBendUpThreshold = round_nplaces(cfg_root["mBendUpThreshold"].asDouble(), 1);
 		m_cfg.mBendDownThreshold = round_nplaces(cfg_root["mBendDownThreshold"].asDouble(), 1);
+		ReadJsonMatrix(cfg_root["mLHIndexOffset"], m_cfg.mLHIndexOffset);
+		ReadJsonMatrix(cfg_root["mRHIndexOffset"], m_cfg.mRHIndexOffset);
+		ReadJsonMatrix(cfg_root["mLHMiddleOffset"], m_cfg.mLHMiddleOffset);
+		ReadJsonMatrix(cfg_root["mRHMiddleOffset"], m_cfg.mRHMiddleOffset);
+		ReadJsonMatrix(cfg_root["mLHRingOffset"], m_cfg.mLHRingOffset);
+		ReadJsonMatrix(cfg_root["mRHRingOffset"], m_cfg.mRHRingOffset);
+		ReadJsonMatrix(cfg_root["mLHPinkyOffset"], m_cfg.mLHPinkyOffset);
+		ReadJsonMatrix(cfg_root["mRHPinkyOffset"], m_cfg.mRHPinkyOffset);
 		ReadJsonMatrix(cfg_root["mLHThumbOffset"], m_cfg.mLHThumbOffset);
 		ReadJsonMatrix(cfg_root["mRHThumbOffset"], m_cfg.mRHThumbOffset);
 		ReadJsonMatrix(cfg_root["mLHModelOffset"], m_cfg.mLHModelOffset);
@@ -199,6 +215,14 @@ public:
 		root["mBendUpThreshold"] = cfg.mBendUpThreshold;
 		root["mBendDownThreshold"] = cfg.mBendDownThreshold;
 
+		root["mLHIndexOffset"] = WriteJsonMatrix(cfg.mLHIndexOffset);
+		root["mRHIndexOffset"] = WriteJsonMatrix(cfg.mRHIndexOffset);
+		root["mLHMiddleOffset"] = WriteJsonMatrix(cfg.mLHMiddleOffset);
+		root["mRHMiddleOffset"] = WriteJsonMatrix(cfg.mRHMiddleOffset);
+		root["mLHRingOffset"] = WriteJsonMatrix(cfg.mLHRingOffset);
+		root["mRHRingOffset"] = WriteJsonMatrix(cfg.mRHRingOffset);
+		root["mLHPinkyOffset"] = WriteJsonMatrix(cfg.mLHPinkyOffset);
+		root["mRHPinkyOffset"] = WriteJsonMatrix(cfg.mRHPinkyOffset);
 		root["mLHThumbOffset"] = WriteJsonMatrix(cfg.mLHThumbOffset);
 		root["mRHThumbOffset"] = WriteJsonMatrix(cfg.mRHThumbOffset);
 		root["mLHModelOffset"] = WriteJsonMatrix(cfg.mLHModelOffset);

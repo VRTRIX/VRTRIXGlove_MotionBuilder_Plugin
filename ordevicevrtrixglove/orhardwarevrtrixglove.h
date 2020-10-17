@@ -23,7 +23,7 @@ public:
 	bool	StopDataStream	();						//!< Take the device out of streaming mode.
 
 	bool	FetchMocapData	(FBTime &pTime);		//!< Fetch a data from Kinect.
-	FBRVector VRTRIXQuaternionToEuler(VRTRIX::VRTRIXQuaternion_t quat, VRTRIX::HandType type, VRTRIX::Joint joint);
+
     void    GetSkeletonJointsOrder(FBBodyNodeId* &pSkeletonJointsOrder);
 
     FBString GetHardWareName();
@@ -61,6 +61,7 @@ public:
 	void OnSetBendUpThreshold(double value);
 	void OnSetBendDownThreshold(double value);
 	void OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
+	void OnSetFingerOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
 	//void OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type);
 
 private:
@@ -84,6 +85,8 @@ private:
 	VRTRIX::Pose			m_RHPose;
 	std::vector<VRTRIX::VRTRIXQuaternion_t> m_LHIMUData;
 	std::vector<VRTRIX::VRTRIXQuaternion_t> m_RHIMUData;
+	std::vector<VRTRIX::VRTRIXVector_t> m_LHFingerOffset;
+	std::vector<VRTRIX::VRTRIXVector_t> m_RHFingerOffset;
 	Eigen::Matrix3d			m_LHModelOffset;
 	Eigen::Matrix3d			m_RHModelOffset;
 	Eigen::Quaterniond		m_LHOffset;

@@ -105,6 +105,7 @@ public:
 	void OnSetBendUpThreshold(double value) { return mHardware.OnSetBendUpThreshold(value); }
 	void OnSetBendDownThreshold(double value) { return mHardware.OnSetBendDownThreshold(value); }
 	void OnSetThumbOffset(VRTRIX::VRTRIXVector_t value, VRTRIX::Joint joint, VRTRIX::HandType type) { return mHardware.OnSetThumbOffset(value, joint, type); }
+	void OnSetFingerOffset(VRTRIX::VRTRIXVector_t value, VRTRIX::Joint joint, VRTRIX::HandType type) { return mHardware.OnSetFingerOffset(value, joint, type); }
 
 	//--- Joint set management.
 	void	DefineHierarchy				();				//!< Define model template hierarchy.
