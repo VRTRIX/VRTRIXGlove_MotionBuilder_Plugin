@@ -37,8 +37,21 @@ bool ORDeviceVRTRIXLayout::FBCreate()
 	}
 	
 	for (int i = 0; i < 3; ++i) {
+		mLHIndexOffset[i] = m_jHandler->m_cfg.mLHIndexOffset[i];
+		mRHIndexOffset[i] = m_jHandler->m_cfg.mRHIndexOffset[i];
+
+		mLHMiddleOffset[i] = m_jHandler->m_cfg.mLHMiddleOffset[i];
+		mRHMiddleOffset[i] = m_jHandler->m_cfg.mRHMiddleOffset[i];
+
+		mLHRingOffset[i] = m_jHandler->m_cfg.mLHRingOffset[i];
+		mRHRingOffset[i] = m_jHandler->m_cfg.mRHRingOffset[i];
+
+		mLHPinkyOffset[i] = m_jHandler->m_cfg.mLHPinkyOffset[i];
+		mRHPinkyOffset[i] = m_jHandler->m_cfg.mRHPinkyOffset[i];
+
 		mLHThumbOffset[i] = m_jHandler->m_cfg.mLHThumbOffset[i];
 		mRHThumbOffset[i] = m_jHandler->m_cfg.mRHThumbOffset[i];
+
 		mLHModelOffset[i] = m_jHandler->m_cfg.mLHModelOffset[i];
 		mRHModelOffset[i] = m_jHandler->m_cfg.mRHModelOffset[i];
 	}
@@ -303,6 +316,16 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 													lW,		kFBAttachNone,		NULL,					1.00,
 													0,		kFBAttachHeight,	"LabelBendDownThreshold",		1.00 );
 
+	mLayoutTuning.AddRegion("LabelProximalOffset", "LabelProximalOffset",
+													0, kFBAttachLeft, "LabelBendDownThreshold", 1.00,
+													lS, kFBAttachBottom, "LabelBendDownThreshold", 1.00,
+													0, kFBAttachWidth, "LabelBendDownThreshold", 1.00,
+													0, kFBAttachHeight, "LabelBendDownThreshold", 1.00);
+	mLayoutTuning.AddRegion("EditProximalOffset", "EditProximalOffset",
+													lS, kFBAttachRight, "LabelProximalOffset", 1.00,
+													0, kFBAttachTop, "LabelProximalOffset", 1.00,
+													lW, kFBAttachNone, NULL, 1.00,
+													0, kFBAttachHeight, "LabelProximalOffset", 1.00);
 
 
 	mLayoutTuning.AddRegion( "LabelThumbProximalOffset",	"LabelThumbProximalOffset",
@@ -371,6 +394,8 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 	mLayoutTuning.SetControl( "LabelBendDownThreshold",		mLabelBendDownThreshold);
 	mLayoutTuning.SetControl( "EditBendDownThreshold",		mEditBendDownThreshold);
 
+	mLayoutTuning.SetControl("LabelProximalOffset",			mLabelProximalOffset);
+	mLayoutTuning.SetControl("EditProximalOffset",			mEditProximalOffset);
 	mLayoutSetup.SetControl	( "AlgorithmTuning",			mLayoutTuning);
 }
 
@@ -658,21 +683,40 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 	mEditDistalSlerpUp.Value	= mDistalSlerpUpValue[mFingerIndex];
 	mEditDistalSlerpUp.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventDistalSlerpUpChange );
 
-	mLabelBendUpThreshold.Caption	= "Finger Bend Up Threshold:";
-	mEditBendUpThreshold.Min	= 30;
+	mLabelBendUpThreshold.Caption = "Finger Bend Up Threshold:";
+	mEditBendUpThreshold.Min = 0;
 	mEditBendUpThreshold.Max = 120;
 	mEditBendUpThreshold.SmallStep = 0.04;
 	mEditBendUpThreshold.LargeStep = 0.2;
-	mEditBendUpThreshold.Value	= mBendUpThreshold;
-	mEditBendUpThreshold.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventBendUpThresholdChange );
+	mEditBendUpThreshold.Value = mBendUpThreshold;
+	mEditBendUpThreshold.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventBendUpThresholdChange);
 
-	mLabelBendDownThreshold.Caption		= "Finger Bend Down Threshold:";
-	mEditBendDownThreshold.Min		= -170;
-	mEditBendDownThreshold.Max		= -100;
+	mLabelBendDownThreshold.Caption = "Finger Bend Down Threshold:";
+	mEditBendDownThreshold.Min = -180;
+	mEditBendDownThreshold.Max = -60;
 	mEditBendDownThreshold.SmallStep = 0.04;
 	mEditBendDownThreshold.LargeStep = 0.2;
-	mEditBendDownThreshold.Value	= mBendDownThreshold;
-	mEditBendDownThreshold.OnChange.Add( this, (FBCallback) &ORDeviceVRTRIXLayout::EventBendDownThresholdChange );
+	mEditBendDownThreshold.Value = mBendDownThreshold;
+	mEditBendDownThreshold.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventBendDownThresholdChange);
+
+	mLabelProximalOffset.Caption = "Proximal Offset:";
+	if (mFingerIndex == 0) {
+		mEditProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHIndexOffset[0] : mRHIndexOffset[0];
+		mEditProximalOffset.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventFingerProximalOffsetChange);
+	}
+	else if (mFingerIndex == 1) {
+		mEditProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHMiddleOffset[0] : mRHMiddleOffset[0];
+		mEditProximalOffset.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventFingerProximalOffsetChange);
+	}
+	else if (mFingerIndex == 2) {
+		mEditProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHRingOffset[0] : mRHRingOffset[0];
+		mEditProximalOffset.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventFingerProximalOffsetChange);
+	}
+	else if (mFingerIndex == 3) {
+		mEditProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHPinkyOffset[0] : mRHPinkyOffset[0];
+		mEditProximalOffset.OnChange.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventFingerProximalOffsetChange);
+	}
+
 
 	mLabelThumbProximalOffset.Caption = "Thumb Proximal Offset:";
 	mEditThumbProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[0] : mRHThumbOffset[0];
@@ -913,6 +957,8 @@ void ORDeviceVRTRIXLayout::EventFingerIndexChange(HISender pSender, HKEvent pEve
 		mLayoutTuning.SetControl( "EditBendUpThreshold",		mEditBendUpThreshold);
 		mLayoutTuning.SetControl( "LabelBendDownThreshold",		mLabelBendDownThreshold);
 		mLayoutTuning.SetControl( "EditBendDownThreshold",		mEditBendDownThreshold);
+		mLayoutTuning.SetControl("LabelProximalOffset", mLabelProximalOffset);
+		mLayoutTuning.SetControl("EditProximalOffset", mEditProximalOffset);
 	}
 
 	mFingerIndex = mListFingerIndex.ItemIndex;
@@ -954,6 +1000,8 @@ void ORDeviceVRTRIXLayout::EventFingerIndexChange(HISender pSender, HKEvent pEve
 		mLayoutTuning.ClearControl("EditBendUpThreshold");
 		mLayoutTuning.ClearControl("LabelBendDownThreshold");
 		mLayoutTuning.ClearControl("EditBendDownThreshold");
+		mLayoutTuning.ClearControl("LabelProximalOffset");
+		mLayoutTuning.ClearControl("EditProximalOffset");
 		
 		mLayoutTuning.SetControl( "LabelThumbProximalOffset",	mLabelThumbProximalOffset);
 		mLayoutTuning.SetControl( "EditThumbProximalOffset",	mEditThumbProximalOffset);
@@ -1133,6 +1181,64 @@ void ORDeviceVRTRIXLayout::EventBendDownThresholdChange(HISender pSender, HKEven
 	mBendDownThreshold = mEditBendDownThreshold.Value;
 }
 
+void ORDeviceVRTRIXLayout::EventFingerProximalOffsetChange(HISender pSender, HKEvent pEvent)
+{
+	VRTRIX::VRTRIXVector_t offset;
+	if (mIsParamSyncEnabled) {
+		if (mHandType == VRTRIX::Hand_Left) {
+			mLHIndexOffset[0] = mEditProximalOffset.Value;
+			offset = { (float)mLHIndexOffset[0].mValue[0], (float)mLHIndexOffset[0].mValue[1], (float)mLHIndexOffset[0].mValue[2] };
+		}
+		else {
+			mRHIndexOffset[0] = mEditProximalOffset.Value;
+			offset = { (float)mRHIndexOffset[0].mValue[0], (float)mRHIndexOffset[0].mValue[1],(float)mRHIndexOffset[0].mValue[2] };
+		}
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Proximal, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Intermediate, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Distal, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Proximal, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Intermediate, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Distal, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Proximal, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Intermediate, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Distal, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Proximal, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Intermediate, mHandType);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Distal, mHandType);
+	}
+	else {
+		if (mHandType == VRTRIX::Hand_Left) {
+			mLHIndexOffset[0] = mEditProximalOffset.Value;
+			offset = { (float)mLHIndexOffset[0].mValue[0], (float)mLHIndexOffset[0].mValue[1], (float)mLHIndexOffset[0].mValue[2] };
+		}
+		else {
+			mRHIndexOffset[0] = mEditProximalOffset.Value;
+			offset = { (float)mRHIndexOffset[0].mValue[0], (float)mRHIndexOffset[0].mValue[1],(float)mRHIndexOffset[0].mValue[2] };
+		}
+
+		if (mFingerIndex == 0) {
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Proximal, mHandType);
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Intermediate, mHandType);
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Distal, mHandType);
+		}
+		else if (mFingerIndex == 1) {
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Proximal, mHandType);
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Intermediate, mHandType);
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Distal, mHandType);
+		}
+		else if (mFingerIndex == 2) {
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Proximal, mHandType);
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Intermediate, mHandType);
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Distal, mHandType);
+		}
+		else if (mFingerIndex == 3) {
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Proximal, mHandType);
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Intermediate, mHandType);
+			mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Distal, mHandType);
+		}
+	}
+}
+
 void ORDeviceVRTRIXLayout::EventThumbProximalOffsetChange(HISender pSender, HKEvent pEvent)
 {
 	if (mHandType == VRTRIX::Hand_Left) {
@@ -1224,6 +1330,14 @@ void ORDeviceVRTRIXLayout::EventButtonSaveParameter(HISender pSender, HKEvent pE
 	}
 	
 	for (int i = 0; i < 3; ++i) {
+		m_jHandler->m_cfg.mLHIndexOffset[i] = mLHIndexOffset[i];
+		m_jHandler->m_cfg.mRHIndexOffset[i] = mRHIndexOffset[i];
+		m_jHandler->m_cfg.mLHMiddleOffset[i] = mLHMiddleOffset[i];
+		m_jHandler->m_cfg.mRHMiddleOffset[i] = mRHMiddleOffset[i];
+		m_jHandler->m_cfg.mLHRingOffset[i] = mLHRingOffset[i];
+		m_jHandler->m_cfg.mRHRingOffset[i] = mRHRingOffset[i];
+		m_jHandler->m_cfg.mLHPinkyOffset[i] = mLHPinkyOffset[i];
+		m_jHandler->m_cfg.mRHPinkyOffset[i] = mRHPinkyOffset[i];
 		m_jHandler->m_cfg.mLHThumbOffset[i] = mLHThumbOffset[i];
 		m_jHandler->m_cfg.mRHThumbOffset[i] = mRHThumbOffset[i];
 		m_jHandler->m_cfg.mLHModelOffset[i] = mLHModelOffset[i];
