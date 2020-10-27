@@ -52,6 +52,14 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 #include <fbsdk/fbcomponent.h>
 
+#include <fbxsdk/fbxsdk_nsbegin.h>
+	class FbxAnimCurveNode;
+	class FbxScene;
+	class FbxAnimStack;
+	class FbxProperty;
+	class FbxObject;
+#include <fbxsdk/fbxsdk_nsend.h>
+
 //@{
 //! Animation node data types.
 // Basic types
@@ -94,6 +102,10 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 class KFCurve;
 
+#include <fbxsdk/fbxsdk_nsbegin.h>
+	class FbxAnimCurve;
+#include <fbxsdk/fbxsdk_nsend.h>
+
 #ifdef FBSDKUseNamespace
 namespace FBSDKNamespace {
 #endif
@@ -107,6 +119,7 @@ namespace FBSDKNamespace {
         kFBInterpolationConstant = 0,  	//!< Constant interpolation.
         kFBInterpolationLinear,			//!< Linear interpolation.
         kFBInterpolationCubic,		   	//!< Cubic interpolation.
+		kFBInterpolationCustom,		   	//!< Custom interpolation.
         kFBInterpolationCount		   	//!< Number of interpolation types.
     };
     FB_DEFINE_ENUM( FBSDK_DLL, Interpolation ); 
@@ -179,6 +192,27 @@ namespace FBSDKNamespace {
 	};
 	FB_DEFINE_ENUM( FBSDK_DLL, AnimationNodeConnectorType );
 
+	/**
+	*	Custom tangent index for the tangents.
+	*/
+	enum FBTangentCustomIndex {
+		kFBTangentCustomIndex0,		//!< First custom tangent type registered in the system.
+		kFBTangentCustomIndex1,		//!< Second custom tangent type registered in the system.
+		kFBTangentCustomIndex2,		//!< Third custom tangent type registered in the system.
+	};
+	FB_DEFINE_ENUM( FBSDK_DLL, TangentCustomIndex );
+
+	/**
+	*	Active tangent weight, no/one/both side are active on a key. Please note, the left value is for the next key, as the current key contains the tangent weight information for the next key. To disable the weight on the left side of a key at index "i", you need to disable "kFBTangentWeightModeNextLeft" the "i-1" key.
+	*/
+	enum FBTangentWeightMode {
+		kFBTangentWeightModeNone,		//!< Tangent weight disabled.
+		kFBTangentWeightModeRight,		//!< Right tangent weight active.
+		kFBTangentWeightModeNextLeft,	//!< Next key left tangent weight active.
+		kFBTangentWeightModeBoth		//!< Right tangent and next key left tangent weight are active
+	};
+	FB_DEFINE_ENUM( FBSDK_DLL, TangentWeightMode );
+
     ////////////////////////////////////////////////////////////////////////////////////
     // FBFCurveKey
     ////////////////////////////////////////////////////////////////////////////////////
@@ -238,13 +272,15 @@ namespace FBSDKNamespace {
         FBPropertyFloat	Continuity;			//!< <b>Read Write Property:</b> Continuity (TCB).
         FBPropertyFloat	Bias;				//!< <b>Read Write Property:</b> Bias (TCB).
 
-        FBPropertyTime	Time;			        //!< <b>Read Write Property:</b> Time of key.
-        FBPropertyInterpolation Interpolation;	//!< <b>Read Write Property:</b> Type of interpolation.
-        FBPropertyTangentMode	TangentMode;	//!< <b>Read Write Property:</b> Tangent calculation method.
-        FBPropertyTangentClampMode		TangentClampMode;	//!< <b>Read Write Property:</b> Tangent's clamp method.
-        FBPropertyBool	TangentBreak;	        //!< <b>Read Write Property:</b> Tangent's break status
+        FBPropertyTime					Time;					//!< <b>Read Write Property:</b> Time of key.
+        FBPropertyInterpolation			Interpolation;			//!< <b>Read Write Property:</b> Type of interpolation.
+        FBPropertyTangentMode			TangentMode;			//!< <b>Read Write Property:</b> Tangent calculation method.
+        FBPropertyTangentClampMode		TangentClampMode;		//!< <b>Read Write Property:</b> Tangent's clamp method.
+        FBPropertyBool					TangentBreak;			//!< <b>Read Write Property:</b> Tangent's break status
         FBPropertyTangentConstantMode	TangentConstantMode;	//!< <b>Read Write Property:</b> Tangent's constant mode
-        FBPropertyExtrapolationMode	ExtrapolationMode;	//!< <b>Read Write Property:</b> Extrapolation mode
+        FBPropertyTangentWeightMode		TangentWeightMode;		//!< <b>Read Write Property:</b> Tangent's weight mode. Setting the value for LeftTangentWeight/RightTangentWeight will also activate the weight for that part. Please see the note provided with FBTangentWeightMode for the left weight of a key.
+        FBPropertyExtrapolationMode		ExtrapolationMode;		//!< <b>Read Write Property:</b> Extrapolation mode
+        FBPropertyTangentCustomIndex	TangentCustomIndex;		//!< <b>Read Write Property:</b> Tangent's custom index
 
         FBPropertyBool  Selected;               //!< <b>Read Write Property:</b> Is the key selected.
         FBPropertyBool  MarkedForManipulation;  //!< <b>Read Write Property:</b> Is the key marked for manipulation.
@@ -350,24 +386,21 @@ namespace FBSDKNamespace {
         bool KeyRemove( int pIndex );
 
         /** Delete keys within an index range.
-        *	Index range is inclusive.
         *	This function is much faster than multiple removes.
         *	@param pStartIndex Index of first deleted key.
         *	@param pStopIndex Index of last deleted key.
-        *	@return \c true if the function curve contains keys, \c false otherwise.
-        *	@remarks Result is undetermined if function curve has keys but an 
-        *	index is out of bounds.
+		*	@return \c True if the delete operation is successful, \c false otherwise (e.g. the FCurve is locked, the index range is invalid, etc.).
         */
-        bool KeyDelete(int pStartIndex , int pStopIndex);	
+        bool KeyDelete( int pStartIndex, int pStopIndex );	
 
         /** Delete keys within a time range.
         *	This function is much faster than multiple removes.
         *	@param pStart Start of time range.
         *	@param pStop End of time range.
-        *	@param pInclusive Time range include the keys at pStart and pStop if true.
-        *	@return \c true if the function curve contains keys, \c false otherwise.
+		*	@param pInclusive \c True to include within the time range the keys at pStartTime and pStopTime, \c false otherwise.
+		*	@return \c True if the delete operation is successful, \c false otherwise (e.g. the FCurve is locked, no keys found within the time range, etc.).
         */	
-        bool KeyDelete(FBTime pStart = FBTime::MinusInfinity, FBTime pStop = FBTime::Infinity, bool pInclusive = false);
+        bool KeyDelete( FBTime pStart = FBTime::MinusInfinity, FBTime pStop = FBTime::Infinity, bool pInclusive = false );
 
         /**	Insert a key without affecting the curve shape
         *	\param pTime            Time at which the key is to be inserted.
@@ -385,15 +418,31 @@ namespace FBSDKNamespace {
         */
         void KeyReplaceBy( FBFCurve& pSource, FBTime pStart = FBTime::MinusInfinity, FBTime pStop = FBTime::Infinity, bool pUseExactGivenSpan = false, bool pKeyStartEndOnNoKey = true );
 
-        /**	Replace keys within a range in current function curve with keys found in a source function curve.
-        *   \deprecated Deprecate as of 2014 version for naming consistency, use KeyReplaceBy instead.       
-        *   \param pSource Source function curve.
-        *   \param pStart Start of time range.
-        *   \param pStop End of time range.
-        *   \param pUseExactGivenSpan When \c false, the time of the first and last key in the range will be used.
-        *   \param pKeyStartEndOnNoKey When \c true, inserts a key at the beginning and at the end of the range if there is no key to insert.
-        */
-        K_DEPRECATED_2014 void Replace( FBFCurve& pSource, FBTime pStart = FBTime::MinusInfinity, FBTime pStop = FBTime::Infinity, bool pUseExactGivenSpan = false, bool pKeyStartEndOnNoKey = true );
+		/**	Offset keys within an index range by a given offset time.
+		*   When offsetting many keys at once, all non-moving keys that are situated in the target range are deleted automatically, to preserve the animation being offset.
+		*   \param pOffsetTime The offset time to apply on keys.
+		*   \param pStartIndex Index of first key to be offset.
+		*   \param pStopIndex Index of last key to be offset.
+		*   \return	\c True if the offset operation is successful, \c false otherwise (e.g. the FCurve is locked, the index range is invalid, etc.).
+		*/
+		bool KeyOffset(
+			FBTime& pOffsetTime,
+			int		pStartIndex,
+			int		pStopIndex );
+
+		/**	Offset keys within a time range by a given offset time.
+		*   Non-moving keys that are situated in the target range are deleted automatically, to preserve the animation being offset.
+		*   \param pOffsetTime The offset time to apply on keys.
+		*   \param pStartTime Start of time range.
+		*   \param pStopTime End of time range.
+		*   \param pInclusive \c True to include within the time range the keys at pStartTime and pStopTime, \c false otherwise.
+		*   \return	\c True if the offset operation is successful, \c false otherwise (e.g. the FCurve is locked, no keys found within the time range, etc.).
+		*/
+		bool KeyOffset(
+			FBTime& pOffsetTime,
+			FBTime	pStartTime = FBTime::MinusInfinity,
+			FBTime	pStopTime = FBTime::Infinity,
+			bool	pInclusive = true );
 
         /**	Create and interpolator curve.
         *   \param pCurveType Interpolator curve type to create.
@@ -410,7 +459,7 @@ namespace FBSDKNamespace {
 
         /**	Get count for post extrapolation
         */
-        long GetPostExtrapolationCount();
+		int GetPostExtrapolationCount();
 
         /**	Set count for post extrapolation
         */
@@ -426,7 +475,7 @@ namespace FBSDKNamespace {
 
         /**	Get count for pre extrapolation
         */
-        long GetPreExtrapolationCount();
+		int GetPreExtrapolationCount();
 
         /**	Set count for pre extrapolation
         */
@@ -435,9 +484,291 @@ namespace FBSDKNamespace {
         FBPropertyListFCurveKey GetKeys(){ return Keys; };
         void SetKeys(FBPropertyListFCurveKey pKeys){ Keys = pKeys; };
         FBPropertyListFCurveKey	Keys;		//!< <b>List:</b> Keys.
+		
+	    /** Get the key value at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return         Value of the key.
+	    */
+		float KeyGetValue(int pIndex);
+
+		/** Set the key value at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue  Value of the key.
+	    */
+		void KeySetValue(int pIndex, float pValue);
+
+	    /** Get the key left derivative value at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return         Left derivative value, in units/seconds.
+	    */
+		float KeyGetLeftDerivative(int pIndex);
+
+	    /** Set the key left derivative value at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param  pValue	Left derivative value, in units/seconds.
+	    */
+		void KeySetLeftDerivative(int pIndex, float pValue);
+
+	    /** Get the key right derivative value at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return         Right derivative value, in units/seconds.
+	    */
+		float KeyGetRightDerivative(int pIndex);
+
+	    /** Set the key right derivative value at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param  pValue	Right derivative value, in units/seconds.
+	    */
+		void KeySetRightDerivative(int pIndex, float pValue);
+
+	    /** Get the key left tangent weight at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Left tangent weight.
+	    */
+		float KeyGetLeftTangentWeight(int pIndex);
+
+	    /** Set the key left tangent weight at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Left tangent weight.
+	    */
+		void KeySetLeftTangentWeight(int pIndex, float pValue);
+
+	    /** Get the key right tangent weight at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Right tangent weight.
+	    */
+		float KeyGetRightTangentWeight(int pIndex);
+
+	    /** Set the key right tangent weight at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Right tangent weight.
+	    */
+		void KeySetRightTangentWeight(int pIndex, float pValue);
+
+	    /** Get the key left bezier tangent value at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Left bezier tangent.
+	    */
+		float KeyGetLeftBezierTangent(int pIndex);
+
+	    /** Set the key left bezier tangent value at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Left bezier tangent.
+	    */
+		void KeySetLeftBezierTangent(int pIndex, float pValue);
+
+	    /** Get the key right bezier tangent value at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Right bezier tangent.
+	    */
+		float KeyGetRightBezierTangent(int pIndex);
+
+	    /** Set the key right bezier tangent value at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Right bezier tangent.
+	    */
+		void KeySetRightBezierTangent(int pIndex, float pValue);
+
+	    /** Get the key tension value at the specified index (TCB key).
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Tension value.
+	    */
+		float KeyGetTCBTension(int pIndex);
+
+	    /** Set the key tension value at the specified index (TCB key).
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Tension value.
+	    */
+		void KeySetTCBTension(int pIndex, float pValue);
+
+	    /** Get the key continuity value at the specified index (TCB key).
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Continuity value.
+	    */
+		float KeyGetTCBContinuity(int pIndex);
+
+	    /** Set the key continuity value at the specified index (TCB key).
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Continuity value.
+	    */
+		void KeySetTCBContinuity(int pIndex, float pValue);
+
+	    /** Get the key bias value at the specified index (TCB key).
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Bias value.
+	    */
+		float KeyGetTCBBias(int pIndex);
+
+	    /** Set the key bias value at the specified index (TCB key).
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Bias value.
+	    */
+		void KeySetTCBBias(int pIndex, float pValue);
+
+	    /** Get the key time value at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Time of key.
+	    */
+		FBTime KeyGetTime(int pIndex);
+	
+	    /** Set the key time value at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Time of key.
+	    */
+		void KeySetTime(int pIndex, FBTime pValue);
+
+	    /** Get the key interpolation type at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Type of interpolation.
+	    */
+		FBInterpolation KeyGetInterpolation(int pIndex);
+
+	    /** Set the key interpolation type at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Type of interpolation.
+	    */
+		void KeySetInterpolation(int pIndex, FBInterpolation pValue);
+
+	    /** Get the key tangent mode at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Tangent calculation method.
+	    */
+		FBTangentMode KeyGetTangentMode(int pIndex);
+
+	    /** Set the key tangent mode at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Tangent calculation method.
+	    */
+		void KeySetTangentMode(int pIndex, FBTangentMode pValue);
+
+		/** Get the key tangent's clamp method at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Tangent's clamp method.
+	    */
+		FBTangentClampMode KeyGetTangentClampMode(int pIndex);
+
+		/** Set the key tangent's clamp method at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Tangent's clamp method.
+	    */
+		void KeySetTangentClampMode(int pIndex, FBTangentClampMode pValue);
+
+		/** Get the key tangent's break status at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Tangent's break status.
+	    */
+		bool KeyGetTangentBreak(int pIndex);
+
+		/** Set the key tangent's break status at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Tangent's break status.
+	    */
+		void KeySetTangentBreak(int pIndex, bool pValue);
+
+		/** Get the key tangent's constant mode at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Tangent's constant mode.
+	    */
+		FBTangentConstantMode KeyGetTangentConstantMode(int pIndex);
+
+		/** Set the key tangent's constant mode at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Tangent's constant mode.
+	    */
+		void KeySetTangentConstantMode(int pIndex, FBTangentConstantMode pValue);
+
+		/** Get the key tangent's custom index at the specified index.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Tangent's custom index.
+	    */
+		FBTangentCustomIndex KeyGetTangentCustomIndex(int pIndex);
+
+		/** Set the key tangent's custom index at the specified index.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Tangent's custom index.
+	    */
+		void KeySetTangentCustomIndex(int pIndex, FBTangentCustomIndex pValue);
+
+		/** Get the tangent weight mode for a key.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			Current weight mode.
+	    */
+		FBTangentWeightMode KeyGetTangentWeightMode(int pIndex);
+
+		/** Change the tangent weight for a key. Setting the value for LeftTangentWeight/RightTangentWeight will also activate the weight for that part. Please see the note provided with FBTangentWeightMode for the left weight of a key.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	Set the pValue according to the desired mode, kFBTangentWeightModeNone to disable it.
+	    */
+		void KeySetTangentWeightMode(int pIndex, FBTangentWeightMode pValue);
+
+		/** Get the key selected state.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			True if the key is selected, false otherwise.
+	    */
+		bool KeyGetSelected(int pIndex);
+
+		/** Set the key selected state.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	New selection state.
+		*   @return	True if the operation was successful, false otherwise.
+	    */
+		bool KeySetSelected(int pIndex, bool pValue);
+
+		/** Get the key manipulation state.
+	    *   @param  pIndex  Index of the key to query.
+	    *   @return			True if the key is being manipulated, false otherwise.
+	    */
+		bool KeyGetMarkedForManipulation(int pIndex);
+
+		/** Set the key manipulation state.
+	    *   @param  pIndex  Index of the key to set.
+	    *   @param	pValue	New manipulation state.
+	    *   @return	True if the operation was successful, false otherwise.
+	    */
+		bool KeySetMarkedForManipulation(int pIndex, bool pValue);
     };
 
     FB_DEFINE_COMPONENT( FBSDK_DLL, FCurve );
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBFCurveCustomTangent
+	////////////////////////////////////////////////////////////////////////////////////
+	__FB_FORWARD( FBFCurveCustomTangent);
+
+	//! This class represents a custom tangents object in the system.
+	class FBSDK_DLL FBFCurveCustomTangent : public FBComponent {
+		__FBClassDeclare( FBFCurveCustomTangent,FBComponent );
+	public:
+		/**	Constructor.
+		*	\param	pObject	For internal use only (default is NULL).
+		*/
+		FBFCurveCustomTangent(HIObject pObject=NULL);
+
+		/** Virtual FBDelete function.
+		*/
+		virtual void FBDelete() override;
+
+		FBPropertyString			CustomTangentName;			//!< <b>Read Only Property:</b> Name of custom tangent, will be displayed in the interface.
+		FBPropertyString			CustomTangentFBXName;		//!< <b>Read Only Property:</b> Name of custom tangent, will be used in the FBX file to identify custom key type.
+		FBPropertyInt				CustomTangentIndex;			//!< <b>Read Only Property:</b> Index of the custom tangent in the system. When you will evaluate a key with your evaluator, match the index of the key with this index to know which tangent type is on the key.
+	};
+
+	FB_DEFINE_COMPONENT( FBSDK_DLL, FBFCurveCustomTangent );
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//! <b>List:</b> Custom Tangent
+	class FBSDK_DLL FBPropertyListCustomTangent : public FBPropertyListComponent
+	{
+	public:
+		/** Constructor */
+		FBPropertyListCustomTangent();
+
+		/**	Get the custom tangent at \e pIndex.
+		*	\param	pIndex	Index of custom tangent to get.
+		*	\return Custom tangent at \e pIndex.
+		*/
+		FBFCurveCustomTangent* operator[](int pIndex);
+	};
 
     ////////////////////////////////////////////////////////////////////////////////////
     // FBPropertyListAnimationNode
@@ -525,6 +856,105 @@ namespace FBSDKNamespace {
     };
 
     ////////////////////////////////////////////////////////////////////////////////////
+	// FBCurveEvaluationEvent
+	////////////////////////////////////////////////////////////////////////////////////
+	__FB_FORWARD( FBCurveEvaluationEvent );
+
+	//! This class is used when an evaluation must be done on your custom tangents. It contains the necessary information to do the evaluation. 
+	class FBSDK_DLL FBCurveEvaluationEvent : public FBEvent 
+	{
+	public:
+	    /**	Constructor.
+	    *	\param pEvent Base event (internal) to obtain information from.
+		*	\note Both Time and KeyIndex are valid and can be used to determine where to evaluate.
+	    */
+	    FBCurveEvaluationEvent( HKEventBase pEvent );
+
+		/**	Get the FbxAnimCurve to evaluate, used in story tool for read-only clip.
+		*	\return \b Curve to evaluate if successful, NULL otherwise.
+		*/
+		FBXSDK_NAMESPACE::FbxAnimCurve*	GetFBXCurve();
+
+	    FBPropertyDouble KeyIndex;				//!< <b>Read Only Property:</b> Index of the key to evaluate, a decimal value indicates an evaluation between two keys (e.g.: 1.25 -> between key 1 and 2 at 25% of the time between key 1 and 2).
+	    FBPropertyTime   Time;					//!< <b>Read Only Property:</b> Time to evaluate.
+	    FBPropertyFCurve Curve;					//!< <b>Read Only Property:</b> Curve to evaluate.
+	    FBPropertyDouble Result;				//!< <b>Read Write Property:</b> Write the resulting value in that prorperty.
+
+	    FBPropertyInt LeftCustomTangentTypeIndex;		//!< <b>Read Only Property:</b> FbxAnimCurveOnly - Type of the left key custom tangent type, -1 if not a custom tangent.
+	    FBPropertyInt RightCustomTangentTypeIndex;		//!< <b>Read Only Property:</b> FbxAnimCurveOnly - Type of the right key custom tangent type, -1 if not a custom tangent.
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBCurveCustomKeyAddEvent
+	////////////////////////////////////////////////////////////////////////////////////
+	__FB_FORWARD( FBCurveCustomKeyAddEvent );
+
+	//! This class is used when adding a key with a custom tangent to a curve. It contains the necessary information for the user to specify the properties of the key.
+	class FBSDK_DLL FBCurveCustomKeyAddEvent : public FBEvent 
+	{
+	public:
+	    /**	Constructor.
+	    *	\param pEvent Base event (internal) to obtain information from.
+	    */
+	    FBCurveCustomKeyAddEvent( HKEventBase pEvent );
+	
+		/**	Return the parent FBAnimationNode of the curve if possible.
+		*	\return	FBAnimationNode of the curve if possible, NULL otherwise.
+		*/
+		FBAnimationNode*		GetParentAnimationNode();
+
+		/**	Return the parent object holding the FBAnimationNode of the curve if possible.
+		*	\return	Parent (FBComponent) of the curve if possible, NULL otherwise.
+		*/
+		FBComponent*			GetParentComponent();
+
+	    FBPropertyInt			KeyIndex;		//!< <b>Read Only Property:</b> Index of the new key that will be added
+	    FBPropertyTime			Time;			//!< <b>Read Only Property:</b> Time where the key will be added.
+	    FBPropertyFCurve		Curve;			//!< <b>Read Only Property:</b> Curve that will receive the new key.
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBCurveCustomKeyChangeEvent
+	////////////////////////////////////////////////////////////////////////////////////
+	__FB_FORWARD( FBCurveCustomKeyChangeEvent );
+
+	//! Indicate if the interpolation or the custom index of the key will be/was modified.
+	enum FBCustomKeyChangeType
+	{
+		kFBNoChange,				//!< No change to the key.
+		kFBInterpolationChange,		//!< The interpolation of the key was/will be modified (FBInterpolation).
+		kFBCustomTangentChange		//!< The custom tangent value was/will be modified (FBTangentCustomIndex).
+	};
+	FB_DEFINE_ENUM( FBSDK_DLL, CustomKeyChangeType );
+
+	//! This class is used when changing the interpolation type/custom tangent index of a key with a custom tangent. It contains the necessary information for the user to identify the key.
+	class FBSDK_DLL FBCurveCustomKeyChangeEvent : public FBEvent 
+	{
+	public:
+	    /**	Constructor.
+	    *	\param pEvent Base event (internal) to obtain information from.
+	    */
+	    FBCurveCustomKeyChangeEvent( HKEventBase pEvent );
+
+		/**	Return the parent FBAnimationNode of the curve if possible.
+		*	\return	FBAnimationNode of the curve if possible, NULL otherwise.
+		*/
+		FBAnimationNode*		        GetParentAnimationNode();
+
+		/**	Return the parent object holding the FBAnimationNode of the curve if possible.
+		*	\return	Parent (FBComponent) of the curve if possible, NULL otherwise.
+		*/
+		FBComponent*			        GetParentComponent();
+
+		FBPropertyBool					IsPreCall;	//!< <b>Read Only Property:</b> True before the value is actually changed (allowing you to cache the current state if needed), false otherwise.
+		FBPropertyCustomKeyChangeType	ChangeType;	//!< <b>Read Write Property:</b> Indicate which setting of the key was/will be changed.
+
+	    FBPropertyInt					KeyIndex;	//!< <b>Read Only Property:</b> Index of the key with the custom tangent type.
+	    FBPropertyTime					Time;		//!< <b>Read Only Property:</b> Time of the key.
+	    FBPropertyFCurve				Curve;		//!< <b>Read Only Property:</b> Curve with the key set to the custom tangent type.			
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
     // FBPropertyEventAnimationNode
     ////////////////////////////////////////////////////////////////////////////////////
     //! \b PropertyEvent: UI idle event.
@@ -546,6 +976,66 @@ namespace FBSDKNamespace {
     *	\param p2
     */
     typedef bool (* kFBDataHandler )(void* pBuffer,FBEvaluateInfo* pEvaluateInfo,FBAnimationNode* pAnimationNode,void* p1,void* p2);
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBPropertyEventAnimationNodeEvaluate
+	////////////////////////////////////////////////////////////////////////////////////
+	//! \b PropertyEvent: Event when a custom tangent that needs to be evaluated.
+	class FBSDK_DLL FBPropertyEventAnimationNodeEvaluate : public FBPropertyEvent
+	{
+	public:
+	    /** Add/Remove a callback.
+		*	\param	pOwner		Callback owner.
+		*	\param	pHandler	Callback handler.
+		*/
+		virtual void Add	( HICallback pOwner, kICallbackHandler pHandler );
+		virtual void Remove	( HICallback pOwner, kICallbackHandler pHandler );
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBPropertyEventAnimationNodeKeyAdd
+	////////////////////////////////////////////////////////////////////////////////////
+	//! \b PropertyEvent: Event when a key that doesn't have a custom tangent is added.
+	class FBSDK_DLL FBPropertyEventAnimationNodeKeyAdd : public FBPropertyEvent
+	{
+	public:
+	    /** Add/Remove a callback.
+		*	\param	pOwner		Callback owner.
+		*	\param	pHandler	Callback handler.
+		*/
+		virtual void Add	( HICallback pOwner, kICallbackHandler pHandler );
+		virtual void Remove	( HICallback pOwner, kICallbackHandler pHandler );
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBPropertyEventAnimationNodeCustomKeyAdd
+	////////////////////////////////////////////////////////////////////////////////////
+	//! \b PropertyEvent: Event when a key with a custom tangent that needs some of its parameters to be specified is added.
+	class FBSDK_DLL FBPropertyEventAnimationNodeCustomKeyAdd : public FBPropertyEvent
+	{
+	public:
+	    /** Add/Remove a callback.
+		*	\param	pOwner		Callback owner.
+		*	\param	pHandler	Callback handler.
+		*/
+		virtual void Add	( HICallback pOwner, kICallbackHandler pHandler );
+		virtual void Remove	( HICallback pOwner, kICallbackHandler pHandler );
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBPropertyEventAnimationNodeCustomKeyChange
+	////////////////////////////////////////////////////////////////////////////////////
+	//! \b PropertyEvent: Event when a key tangent is changed to a custom tangent/changed to another type from a custom tangent or the custom tangent index is changed.
+	class FBSDK_DLL FBPropertyEventAnimationNodeCustomKeyChange : public FBPropertyEvent
+	{
+	public:
+	    /** Add/Remove a callback.
+		*	\param	pOwner		Callback owner.
+		*	\param	pHandler	Callback handler.
+		*/
+		virtual void Add	( HICallback pOwner, kICallbackHandler pHandler );
+		virtual void Remove	( HICallback pOwner, kICallbackHandler pHandler );
+	};
 
     ////////////////////////////////////////////////////////////////////////////////////
     // FBAnimationNode
@@ -718,6 +1208,264 @@ namespace FBSDKNamespace {
 
         friend class FBBox;
     };
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // FBAnimationStack
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	__FB_FORWARD( FBAnimationStack );
+
+    /** Used to access animation stack.
+    *	Class under development
+    */
+
+    class FBSDK_DLL FBAnimationStack : public FBComponent
+    {
+        //--- Open Reality declaration.
+        __FBClassDeclare(FBAnimationStack, FBComponent);
+    public:
+
+        /**	Constructor.
+        *	\param	pName		Name of the animation stack.
+        *	\param	pObject		For internal use only.
+        */
+        FBAnimationStack(const char *pName, HIObject pObject=NULL);
+
+        /** Virtual FBDelete function.
+        */
+        virtual void FBDelete();
+
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBFCurveCustomTangentManager
+	////////////////////////////////////////////////////////////////////////////////////
+	__FB_FORWARD( FBFCurveCustomTangentManager );
+
+	/**	Custom Tangent Manager
+	*	Interface to the Custom Tangent Manager.
+	*/
+	class FBSDK_DLL FBFCurveCustomTangentManager : public FBComponent
+	{
+	    __FBClassDeclare(FBFCurveCustomTangentManager, FBComponent);
+
+	    //! Constructor. protected 
+	    FBFCurveCustomTangentManager();
+
+	public:
+
+		/** Register a new custom tangent in the system.
+		*   \param		pTangentName		Name to display in the FCurve Editor and in the Key Control UI.
+		*   \param		pTangentFBXName		String to identify the custom tangent in the FBX file.
+		*	\return		Index of the custom tangent in the system.
+	  	*	\note Only 3 different custom tangents are currently supported.
+	    */
+		int AddCustomTangentType(const char* pTangentName, const char* pTangentFBXName);
+
+		/** Remove a custom tangent from the system.
+		*   \param		pTangentName		Name of the custom tangent to remove, use the UI name that was used when the tangent was registered.
+		*	\return		True if the tangent was removed, false otherwise.
+		*	\note Custom tangent can only be removed when the scene is empty (after a file new). Be sure to update the index of the remaining tangent, since they might have changed.
+	    */
+		bool RemoveCustomTangentType(const char* pTangentName);
+	
+		/** Return the number of tangent currently registered in the system.
+		*	\return		Number of custom tangent in the system.
+	    */
+		int GetCustomTangentTypeCount();
+
+		/** Return the UI name of the custom tangent at the specified index.
+		*   \param		pIndex		Index of the custom tangent to query.
+		*	\return		UI Name of the custom tangent.
+	    */
+		const char* GetCustomTangentTypeName(int pIndex);
+
+		FBPropertyEventAnimationNodeEvaluate				OnEvaluate;		//!< <b>Event:</b> Called when evaluating the node, you must evaluate your curve and return the computed value.
+
+		FBPropertyEventAnimationNodeKeyAdd					OnKeyAdd;			//!< <b>Event:</b> Called when adding a key that doesn't have a custom tangent, you can specify some of its parameters if needed. NOTE: you will also receive callbacks for keys added by internal Mobu process, be sure to manage only your curves.
+		FBPropertyEventAnimationNodeCustomKeyAdd			OnCustomKeyAdd;		//!< <b>Event:</b> Called when adding a key with a custom tangent, you must specify some of its parameters.
+
+		FBPropertyEventAnimationNodeCustomKeyChange			OnCustomKeyChange;	//!< <b>Event:</b> Called when the interpolation/tangent of a key is changed to/from a custom tangent or custom tangent index is modified.
+
+		/**	Get the global object for this class
+	    *	\return	The global object.
+	    */
+	    static FBFCurveCustomTangentManager& TheOne();
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBPropertyStateEvent
+	////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+    *	This enum indicates what modification was made to the animation of a tracked property.
+    */
+    enum FBPropertyStateEventType	{
+        kFBPropertyStateEventTypeUnknownOperation = 0,  //!< Invalid event
+		kFBPropertyStateEventTypeAttached = 1 << 0,		//!< Property connector was added (can happen when undoing a delete operation, which set back the property active in the scene)
+		kFBPropertyStateEventTypeDetached = 1 << 1,		//!< Property connector was detached (property animation was delete from the scene, but it still keep in case an undo operation is done)
+        kFBPropertyStateEventTypeDestroyed = 1 << 2,	//!< Property connector was destroyed (property animation was deleted)
+        kFBPropertyStateEventTypeMassOperation = 1 << 3,//!< Property was heavily modified (switching to story tool, story clip deleted...)
+    };
+    FB_DEFINE_ENUM( FBSDK_DLL, PropertyStateEventType );
+
+	__FB_FORWARD( FBPropertyStateEvent );
+
+	//! This class is used when the state of a property tracked by the FBFCurveEventManager is changed.
+	class FBSDK_DLL FBPropertyStateEvent : public FBEvent 
+	{
+	public:
+	    /**	Constructor.
+	    *	\param pEvent Base event (internal) to obtain information from.
+	    */
+	    FBPropertyStateEvent( HKEventBase pEvent );
+	
+		/**	Return the FBProperty related to the event
+		*	\return	FBProperty of the event.
+		*/
+		FBProperty*				GetProperty();
+
+		/**	Return the parent object holding the property if possible.
+		*	\return	Parent (FBComponent) of the property if possible, NULL otherwise.
+		*/
+		FBComponent*			GetParentComponent();
+
+		FBPropertyPropertyStateEventType	EventType;    //!< <b>Read Only Property:</b> Event type, please see the FBPropertyStateEventType for the possible types.
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBFCurveEvent
+	////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+    *	This enum indicates what modification was made to a tracked FCurve.
+    */
+    enum FBFCurveEventType	{
+        kFBFCurveEventTypeUnknownOperation = 0,                     //!< Invalid event
+		kFBFCurveEventTypeKeyAdded = 1 << 0,						//!< A new key was added
+        kFBFCurveEventTypeKeyRemoved = 1 << 1,						//!< A key was removed
+        kFBFCurveEventTypeKeyTimeChanged = 1 << 2,					//!< A key time was changed
+        kFBFCurveEventTypeKeyValueChanged = 1 << 3,					//!< A key value was changed
+		kFBFCurveEventTypeDerivativedChanged = 1 << 4,				//!< A key left/right/both derivative was changed, please note that this event can affect the key specified in the event index and the following key
+		kFBFCurveEventTypeKeyInterpolationChanged = 1 << 5,			//!< A key interpolation mode was changed
+		kFBFCurveEventTypeKeyTangentChanged = 1 << 6,				//!< A key tangent was changed
+		kFBFCurveEventTypeKeyTangentBreakChanged = 1 << 7,			//!< A key break mode was changed
+		kFBFCurveEventTypeKeyTangentClampModeChanged = 1 << 8,		//!< A key clamping mode was changed
+		kFBFCurveEventTypeKeyTangentConstantChanged = 1 << 9,		//!< A key constant mode was changed
+		kFBFCurveEventTypeKeyVelocityChanged = 1 << 10,				//!< A key velocity was changed
+		kFBFCurveEventTypeKeyWeightChanged = 1 << 11,				//!< A key left/right weight was changed, please note that this event can affect the key specified in the event index and the following key
+		kFBFCurveEventTypeKeyTensionChanged = 1 << 12,				//!< A key tension was changed (only valid on TCB key)
+		kFBFCurveEventTypeKeyContinuityChanged = 1 << 13,			//!< A key continuity was changed (only valid on TCB key)
+		kFBFCurveEventTypeKeyBiasChanged = 1 << 14,					//!< A key bias was changed (only valid on TCB key)
+		kFBFCurveEventTypeKeyPreExtrapolationChanged = 1 << 15,		//!< A curve pre-extrapolation value was changed
+		kFBFCurveEventTypeKeyPostExtrapolationChanged = 1 << 16,	//!< A curve post-extrapolation value was changed
+		kFBFCurveEventTypeKeyMassOperation = 1 << 17,				//!< An operation affecting multiple keys was made
+    };
+    FB_DEFINE_ENUM( FBSDK_DLL, FCurveEventType );
+
+	__FB_FORWARD( FBFCurveEvent );
+
+	//! This class is used when a modification is made on a FCurve. It contains the necessary information to identify the owner of the curve and what modification was made. 
+	class FBSDK_DLL FBFCurveEvent : public FBEvent 
+	{
+	public:
+	    /**	Constructor.
+	    *	\param pEvent Base event (internal) to obtain information from.
+	    */
+	    FBFCurveEvent( HKEventBase pEvent );
+	
+		/**	Return the parent FBProperty of the curve if possible.
+		*	\return	FBProperty of the curve if possible, NULL otherwise.
+		*/
+		FBProperty*				GetParentProperty();
+
+		/**	Return the parent FBAnimationNode of the curve if possible.
+		*	\return	FBAnimationNode of the curve if possible, NULL otherwise.
+		*/
+		FBAnimationNode*		GetParentAnimationNode();
+
+		/**	Return the parent object holding the FBAnimationNode of the curve if possible.
+		*	\return	Parent (FBComponent) of the curve if possible, NULL otherwise.
+		*/
+		FBComponent*			GetParentComponent();
+
+		FBPropertyFCurveEventType	EventType;			//!< <b>Read Only Property:</b> Type of fcurve event.
+	    FBPropertyInt				KeyIndexStart;		//!< <b>Read Only Property:</b> Index of the first key which is involved in the event.
+	    FBPropertyInt				KeyIndexStop;		//!< <b>Read Only Property:</b> Index of the last key which is involved in the event.
+	    FBPropertyFCurve			Curve;				//!< <b>Read Only Property:</b> Curve that will receive the new key.
+		FBPropertyString			CurveName;			//!< <b>Read Only Property:</b> Name of curve.
+		FBPropertyInt				CurveIndex;			//!< <b>Read Only Property:</b> Index of curve.
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBPropertyChanged
+	////////////////////////////////////////////////////////////////////////////////////
+	//! \b PropertyEvent: Event when a property is modified, to be used with the FBFCurveEventManager.
+	class FBSDK_DLL FBPropertyChanged: public FBPropertyEvent
+	{
+	public:
+	    /** Add/Remove a callback.
+		*	\param	pOwner		Callback owner.
+		*	\param	pHandler	Callback handler.
+		*/
+		virtual void Add	( HICallback pOwner, kICallbackHandler pHandler );
+		virtual void Remove	( HICallback pOwner, kICallbackHandler pHandler );
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBFCurveChanged
+	////////////////////////////////////////////////////////////////////////////////////
+	//! \b PropertyEvent: Event when a fcurve is changed.
+	class FBSDK_DLL FBFCurveChanged: public FBPropertyEvent
+	{
+	public:
+	    /** Add/Remove a callback.
+		*	\param	pOwner		Callback owner.
+		*	\param	pHandler	Callback handler.
+		*/
+		virtual void Add	( HICallback pOwner, kICallbackHandler pHandler );
+		virtual void Remove	( HICallback pOwner, kICallbackHandler pHandler );
+	};
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBFCurveEventManager
+	////////////////////////////////////////////////////////////////////////////////////
+	__FB_FORWARD( FBFCurveEventManager );
+
+	/**	FCurve Event Manager
+	*	Interface to the FBFCurveEventManager. This class is used to track the changes on a FCurve of a property.
+	*/
+	class FBSDK_DLL FBFCurveEventManager : public FBComponent
+	{
+	    __FBClassDeclare(FBFCurveEventManager, FBComponent);
+
+	    //! Constructor. protected 
+	    FBFCurveEventManager();
+
+	public:
+
+		/**	Register a property to the FCurve Event Manager. Properties that are registered will receive events with the OnFCurveEvent/OnPropertyEvent 
+        *   properties when their FCurves are modified.
+		*	\param	pProperty		The property to track.
+		*	\return	True if the registration was successful, False otherwise.
+		*/
+		bool RegisterProperty(FBPropertyAnimatable* pProperty);
+
+		/**	Unregister a property from the FCurve Event Manager. Those properties will not be tracked and no update will be sent with the 
+        *   OnFCurveEvent/OnPropertyEvent properties anymore.
+		*	\param	pProperty		The property to stop tracking.
+		*	\return	True if the unregistration was successful, False otherwise.
+		*/
+		bool UnregisterProperty(FBPropertyAnimatable* pProperty);
+
+		FBFCurveChanged			OnFCurveEvent;	//!< <b>Event:</b> Called when a registered FCurve is modified.
+		FBPropertyChanged		OnPropertyEvent;//!< <b>Event:</b> Called when a registered property state is modified (detached, destroyed...).
+
+		/**	Get the global object for this class
+	    *	\return	The global object.
+	    */
+	    static FBFCurveEventManager& TheOne();
+	};
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // FBAnimationLayer
@@ -730,7 +1478,7 @@ namespace FBSDKNamespace {
         kFBLayerModeInvalidIndex = -1,	//!< Invalid value
         kFBLayerModeAdditive = 0,		//!< Layer value will be added to the other layers to computed the final value.
         kFBLayerModeOverride,			//!< Layer value will override the value of the other precedent layers.
-        kFBLayerModeOverridePassthrough	//!< If the layer has a weigth of 75%, the precedent layers will have a combined effect of 25% on the final value. Setting the weigth to 100% is similar to setting the layer in override.
+        kFBLayerModeOverridePassthrough	//!< If the layer has a weight of 75%, the precedent layers will have a combined effect of 25% on the final value. Setting the weight to 100% is similar to setting the layer in override.
     };
     FB_DEFINE_ENUM( FBSDK_DLL, LayerMode );
 
@@ -869,9 +1617,6 @@ namespace FBSDKNamespace {
         kFBAnimLayerMerge_AllLayers_CompleteScene,			//!< Merge the animation of all properties from all the layers to the BaseAnimation layer.
     };
 
-    //! \deprecated  Use kFBAnimLayerMerge_SelectedLayers_CompleteScene instead.
-    K_DEPRECATED_2014 static const FBAnimationLayerMergeOptions kFBAnimLayerMerge_SelectedLayer_CompleteScene = kFBAnimLayerMerge_SelectedLayers_CompleteScene; 
-
     //! Merge layer mode for animation layers. This will specify the mode of the resulting merged layer, if applicable (To BaseAnimation layer mode cannot be modified). 
     enum FBMergeLayerMode	{	
         kFBMergeLayerModeAutomatic,	//!< The resulting layer will be in override mode if one of the source layer is in override, otherwise, it will be in additive mode.
@@ -886,6 +1631,18 @@ enum FBTimeMarkAction
 	kFBTimeMarkAction_Stop,			//!< When reaching the mark, the playback stops.
 	kFBTimeMarkAction_Loop,			//!< When reaching the mark, the playback loops to previous global mark (or start frame if any).
 };
+
+//! Property Components Bit Field (XYZ, RGB, RGBA, UV, XYZW, etc.).
+enum FBPropertyComponents {	
+	kFBPropertyComponent0	= 1 << 0,	//!< First component (e.g.: X, Red, etc.).
+	kFBPropertyComponent1	= 1 << 1,	//!< Second component (e.g.: Y, Green, etc.).
+	kFBPropertyComponent2	= 1 << 2,	//!< Third component (e.g.: Z, Blue, etc.).
+	kFBPropertyComponent3	= 1 << 3,	//!< Fourth component (e.g.: W, Alpha, etc.).
+	kFBPropertyComponentAll	=	kFBPropertyComponent0 |
+								kFBPropertyComponent1 |
+								kFBPropertyComponent2 |
+								kFBPropertyComponent3	//!< All components.
+};	
 
     ////////////////////////////////////////////////////////////////////////////////////
     // FBTake
@@ -1234,6 +1991,117 @@ enum FBTimeMarkAction
 		*   \return The previous time mark index, -1 if any previous time mark is available.
 		*/
 		int GetPreviousTimeMarkIndex();
+
+		/** Offset the animation (FCurve keys) of this take object within a time range by a given offset time.
+		*   Non-moving FCurve keys that are situated in the target range are deleted automatically, to preserve the animation being offset.
+		*   \param pOffsetTime The offset time to apply.
+		*   \param pStartTime Start of time range.
+		*   \param pStopTime End of time range.
+		*   \param pInclusive \c True to include within the time range the keys at pStartTime and pStopTime, \c false otherwise.
+		*   \param pLayerID The animation layer ID being affected by the offset operation, -1 to offset the animation of all animations layers.
+		*   \param pOnLockedProperties \c True to offset animation on locked properties, \c false to skip offsetting animation on locked properties.
+		*   \return	\c True if the offset operation is successful (at least one FCurve has been modified), \c false otherwise (e.g. no keys found within the time range, invalid layer ID, etc.).
+		*/
+		bool OffsetAnimation(
+			FBTime&							pOffsetTime,
+			FBTime							pStartTime = FBTime::MinusInfinity,
+			FBTime							pStopTime = FBTime::Infinity,
+			bool							pInclusive = true,
+			int								pLayerID = -1,
+			bool							pOnLockedProperties = false );
+
+		/** Offset the animation (FCurve keys) of this take object on given objects within a time range by a given offset time.
+		*   Non-moving FCurve keys that are situated in the target range are deleted automatically, to preserve the animation being offset.
+		*   \param pObjects Objects affected by the offset operation.
+		*   \param pOffsetTime The offset time to apply.
+		*   \param pStartTime Start of time range.
+		*   \param pStopTime End of time range.
+		*   \param pInclusive \c True to include within the time range the keys at pStartTime and pStopTime, \c false otherwise.
+		*   \param pLayerID The animation layer ID being affected by the offset operation, -1 to offset the animation of all animations layers.
+		*   \param pOnLockedProperties \c True to offset animation on locked properties, \c false to skip offsetting animation on locked properties.
+		*   \return	\c True if the offset operation is successful (at least one FCurve has been modified), \c false otherwise (e.g. no keys found within the time range, invalid layer ID, etc.).
+		*/
+		bool OffsetAnimationOnObjects(
+			FBArrayTemplate<FBBox*>*		pObjects,
+			FBTime&							pOffsetTime,
+			FBTime							pStartTime = FBTime::MinusInfinity,
+			FBTime							pStopTime = FBTime::Infinity,
+			bool							pInclusive = true,
+			int								pLayerID = -1,
+			bool							pOnLockedProperties = false );
+	
+		/** Offset the animation (FCurve keys) of this take object on given properties within a time range by a given offset time.
+		*   Non-moving FCurve keys that are situated in the target range are deleted automatically, to preserve the animation being offset.
+		*   \param pProperties Properties affected by the offset operation.
+		*   \param pOffsetTime The offset time to apply.
+		*   \param pStartTime Start of time range.
+		*   \param pStopTime End of time range.
+		*   \param pInclusive \c True to include within the time range the keys at pStartTime and pStopTime, \c false otherwise.
+		*   \param pLayerID The animation layer ID being affected by the offset operation, -1 to offset the animation of all animations layers.
+		*   \param pOnLockedProperties \c True to offset animation on locked properties, \c false to skip offsetting animation on locked properties.
+		*   \param pPropertyComponents The component bit field considered when performing the offset operation, for properties having such components. By default, all components are considered. If a property don't have any component, this parameter is not affecting that property.
+		*   \return	\c True if the offset operation is successful (at least one FCurve has been modified), \c false otherwise (e.g. no keys found within the time range, invalid layer ID, etc.).
+		*/
+		bool OffsetAnimationOnProperties(
+			FBArrayTemplate<FBProperty*>*	pProperties,
+			FBTime&							pOffsetTime,
+			FBTime							pStartTime = FBTime::MinusInfinity,
+			FBTime							pStopTime = FBTime::Infinity,
+			bool							pInclusive = true,
+			int								pLayerID = -1,
+			bool							pOnLockedProperties = false,
+			FBPropertyComponents			pPropertyComponents = kFBPropertyComponentAll );
+
+		/** Delete animation (FCurve keys) of this take object within a time range.
+		*   \param pStartTime Start of time range.
+		*   \param pStopTime End of time range.
+		*   \param pInclusive \c True to include within the time range the keys at pStartTime and pStopTime, \c false otherwise.
+		*   \param pLayerID The animation layer ID being affected by the delete operation, -1 to delete the animation of all animations layers.
+		*   \param pOnLockedProperties \c True to delete animation on locked properties, \c false to skip deleting animation on locked properties.
+		*   \return \c True if the delete operation is successful (at least one FCurve has been modified), \c false otherwise (e.g. no keys found within the time range, invalid layer ID, etc.).
+		*/
+		bool DeleteAnimation(
+			FBTime							pStartTime = FBTime::MinusInfinity,
+			FBTime							pStopTime = FBTime::Infinity,
+			bool							pInclusive = true,
+			int								pLayerID = -1,
+			bool							pOnLockedProperties = false );
+
+		/** Delete animation (FCurve keys) of this take object on given objects within a time range.
+		*   \param pObjects Objects affected by the delete operation.
+		*   \param pStartTime Start of time range.
+		*   \param pStopTime End of time range.
+		*   \param pInclusive \c True to include within the time range the keys at pStartTime and pStopTime, \c false otherwise.
+		*   \param pLayerID The animation layer ID being affected by the delete operation, -1 to delete the animation of all animations layers.
+		*   \param pOnLockedProperties \c True to delete animation on locked properties, \c false to skip deleting animation on locked properties.
+		*   \return \c True if the delete operation is successful (at least one FCurve has been modified), \c false otherwise (e.g. no keys found within the time range, invalid layer ID, etc.).
+		*/
+		bool DeleteAnimationOnObjects(
+			FBArrayTemplate<FBBox*>*		pObjects,
+			FBTime							pStartTime = FBTime::MinusInfinity,
+			FBTime							pStopTime = FBTime::Infinity,
+			bool							pInclusive = true,
+			int								pLayerID = -1,
+			bool							pOnLockedProperties = false );
+
+		/** Delete animation (FCurve keys) of this take object on given properties within a time range.
+		*   \param pProperties Properties affected by the delete operation.
+		*   \param pStartTime Start of time range.
+		*   \param pStopTime End of time range.
+		*   \param pInclusive \c True to include within the time range the keys at pStartTime and pStopTime, \c false otherwise.
+		*   \param pLayerID The animation layer ID being affected by the delete operation, -1 to delete the animation of all animations layers.
+		*   \param pOnLockedProperties \c True to delete animation on locked properties, \c false to skip deleting animation on locked properties.
+		*   \param pPropertyComponents The component bit field considered when performing the delete operation, for properties having such components. By default, all components are considered. If a property don't have any component, this parameter is not affecting that property.
+		*   \return \c True if the delete operation is successful (at least one FCurve has been modified), \c false otherwise (e.g. no keys found within the time range, invalid layer ID, etc.).
+		*/
+		bool DeleteAnimationOnProperties(
+			FBArrayTemplate<FBProperty*>*	pProperties,
+			FBTime							pStartTime = FBTime::MinusInfinity,
+			FBTime							pStopTime = FBTime::Infinity,
+			bool							pInclusive = true,
+			int								pLayerID = -1,
+			bool							pOnLockedProperties = false,
+			FBPropertyComponents			pPropertyComponents = kFBPropertyComponentAll );
     };
 
     FB_DEFINE_COMPONENT( FBSDK_DLL, Take );
@@ -1404,6 +2272,29 @@ enum FBTimeMarkAction
         */
         static FBTimeWarpManager& TheOne();
     };
+
+/**  Convert a FBProperty to a FbxProperty, useful to extract some properties to a FBX file. 
+    *   \param pSourceProperty Property that will be exported.
+    *   \param pSourceTake Exported animation data will be taken from this take.
+    *   \param pDestinationObject The FbxObject object that will hold the FbxProperty.
+    *   \param pDestinationScene The FbxScene object containing the FbxObject object.
+    *   \param pDestinationStack The FbxAnimStack object that will contain the animation data.
+    *   \param pCopyAnimation If set to true, the animation will be copied (default is true).
+    *	\return	The newly created FbxProperty if the property didn't exist on the pDestinationObject, or the existing property that was used to receive the data.
+*/
+FBSDK_DLL FBXSDK_NAMESPACE::FbxProperty FBtoFBXProperty(FBProperty* pSourceProperty, FBTake* pSourceTake, FBXSDK_NAMESPACE::FbxObject* pDestinationObject, FBXSDK_NAMESPACE::FbxScene* pDestinationScene, FBXSDK_NAMESPACE::FbxAnimStack* pDestinationStack, bool pCopyAnimation=true);
+
+/**  Convert a FbxProperty to a FBProperty, useful to extract some properties from a FBX file to a MotionBuilder scene. 
+    *   \param pSourceProperty Property that will be imported.
+    *   \param pSourceStack FbxAnimStack source object where the animation data will be taken.
+    *   \param pDestinationObject The FBComponent object that will hold the FBProperty.
+    *   \param pDestinationTake The FBTake object that will contain the animation data.
+    *   \param pCopyAnimation If set to true, the animation will be copied (default is true).
+    *   \param pLimitStart If set to a specific time, will remove the keys before that time (default is MinusInfinity).
+    *   \param pLimitEnd If set to a specific time, will remove the keys after that time  (default is Infinity).
+    *	\return	The newly created FBProperty if the property didn't exist on the pDestinationObject, or the existing property that was used to receive the data
+*/
+FBSDK_DLL FBProperty* FBXtoFBProperty(FBXSDK_NAMESPACE::FbxProperty* pSourceProperty, FBXSDK_NAMESPACE::FbxAnimStack* pSourceStack, FBComponent* pDestinationObject, FBTake* pDestinationTake, bool pCopyAnimation=true, FBTime pLimitStart=FBTime::MinusInfinity, FBTime pLimitEnd=FBTime::Infinity);
 
 #ifdef FBSDKUseNamespace
 }

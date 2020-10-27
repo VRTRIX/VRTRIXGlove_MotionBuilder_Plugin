@@ -46,6 +46,10 @@ public:
 	bool GetPreciseTimeDiscontinuities(  ) { return mFBPlotOptions->mPreciseTimeDiscontinuities; }
 	void SetPlotLockedProperties( bool pPlotLockedProperties ) { mFBPlotOptions->mPlotLockedProperties = pPlotLockedProperties; }
 	bool GetPlotLockedProperties(  ) { return mFBPlotOptions->mPlotLockedProperties; }
+	void SetPlotAuxEffectors( bool pPlotAuxEffectors ) { mFBPlotOptions->mPlotAuxEffectors = pPlotAuxEffectors; }
+	bool GetPlotAuxEffectors(  ) { return mFBPlotOptions->mPlotAuxEffectors; }
+	void SetEvaluateDeformation( bool pEvaluateDeformation ) { mFBPlotOptions->mEvaluateDeformation = pEvaluateDeformation; }
+	bool GetEvaluateDeformation(  ) { return mFBPlotOptions->mEvaluateDeformation; }
 	void SetRotationFilterToApply( FBRotationFilter pRotationFilterToApply ) { mFBPlotOptions->mRotationFilterToApply = pRotationFilterToApply; }
 	FBRotationFilter GetRotationFilterToApply(  ) { return mFBPlotOptions->mRotationFilterToApply; }
     void SetPlotTangentMode( FBPlotTangentMode pPlotTangentMode ) { mFBPlotOptions->mPlotTangentMode = pPlotTangentMode; }

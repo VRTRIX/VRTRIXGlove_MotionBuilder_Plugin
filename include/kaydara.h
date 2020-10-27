@@ -37,17 +37,16 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 **************************************************************************/
 
 // *** if you update this version, make sure to update the other version value in src/motionbuilder/motionbuilder/resource.h
-#define K_KERNEL_VERSION	18000 
+#define K_KERNEL_VERSION	19000 
 // ***
 
 #define K_NO_PROJECTSETTINGS
+#define K_NO_NAMESPACE_UPGRADE			// Support for NamespaceUpgradeToFileReference and NamespaceDowngradeFromFileReference
+#define K_NO_PYTHON_CODE_GENERATION		// Python code generator
+#define K_NO_LIVE			    		// No video input/output support, no fullscreen, Live camera switcher ...
 
 /* Product definitions using the Kernel */
 #if defined(FB_KERNEL)
-	#if defined(K_QUICKTIME_PLUGIN)
-		#define K_NO_FILTER
-		#define	K_NO_PHYSICS
-	#endif
 
 #ifndef FB_KERNEL_WITH_UI
 	#define K_CONFIG_MEMORY
@@ -73,11 +72,20 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#define	K_NO_STEREO
 	#define K_NO_CGFX_SHADER
 	#define K_NO_ONECLICK
+	#define K_NO_NVAPI
 //	#define K_NO_STATIC_FONTS	// OpenGL fonts
 // Others not used
 //		#define	K_NO_ACTOR
 //      #define	K_NO_CHARACTER
 //	    #define	K_NO_POSE
+#else
+	// API availability
+	#ifdef K_NO_CG
+		#define K_NO_CGFX_SHADER
+		#define	K_NO_STEREO
+	#endif
+	#ifdef K_NO_NVAPI
+	#endif
 #endif
 
 #if (_MSC_VER >= 1400) // The Visual C++ 2005 compiler version is 1400
@@ -115,7 +123,9 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 			#include <crtdbg.h>
 			#include <malloc.h>
             #include <new>
-            #include <xdebug>
+			#if (_MSC_VER<1900)
+				#include <xdebug>
+			#endif
             #include <xlocale>
             #include <xiosbase>
             #include <xlocnum>
@@ -188,7 +198,9 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 
 #ifdef KARCH_ENV_WIN
-	//#define snprintf _snprintf // for stdio.h platform compatibility
+	#if _MSC_VER < 1900 // < VS2015
+		#define snprintf _snprintf // for stdio.h platform compatibility
+	#endif
 	#ifndef WIN32_LEAN_AND_MEAN
 		#define WIN32_LEAN_AND_MEAN  // Defined to speed up compilation
 	#endif
@@ -231,17 +243,13 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 #else
 	#define _MSC_EMULATOR
 
-	#if (GCC_VERSION <= 40700) || !defined(__GXX_EXPERIMENTAL_CXX0X__)	// override is supported in GCC 4.7 and higher
-		#define override		//	Indicates that a method must be an override of a base-class version
-	#endif
-
 	#define sealed			//	Prevents classes from being used as base classes
 	#define abstract	=0	//	Indicates functions or classes are abstract 
 
 	#if !defined(_TRUNCATE)
 		#define _TRUNCATE ((size_t)-1)
 	#endif
-	inline int strcpy_s( char* dst,size_t bufsize,const char* src ) 
+	inline int strcpy_s( char* dst,size_t /*bufsize*/,const char* src )
 	{
 		strcpy( dst,src );
 		return 0;
@@ -251,7 +259,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 		return strcpy_s( dst,bufsize,src );
 	}
 
-	inline int strncpy_s( char* dst,size_t bufsize,const char* src,size_t count )
+	inline int strncpy_s( char* dst,size_t /*bufsize*/,const char* src,size_t count )
 	{
 		strncpy( dst,src,count );
 		return 0;
@@ -261,7 +269,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 		return strncpy_s( dst,bufsize,src,count );
 	}
 
-	inline int vsprintf_s( char *buffer, size_t bufsize, const char *format, va_list args )
+	inline int vsprintf_s( char *buffer, size_t /*bufsize*/, const char *format, va_list args )
 	{
 		return vsprintf( buffer,format, args ); 
 	}
@@ -287,7 +295,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 		return result;
 	}
 
-	inline int strcat_s( char *dst, size_t bufsize, const char *src )
+	inline int strcat_s( char *dst, size_t /*bufsize*/, const char *src )
 	{
 		strcat( dst,src );
 		return 0;
@@ -332,10 +340,6 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 		#define _atoi64( str ) strtoll( str,NULL,10 )
 	#endif
 
-	#ifndef _isnan
-		#define _isnan( x ) isnan( x )
-	#endif
-
 	inline char* _itoa(int pValue, char* pString, int pRadix)
 	{
 		assert(pRadix==10);
@@ -350,6 +354,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 #if defined(KARCH_ENV_LINUX)
 	#include <malloc.h>
+	#pragma GCC diagnostic ignored "-Wdelete-non-virtual-dtor"
 #endif
 
 #if defined(KARCH_ENV_MACOSX)
@@ -362,28 +367,30 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#pragma warning(disable : 4100)	// warning C4100: '?' : unreferenced formal parameter
 	#pragma warning(disable : 4201)	// nonstandard extension used : nameless struct/union (Level 4) portability  
 	#pragma warning(disable : 4244)	// conversion from 'const double' to 'float', possible loss of data 
+	#pragma warning(disable : 4251)	// needs to have dll-interface to be used by clients of class
 	#pragma warning(disable : 4481)	// warning C4481: nonstandard extension used: override specifier 'override'
 	#pragma warning(disable : 4514)	// unreferenced inline function has been removed (Level 4) optimizer  
 	#pragma warning(disable : 4660)	// template-class specialization 'identifier' is already instantiated (Level 2) compiler
 	#pragma warning(disable : 4710)	// function (X) not expanded  ??? may be good to know
 	#pragma warning(disable : 4711)	// function (X) selected for automatic inline expansion
 	#pragma warning(disable : 4725)	// instruction may be inaccurate on some Pentiums
-	#pragma warning(disable : 4251) // needs to have dll-interface to be used by clients of class
 
 	#pragma warning(error : 4002)	// too many actual parameters for macro 'identifier'
+	#pragma warning(error : 4018)	// warning C4018: '>': signed/unsigned mismatch
 	#pragma warning(error : 4130)	// warning C4130: '==' : logical operation on address of string constant
+	#pragma warning(error : 4189)	// warning C4189: local variable is initialized but not referenced
 	#pragma warning(error : 4238)	// warning C4238: nonstandard extension used : class rvalue used as lvalue
 	#pragma warning(error : 4265)	// warning C4265: 'class': class has virtual functions, but destructor is not virtual
 	#pragma warning(error : 4289)	// warning C4289: nonstandard extension used : 'var' : loop control variable declared in the for-loop is used outside the for-loop scope
 	#pragma warning(error : 4311)	// warning C4311: 'type cast' : pointer truncation from 'x *' to 'y'
 	#pragma warning(error : 4373)	// warning C4373: '%$S': virtual function overrides '%$pS', previous versions of the compiler did not override when parameters only differed by const/volatile qualifiers
+	#pragma warning(error : 4407)	// warning C4407: cast between different pointer to member representations, compiler may generate incorrect code
 	#pragma warning(error : 4431)	// warning C4431: missing type specifier - int assumed. Note: C no longer supports default-int
 	#pragma warning(error : 4510)	// warning C4510: 'class' : default constructor could not be generated
 	#pragma warning(error : 4551)	// warning C4551: function call missing argument list
 	#pragma warning(error : 4553)	// warning C4553: '==' : operator has no effect; did you intend '='?
 	#pragma warning(error : 4700)	// warning C4700: (level 1 and 4) local variable 'name' used without having been initialized
-	#pragma warning(error : 4701)	// warning C4700: (level 4) local variable 'name' may be used without having been initialized
-	#pragma warning(error : 4407)	// warning C4407: cast between different pointer to member representations, compiler may generate incorrect code
+	#pragma warning(error : 4701)	// warning C4701: (level 4) local variable 'name' may be used without having been initialized
 	#pragma warning(error : 4946)	// warning C4946: reinterpret_cast used between related classes: 'class1' and 'class2'
 	#pragma warning(error : 4996)	// warning C4996: 'function': was declared deprecated
 #endif
@@ -397,23 +404,20 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 // the timing.
 
 #if defined(KARCH_DEV_GNUC) // GNU compiler
-    #define K_DEPRECATED_2014 __attribute__((deprecated))
-    #define K_DEPRECATED_2015 __attribute__((deprecated))
 	#define K_DEPRECATED_2016 __attribute__((deprecated))
 	#define K_DEPRECATED_2017 __attribute__((deprecated))
 	#define K_DEPRECATED_2018 __attribute__((deprecated))
+	#define K_DEPRECATED_2019 __attribute__((deprecated))
 #elif defined(KARCH_DEV_MSC) || defined(KARCH_DEV_INTEL) // Microsoft or Intel compiler
-    #define K_DEPRECATED_2014 __declspec(deprecated)
-    #define K_DEPRECATED_2015 __declspec(deprecated)
 	#define K_DEPRECATED_2016 __declspec(deprecated)
 	#define K_DEPRECATED_2017 __declspec(deprecated)
 	#define K_DEPRECATED_2018 __declspec(deprecated)
+	#define K_DEPRECATED_2019 __declspec(deprecated)
 #else // Unknown compiler
-    #define K_DEPRECATED_2014
-    #define K_DEPRECATED_2015
 	#define K_DEPRECATED_2016
 	#define K_DEPRECATED_2017
 	#define K_DEPRECATED_2018
+	#define K_DEPRECATED_2019
 #endif
 
 #endif // _KAYDARA_H_

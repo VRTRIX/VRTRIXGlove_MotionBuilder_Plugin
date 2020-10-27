@@ -108,6 +108,14 @@ enum FBTransportSnapMode
 };
 FB_DEFINE_ENUM( FBSDK_DLL, TransportSnapMode );
 
+//! Available loop modes for the transport control.
+enum FBTransportLoopMode {
+	kFBTransportNoLoop,					//!< Playback not looping.
+	kFBTransportLoopCurrentTake,		//!< Playback looping the current take.
+	kFBTransportLoopThroughAllTakes,	//!< Playback from the current take through all takes in order then stops.
+};
+FB_DEFINE_ENUM( FBSDK_DLL, TransportLoopMode );
+
 //! Types of player control change events.
 enum FBPlayerControlChangeType {
 	kFBPlayerControlNone,			//!< None
@@ -296,7 +304,8 @@ public:
     */
     void EvaluationResume();
 
-    FBPropertyBool	LoopActive;		//!< <b>Read Write Property:</b> Is looping active?
+    /* K_DEPRECATED_2019 */ FBPropertyBool	LoopActive;		//!< <b>Read Write Property:</b> Is looping active? Deprecated, use the LoopMode property instead.
+	FBPropertyTransportLoopMode LoopMode;	//!< <b>Read Write Property:</b> Loop mode.
     FBPropertyTime	LoopStart;		//!< <b>Read Write Property:</b> Loop begin time.
     FBPropertyTime	LoopStop;		//!< <b>Read Write Property:</b> Loop end time.
 
@@ -503,7 +512,12 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////
 __FB_FORWARD( FBReferenceTime );
 
-//! Reference time class.
+/**	Reference time class.
+*	Interface for the reference time used by MotionBuilder
+The reference time are identified using unique ID. A unique ID is given when a reference time is added to the system with Add().
+Instead of using a linear array to store the reference time, a map is used to link an ID to a reference time.
+The available IDs can be queried using GetUniqueIDList().
+*/
 class FBSDK_DLL FBReferenceTime : public FBComponent {
     __FBClassDeclare( FBReferenceTime,FBComponent );
 public:
@@ -514,36 +528,49 @@ public:
 
     /**	Add a reference time to list.
     *	\param	pName	Name of time to add the list.
-    *	\return Number of reference times after operation.
+    *	\return Unique ID of the reference time, use this ID to access the reference time in the future.
     */
     int    Add( const char *pName );
 
     /**	Remove a reference time from the list.
-    *	\param	pIndex	Index of reference time to remove.
+    *	\param	pID	ID of reference time to remove.
     */
-    void   Remove( int pIndex );
+    void   Remove( int pID );
 
     /**	Set a reference time.
-    *	\param	pIndex			Index of reference time set.
+    *	\param	pID				ID of reference time set.
     *	\param	pReferenceTime	Time to use as reference time.
     *	\param	pSystem			System time.
     */
-    void   SetTime( int pIndex, FBTime pReferenceTime, FBTime pSystem );
+    void   SetTime( int pID, FBTime pReferenceTime, FBTime pSystem );
     /**	Get a reference time.
-    *	\param	pIndex		Index of reference to get.
+    *	\param	pID			ID of reference to get.
     *	\param	pSystem		System time.
     *	\return	Reference time at \p pIndex.
     */
-    FBTime GetTime( int pIndex, FBTime pSystem );
+    FBTime GetTime( int pID, FBTime pSystem );
 
     /**	Overloaded [] operator
-    *	\param	pIndex
-    *	\return	Name of reference time at \p pIndex.
+    *	\param	pID
+    *	\return	Name of reference time with the \p pID.
     */
-    const char *operator[](int pIndex);
+    const char *operator[](int pID);
 
-    FBPropertyInt				Count;			//!< <b>Read Only Property:</b> Number of reference times.
-    FBPropertyInt				ItemIndex;		//!< <b>Read Write Property:</b> Current reference time index.
+    /**	Get list of currently available IDs.
+    *	\param	pIDArray	Array that will be filled with the requested IDs.
+    */
+    void GetUniqueIDList( FBArrayTemplate<int>* pIDArray );
+
+    /**	Get the name of a time reference.
+    *	\param	pID	ID of the time reference whose name will be returned.
+    *	\return	Name of reference time with the \p pID.
+    */
+    const char * GetReferenceTimeName( int pID );
+
+    /*K_DEPRECATED_2019*/ FBPropertyInt				Count;			//!< <b>Read Only Property:</b> Number of reference times. Deprecated, use GetUniqueIDList() instead.
+    /*K_DEPRECATED_2019*/ FBPropertyInt				ItemIndex;		//!< <b>Read Write Property:</b> Current reference time index. Deprecated, use CurrentTimeReferenceID instead.
+
+	FBPropertyInt				CurrentTimeReferenceID;		//!< <b>Read Write Property:</b> Current reference time ID
 };
 
 #ifdef FBSDKUseNamespace

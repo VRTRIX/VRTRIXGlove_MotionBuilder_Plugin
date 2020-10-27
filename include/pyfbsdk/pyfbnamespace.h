@@ -38,6 +38,8 @@ public:
     int    GetContentCount() { return mFBNamespace->GetContentCount(); } 
     object GetContent(int pIndex) { return FBWrapperFactory::TheOne().WrapFBObject(mFBNamespace->GetContent(pIndex)); }
     void   GetContentList(FBComponentList_Wrapper& pContentList, FBPlugModificationFlag pModificationFlags = kFBPlugAllContent, bool pRecursive = true, int pTypeInfo = FBPlug::TypeInfo, bool pExactTypeMatch = false) { mFBNamespace->GetContentList( *(pContentList.mFBObjectList), pModificationFlags, pRecursive, pTypeInfo, pExactTypeMatch); }
+	bool   IsContentLocked() { return mFBNamespace->ContentLocked; }
+	void   SetContentLocked( bool pLockState ) { mFBNamespace->ContentLocked = pLockState; }
 };
 
 #endif // pyfbset_h__

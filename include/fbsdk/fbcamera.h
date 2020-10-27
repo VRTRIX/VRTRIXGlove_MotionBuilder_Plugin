@@ -362,13 +362,6 @@ public:
 #endif
 
     /**  Obtains the camera's matrix.
-    *    \deprecated Use FBCamera::GetCameraMatrix() instead
-    *    \param     pType    Matrix type to obtain.
-    *    \return    Matrix of doubles (the camera's matrix in question).
-    */
-    K_DEPRECATED_2014 double*    GetMatrix( FBCameraMatrixType pType );
-
-    /**  Obtains the camera's matrix.
     *    \param     pMatrix         Matrix to fill with requested information.
     *    \param     pType           Camera Matrix type to obtain.
     *    \param     pEvalInfo       Take Display if none specified.

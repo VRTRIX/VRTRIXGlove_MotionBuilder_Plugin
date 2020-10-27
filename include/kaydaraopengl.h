@@ -35,10 +35,48 @@ DATA OR ITS USE OR ANY OTHER PERFORMANCE, WHETHER OR NOT AUTODESK HAS
 BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 **************************************************************************/
-#include <kgl/glew.h>
-#if defined(KARCH_ENV_WIN32) || defined(KARCH_ENV_WIN64)
-	#define	GL_DISPLAY_CGP							0x6001
-	#define	GL_GLTARGET_CGP							0x6003
+#if defined(_WIN32)
+//	#include <windows.h> // must include before this include if needed
+// Now redefining those if not already defined
+	#ifndef WINGDIAPI
+		#define CALLBACK		__stdcall
+		#define WINAPI			__stdcall
+		#define DECLSPEC_IMPORT	__declspec(dllimport)
+		#define WINGDIAPI		DECLSPEC_IMPORT
+		#define APIENTRY		WINAPI
+	#endif
+	#ifndef _WCHAR_T_DEFINED
+		typedef unsigned short wchar_t;
+		#define _WCHAR_T_DEFINED
+	#endif
+#else
+	#ifndef CALLBACK
+		#define CALLBACK
+	#endif
+#endif
+
+#if defined(__APPLE__)
+	#include <OpenGl/gl.h>
+	#include <OpenGl/glu.h>
+#else
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+#endif
+
+#if defined(_WIN32)
+	#ifndef GL_BGR
+		#define GL_BGR									GL_BGR_EXT
+	#endif
+	#ifndef GL_BGRA
+		#define GL_BGRA									GL_BGRA_EXT
+	#endif
+
+	#ifndef GL_EXT_abgr
+		#define GL_ABGR_EXT							0x8000
+		#define GL_EXT_abgr 1
+	#endif
+	#define GL_TEXTURE_MAX_ANISOTROPY_EXT			0x84FE
+	#define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT		0x84FF
 #endif
 
 #endif /* _KAYDARA_OPENGL_H_ */

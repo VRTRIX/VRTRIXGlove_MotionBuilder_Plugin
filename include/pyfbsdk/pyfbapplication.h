@@ -63,7 +63,7 @@ public:
 	virtual ~FBApplication_Wrapper( );
 	bool ExecuteScript(const char* pFilename) { return mFBApplication->ExecuteScript( pFilename ); }
     FBBatchStatus FileBatch(FBBatchOptions_Wrapper& pBatchOptions, FBPlotOptions_Wrapper* pPlotOptions = NULL) { return mFBApplication->FileBatch( pBatchOptions.mFBBatchOptions, pPlotOptions ? pPlotOptions->mFBPlotOptions : 0 ); }
-	void FileExit(bool pSave = false) { mFBApplication->FileExit( pSave ); }
+	void FileExit(bool pSave = false, int pExitCode = 0) { mFBApplication->FileExit( pSave, pExitCode ); }
 	bool FileExport(const char* pFilename) { return mFBApplication->FileExport( pFilename ); }
     bool FileImport(const char* pFilename, bool pMatchModels = false, bool pCreateUnmatchedModels = true) { return mFBApplication->FileImport( pFilename, pMatchModels, pCreateUnmatchedModels ); }
 	bool FileImportWithOptions(FBMotionFileOptions_Wrapper* pOptions) { return mFBApplication->FileImportWithOptions( pOptions->mFBMotionFileOptions ); }

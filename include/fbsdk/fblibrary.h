@@ -36,7 +36,6 @@
  
 **************************************************************************/
 
-#include <kaydara.h>
 #include <kaydaradef.h>
 
 enum kFBDllOperation { kFBDllLoad, kFBDllUnLoad };

@@ -36,7 +36,7 @@ class FbxUserDataRecord;
 class FbxConnectEvent;
 
 //! \internal Macro used to declare ClassId mechanics.
-#define FBXSDK_CLASS_DECLARE(Class, Parent)\
+#define FBXSDK_CLASS_DECLARE(Class, Parent, Const_Override)\
 private:\
 	Class(const Class&);\
 	Class& operator=(const Class&);\
@@ -44,14 +44,14 @@ protected:\
 	virtual ~Class(){};\
 public:\
 	static FbxClassId ClassId;\
-	virtual FbxClassId GetClassId() const { return ClassId; }\
+	virtual FbxClassId GetClassId() Const_Override { return ClassId; }\
 	friend class FBXSDK_NAMESPACE::FbxManager;\
     typedef Parent ParentClass;\
 	static Class* Create(FbxManager* pManager, const char* pName);\
 
 //! \internal Macro used to declare the FbxObject class.
-#define FBXSDK_FBXOBJECT_DECLARE(Class, Parent)\
-	FBXSDK_CLASS_DECLARE(Class, Parent)\
+#define FBXSDK_FBXOBJECT_DECLARE(Class, Parent, Const_Override)\
+	FBXSDK_CLASS_DECLARE(Class, Parent, Const_Override)\
     FBXSDK_FRIEND_NEW()\
     static Class* Create(FbxObject* pContainer, const char* pName);\
 protected:\
@@ -59,14 +59,14 @@ protected:\
 
 //! Macro used to declare a new class derived from FbxObject.
 #define FBXSDK_OBJECT_DECLARE(Class, Parent)\
-	FBXSDK_FBXOBJECT_DECLARE(Class, Parent)\
+	FBXSDK_FBXOBJECT_DECLARE(Class, Parent, const override)\
 protected:\
 	Class(FbxManager& pManager, const char* pName) : Parent(pManager, pName){};\
 private: /* end of object declaration, put back private */\
 
 //! Macro used to declare a new abstract class derived from FbxObject.
 #define FBXSDK_ABSTRACT_OBJECT_DECLARE(Class, Parent)\
-	FBXSDK_CLASS_DECLARE(Class, Parent)\
+	FBXSDK_CLASS_DECLARE(Class, Parent, const override)\
 protected:\
 	static FbxObjectCreateProc Allocate;\
 	Class(FbxManager& pManager, const char* pName) : Parent(pManager, pName){};\
@@ -156,7 +156,7 @@ private: /* end of object declaration, put back private */\
   */
 class FBXSDK_DLL FbxObject : public FbxEmitter
 {
-	FBXSDK_FBXOBJECT_DECLARE(FbxObject, FbxEmitter);
+	FBXSDK_FBXOBJECT_DECLARE(FbxObject, FbxEmitter, const);
 
 public:
 	//! \name General Object Management
@@ -233,7 +233,7 @@ public:
 		* \param pObject	The source object to copy data from.
 		* \return			Returns the destination object being modified by the source.
 		* \remark			This function replace the assignment operator (operator=). It will copy all property values and the name. Connections are NOT copied. */
-		virtual FbxObject& Copy(const FbxObject& pObject);
+        virtual FbxObject& Copy(const FbxObject& pObject);
 
 		//! Types of clones that can be created for FbxObject.
 		enum ECloneType
@@ -346,7 +346,7 @@ public:
 		  * \param pName Whose prefix is removed.
 		  * \return A temporary string without prefix.
 		  */
-		static FbxString RemovePrefix(char* pName);
+		static FbxString RemovePrefix(const char* pName);
 
 		/** Strips the prefix of pName
 		  * \param lName Whose prefix is stripped.
@@ -941,7 +941,7 @@ public:
 		  * \return \c True on success, \c false otherwise.
 		  * \remarks The URL indicates where the object is stored.
 		  */
-		virtual bool SetUrl(char* pUrl);
+		virtual bool SetUrl(const char* pUrl);
 	//@}
 
 	/** \name Run-time ClassId Management */

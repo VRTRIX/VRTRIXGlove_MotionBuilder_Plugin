@@ -34,6 +34,8 @@ public:
 	virtual ~FBStory_Wrapper( ) {}
 	void SetLockedShot( bool pLockedShot ) { mFBStory->LockedShot = pLockedShot; }
 	bool GetLockedShot(  ) { return mFBStory->LockedShot; }
+	void SetMaintainShotAndClipShotLengthsSynced( bool pSync ) { mFBStory->MaintainShotAndClipShotLengthsSynced = pSync; }
+	bool GetMaintainShotAndClipShotLengthsSynced() { return mFBStory->MaintainShotAndClipShotLengthsSynced; }
 	void SetMute( bool pMute ) { mFBStory->Mute = pMute; }
 	bool GetMute(  ) { return mFBStory->Mute; }
 	void SetSummaryClip( bool pSummaryClipOn ) { mFBStory->SummaryClip = pSummaryClipOn; }
@@ -42,7 +44,10 @@ public:
 	bool GetRecordToDisk(  ) { return mFBStory->RecordToDisk; }
 	void SetNoneBlockingPostprocess( bool pNoneBlockingPostprocess ) { mFBStory->NoneBlockingPostprocess = pNoneBlockingPostprocess; }
 	bool GetNoneBlockingPostprocess(  ) { return mFBStory->NoneBlockingPostprocess; }
+	void SetClipsTextsVisible( bool pVisible ) { mFBStory->ClipsTextsVisible = pVisible; }
+	bool GetClipsTextsVisible() { return mFBStory->ClipsTextsVisible; }
 	object GetRootEditFolder(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBStory->RootEditFolder ); }
 	object GetRootFolder(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBStory->RootFolder ); }
+	int CleanEmptyTracksAndFolders() { return mFBStory->CleanEmptyTracksAndFolders(); }
 };
 #endif // pyfbstory_h__

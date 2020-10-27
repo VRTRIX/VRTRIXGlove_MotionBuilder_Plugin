@@ -82,13 +82,6 @@ namespace FBSDKNamespace {
         kFBGeometryArrayID_Color          =  1 << 4     //!< ID to the Vertex Color Array
     };
 
-    //! \deprecated  Use kFBGeometryArrayID_Normal instead.
-    K_DEPRECATED_2014 const int kFBGeometryArrayID_NormalByPoint = kFBGeometryArrayID_Normal; 
-    
-    //! \deprecated  Use kFBGeometryArrayID_Color instead.
-    K_DEPRECATED_2014 const int kFBGeometryArrayID_VertexColor   = kFBGeometryArrayID_Color;
-
-
     //! Type of data when requesting an array
     enum FBGeometryArrayElementType {
         kFBGeometryArrayElementType_Unknown,

@@ -369,6 +369,25 @@ namespace FBSDKNamespace {;
     // FBKeyControl
     ////////////////////////////////////////////////////////////////////////////////////
     __FB_FORWARD( FBKeyControl );
+	/**
+	*	Key Interpolation Type to use when creating new keys.
+	*/
+	enum FBNewKeyInterpolationType	{
+		kFBNewKeyInterpolation_None = -1,		//!< Invalid interpolation type, could be returned by the system if it is in an uninitialized state. Don't use this mode.
+		kFBNewKeyInterpolation_Auto,			//!< Auto interpolation type.
+		kFBNewKeyInterpolation_Spline,			//!< Spline interpolation type.
+		kFBNewKeyInterpolation_SplineClamp,		//!< Spline Clamp interpolation type.
+		kFBNewKeyInterpolation_Linear,			//!< Linear interpolation type.
+		kFBNewKeyInterpolation_Step,			//!< Step interpolation type.
+		kFBNewKeyInterpolation_TCB,				//!< TCB interpolation type.
+		kFBNewKeyInterpolation_Smooth,			//!< Smooth interpolation type.
+		kFBNewKeyInterpolation_SmoothClamp,		//!< Smooth Clamp interpolation type.
+		kFBNewKeyInterpolation_Fixed,			//!< Fixed interpolation type.
+		kFBNewKeyInterpolation_Custom0,			//!< Custom 0 interpolation type.
+		kFBNewKeyInterpolation_Custom1,			//!< Custom 1 interpolation type.
+		kFBNewKeyInterpolation_Custom2,			//!< Custom 2 interpolation type.
+	};
+	FB_DEFINE_ENUM( FBSDK_DLL, NewKeyInterpolationType );
 
     /**	Key control.
     *	Interface to use the key controls tool.
@@ -383,23 +402,24 @@ namespace FBSDKNamespace {;
         */
         FBKeyControl(HIObject pObject=NULL);
 
-	/**	Move animation keys in space, with respect to a pivot object. 
-	*	Equivalent to using the "Move Keys" button in the Key Controls panel.
-    *   Only keys that are part of the current animation layer will get affected.
-	*	\param	pTimeSpan	The time span in which the animation keys will be modified
-	*	\param	pPivot		The pivot object to use as a reference. The pivot needs to be part of 
-	*						pModelList (or the current keying group) otherwise the move keys operation 
-	*						will abort
-	*	\param	pT			The global translation to apply to the pivot
-	*	\param	pR			The global Euler rotation to apply to the pivot (deg)
-	*	\param	pS			The global scaling factors to apply to the pivot
-	*	\param	pTime		The time at which the transformation values are applied to the pivot object
-	*	\param	pModelList	List of models for which the animation will be modified. Optional parameter.
-	*						If not supplied, the models in the current keying group will be used
-	*/
-	void MoveKeys( FBTimeSpan pTimeSpan, FBModel *pPivot, FBVector3d pT, FBVector3d pR, FBVector3d pS, FBTime pTime, FBModelList *pModelList = NULL );
+		/**	Move animation keys in space, with respect to a pivot object. 
+		*	Equivalent to using the "Move Keys" button in the Key Controls panel.
+	    *   Only keys that are part of the current animation layer will get affected.
+		*	\param	pTimeSpan	The time span in which the animation keys will be modified
+		*	\param	pPivot		The pivot object to use as a reference. The pivot needs to be part of 
+		*						pModelList (or the current keying group) otherwise the move keys operation 
+		*						will abort
+		*	\param	pT			The global translation to apply to the pivot
+		*	\param	pR			The global Euler rotation to apply to the pivot (deg)
+		*	\param	pS			The global scaling factors to apply to the pivot
+		*	\param	pTime		The time at which the transformation values are applied to the pivot object
+		*	\param	pModelList	List of models for which the animation will be modified. Optional parameter.
+		*						If not supplied, the models in the current keying group will be used
+		*/
+		void MoveKeys( FBTimeSpan pTimeSpan, FBModel *pPivot, FBVector3d pT, FBVector3d pR, FBVector3d pS, FBTime pTime, FBModelList *pModelList = NULL );
 
         FBPropertyBool	AutoKey;	//!< <b>Read Write Property:</b> Enable/Disable Auto Key feature (key when moving 3D objects).
+		FBPropertyNewKeyInterpolationType NewKeyInterpolationType;	//!< <b>Read Write Property:</b> Current key interpolation type that will be used for new keys.
     };
 
     ////////////////////////////////////////////////////////////////////////////////////

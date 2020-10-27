@@ -104,7 +104,7 @@ public:
 		  * \remarks             To identify the error that occurred, inspect the status object accessed 
           *                      using the GetStatus() function.
 		  */
-		virtual bool Initialize(const char* pFileName, int pFileFormat = -1, FbxIOSettings* pIOSettings = NULL);
+        bool Initialize(const char* pFileName, int pFileFormat = -1, FbxIOSettings* pIOSettings = NULL) override;
 
 	    /** Initialize object.
 	    * \param pStream       stream to access.
@@ -238,12 +238,13 @@ public:
 ** WARNING! Anything beyond these lines is for internal use, may not be documented and is subject to change without notice! **
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-	bool GetExportOptions(FbxIO* pFbxObject);
+    void TCSetDefinition(int pType);
+    bool GetExportOptions(FbxIO* pFbxObject);
 	bool Export(FbxDocument* pDocument, FbxIO* pFbxObject);
 
 protected:
-	virtual void Construct(const FbxObject* pFrom);
-	virtual void Destruct(bool pRecursive);
+	void Construct(const FbxObject* pFrom) override;
+	void Destruct(bool pRecursive) override;
 	virtual void SetOrCreateIOSettings(FbxIOSettings* pIOSettings, bool pAllowNULL);
 
 	void Reset();

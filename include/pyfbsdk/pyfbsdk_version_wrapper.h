@@ -15,12 +15,12 @@
 #define PYSDK_DLL K_DLLEXPORT
 #endif
 
-// Suppress warnings from boost header files.
-#pragma warning(disable:4100) // Unreferenced formal parameter.
-#pragma warning(disable:4127) // Conditional expression is constant.
-#pragma warning(disable:4244) // Conversion from 'long double' to 'double', possible loss of data.
-#pragma warning(disable:4512) // Assignment operator could not be generated.
-#pragma warning(disable:4996) // 'function': was declared deprecated.
+#ifdef _MSC_VER
+	// Suppress warnings from boost header files.
+	#pragma warning(disable:4100) // Unreferenced formal parameter.
+	#pragma warning(disable:4244) // Conversion from 'long double' to 'double', possible loss of data.
+	#pragma warning(disable:4459) // declaration of 'xxxx' hides global declaration
+#endif
 
 #include <boost/python.hpp>
 using namespace boost::python;
@@ -99,6 +99,7 @@ namespace PYFBSDKNamespace {
 	#include "pyfbkernel.h"
 #endif
 };
+
 
 using namespace PYFBSDKNamespace;
 

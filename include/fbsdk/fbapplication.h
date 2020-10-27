@@ -200,6 +200,8 @@ public:
     bool				mPlotTranslationOnRootOnly;		//!< Should we plot the translation on root only?
     bool				mPreciseTimeDiscontinuities;	//!< Should we use precise time discontinuities?
     bool				mPlotLockedProperties;			//!< Should we plot locked properties?
+    bool				mPlotAuxEffectors;				//!< Should we plot aux effectors?
+    bool				mEvaluateDeformation;			//!< Should we evaluate deformation while plotting? This is useful when there is a dependency with the deformation. Disabled by default.
 };
 
 #if !defined(K_NO_AUDIO)
@@ -425,8 +427,9 @@ public:
     /**	Quit application.
     *	Command File->Exit in the menus.
     *	\param	pSave	true if file is saved on exit(default=false).
-    */
-    void FileExit( bool pSave = false );
+	*	\param	pExitCode	Exit code of the application(default=0).
+	*/
+    void FileExit( bool pSave = false, int pExitCode = 0);
 
     /**	Import a motion file.
     *	Command File->Motion File Import... in the menus.

@@ -463,8 +463,6 @@ enum FBObjectFlag
     kFBFlagNamespaceEditable      = (1 << 23),  //!< Allow editing on the namespace objects. If disabled, the "Add/Remove Namespace..." option is removed from the contextual menu.
 };
 
-K_DEPRECATED_2014 const int  kFBFlagCustomObject  = (1 << 24); //!< User custom class instances (Internal usage only, to be removed in the future).
-
 //! Available lifetime status for any component
 enum FBObjectStatus {
 	kFBStatusCreating	= (1 << 0),	//!< Object is in creation operations.
@@ -472,10 +470,8 @@ enum FBObjectStatus {
 	kFBStatusRetrieving	= (1 << 2),	//!< Object is in retrieving operations.
 	kFBStatusMerging	= (1 << 3),	//!< Object is in Merging operations.
 	kFBStatusDestroying	= (1 << 4),	//!< Object is in destruction operations.
+	kFBStatusClearing	= (1 << 5), //!< Object is in clearing operations (File new).
 };
-
-//! \deprecated  Use FBPlugStatusFlag's kFBOwnedByUndo on FBPlug instead.
-K_DEPRECATED_2014 const int kFBStatusOwnedByUndo = (1 << 5);
 
 //! Namespace flags 
 enum FBNamespaceAction

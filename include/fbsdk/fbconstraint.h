@@ -706,11 +706,6 @@ class FBSDK_DLL FBConstraintManager : public FBComponent
 {
 	__FBClassDeclare( FBConstraintManager, FBComponent );
 public:
-	/** Constructor.
-    *   \deprecated This public constructor to be protected in the future. Use TheOne() function instead.
-    */
-	K_DEPRECATED_2014 FBConstraintManager();
-
     /**	Get the global FBConstraintManager object
     *	\return	the global object.
     */
@@ -746,6 +741,10 @@ public:
 	*	\return	The newly created constraint, or NULL if pName doesn't match any registered constraints. 
 	*/
 	FBConstraint* TypeCreateConstraint( const char* pName );
+protected:
+    /** Constructor.
+    */
+    FBConstraintManager();
 };
 
 

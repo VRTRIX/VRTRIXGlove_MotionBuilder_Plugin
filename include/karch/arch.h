@@ -86,10 +86,7 @@
 		#endif
 
 		// ARCH Determination.
-		#if defined(KARCH_CPU_IA64)
-			#define KARCH_ARCH_IA64			KARCH_CPU_IA64
-			#define KARCH_ARCH_64			1
-		#elif defined(KARCH_CPU_AMD64)
+		#if defined(KARCH_CPU_AMD64)
 			#define KARCH_ARCH_AMD64		KARCH_CPU_AMD64
 			#define KARCH_ARCH_64			1
 		#elif defined(KARCH_CPU_IA32)
@@ -106,17 +103,14 @@
 	#define KARCH_ARCH_IA32				_M_IX86	
 	#define KARCH_CPU_IA32				KARCH_ARCH_X86	
 
-#elif defined(_WIN32) || defined(_WIN64) //////////////////////////////////////////////// WIN32/WIN64
+#elif defined(_WIN32) || defined(_WIN64) //////////////////////////////////////////////// _WIN32/_WIN64
 	#define KARCH_ENV_WIN				1
 	#define KARCH_ENV_WIN32				_WIN32
-	#if defined(_WINNT)
-		#define KARCH_ENV_WINNT			_WINNT
-	#endif
 	#if !defined(_WIN32_WINNT)
-		#define _WIN32_WINNT	0x0502		// Latest change is for SetDllDirectory()
+		#define _WIN32_WINNT	0x0601		// _WIN32_WINNT_WIN7
     #endif
     #if !defined(WINVER)
-	    #define WINVER			0x0502
+	    #define WINVER			0x0601		// _WIN32_WINNT_WIN7
     #endif
 
 	#ifndef _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES
@@ -174,11 +168,6 @@
 		#define KARCH_CPU_X64			KARCH_ARCH_AMD64
 		#define KARCH_ENV_WIN64			_WIN64
 		#define KARCH_ARCH_64			1
-	#elif defined(_M_IA64)
-		#define KARCH_ARCH_IA64			_M_IA64
-		#define KARCH_CPU_IA64			KARCH_ARCH_ITANIUM
-		#define KARCH_ENV_WIN64			_WIN64
-		#define KARCH_ARCH_64           1
 	#else
 		#error "Architecture not supported"
 	#endif

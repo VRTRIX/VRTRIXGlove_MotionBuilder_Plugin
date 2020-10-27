@@ -1,6 +1,6 @@
 /****************************************************************************************
  
-   Copyright (C) 2016 Autodesk, Inc.
+   Copyright (C) 2017 Autodesk, Inc.
    All rights reserved.
  
    Use of this software is subject to the terms of the Autodesk license agreement
@@ -36,7 +36,7 @@ class FBXSDK_DLL FbxMesh : public FbxGeometry
 public:
 	/** Return the type of node attribute.
 	* \return Return the type of this node attribute which is \e EType::eMesh. */
-	virtual FbxNodeAttribute::EType GetAttributeType() const;
+    FbxNodeAttribute::EType GetAttributeType() const override;
 
 	/** \name Polygon Management */
 	//@{
@@ -680,8 +680,9 @@ public:
 		* resulting binormal to correct for mirrored geometry.
 		* \param pUVSetName The UVSet name to generate tangents data with. The UVSet on the first layer is the the default UVSet to generate.
 		* \param pOverwrite If true, re-generate tangents data regardless of availability, otherwise left untouched if exist.
+		* \param pIgnoreTangentFlip If true, don't test for the tangent flip when deciding which smoothing group to assign.
 		* \return \c true if successfully generated tangents data, or if already available and pOverwrite is false. */
-		bool GenerateTangentsData(const char* pUVSetName=NULL, bool pOverwrite=false);
+		bool GenerateTangentsData(const char* pUVSetName=NULL, bool pOverwrite=false, bool pIgnoreTangentFlip = false);
 
 		/** Generate tangents data for UVSet in specific layer.
 		* Note that the UV winding order is stored in the W component of the tangent.
@@ -691,8 +692,9 @@ public:
 		* resulting binormal to correct for mirrored geometry.
 		* \param pUVSetLayerIndex The layer to generate tangents data with.
 		* \param pOverwrite If true, re-generate tangents data regardless of availability, otherwise left untouched if exist.
+		* \param pIgnoreTangentFlip If true, don't test for the tangent flip when deciding which smoothing group to assign.
 		* \return \c true if successfully generated tangents data, or if already available and pOverwrite is false. */
-		bool GenerateTangentsData(int pUVSetLayerIndex, bool pOverwrite=false);
+		bool GenerateTangentsData(int pUVSetLayerIndex, bool pOverwrite=false, bool pIgnoreTangentFlip = false);
 
     
 		/** Generate tangents data for all UVSets in all layers.
@@ -702,16 +704,17 @@ public:
 		* In the case of a left-handed tangent, this function automatically flips the
 		* resulting binormal to correct for mirrored geometry.
 		* \param pOverwrite If true, re-generate tangents data regardless of availability, otherwise left untouched if exist.
+		* \param pIgnoreTangentFlip If true, don't test for the tangent flip when deciding which smoothing group to assign.
 		* \return \c true if successfully generated tangents data, or if already available and pOverwrite is false. */
-		bool GenerateTangentsDataForAllUVSets(bool pOverwrite=false);
+		bool GenerateTangentsDataForAllUVSets(bool pOverwrite=false, bool pIgnoreTangentFlip=false);
     //@}
 
 /*****************************************************************************************************************************
 ** WARNING! Anything beyond these lines is for internal use, may not be documented and is subject to change without notice! **
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    virtual FbxObject& Copy(const FbxObject& pObject);
-	virtual void Compact();
+    FbxObject& Copy(const FbxObject& pObject) override;
+    void Compact() override;
 
 	//Please use GetPolygonVertexIndex and GetPolygonVertices to access these arrays.
 	//DO NOT MODIFY them directly, otherwise unexpected behavior will occur.
@@ -767,9 +770,9 @@ public:
 	bool ConformNormalsTo(const FbxMesh* pMesh);
 
 protected:
-	virtual void Construct(const FbxObject* pFrom);
-	virtual void Destruct(bool pRecursive);
-	virtual void ContentClear();
+	void Construct(const FbxObject* pFrom) override;
+	void Destruct(bool pRecursive) override;
+	void ContentClear() override;
 
 	void InitTextureIndices(FbxLayerElementTexture* pLayerElementTexture, FbxLayerElement::EMappingMode pMappingMode);
 	void RemoveTextureIndex(FbxLayerElementTexture* pLayerElementTextures, int pPolygonIndex, int pOffset);
@@ -816,7 +819,7 @@ protected:
 	friend class FbxGeometryConverter;
 
 private:
-    bool GenerateTangentsData(FbxLayerElementUV* pUVSet, int pLayerIndex, bool pOverwrite=false);
+    bool GenerateTangentsData(FbxLayerElementUV* pUVSet, int pLayerIndex, bool pOverwrite=false, bool pIgnoreTangentFlip = false);
     void FillMeshEdgeTable(FbxArray<int>& pTable, int* pValue, void (*FillFct)(FbxArray<int>& pTable, int pIndex, int* pValue));
     void ComputeNormalsPerCtrlPoint(FbxArray<VertexNormalInfo>& lNormalInfo, bool pCW=false);
     void ComputeNormalsPerPolygonVertex(FbxArray<VertexNormalInfo>& lNormalInfo, bool pCW=false);

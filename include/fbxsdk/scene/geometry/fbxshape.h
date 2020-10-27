@@ -90,13 +90,13 @@ public:
 ** WARNING! Anything beyond these lines is for internal use, may not be documented and is subject to change without notice! **
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-	virtual void Compact();
-	virtual FbxObject& Copy(const FbxObject& pObject);
-    virtual FbxObject* Clone(FbxObject::ECloneType pCloneType=eDeepClone, FbxObject* pContainer=NULL, void* pSet = NULL) const;
+    void Compact() override;
+    FbxObject& Copy(const FbxObject& pObject) override;
+    FbxObject* Clone(FbxObject::ECloneType pCloneType=eDeepClone, FbxObject* pContainer=NULL, void* pSet = NULL) const override;
     
 protected:
-    virtual FbxNodeAttribute::EType GetAttributeType() const;
-	virtual FbxStringList GetTypeFlags() const;
+    FbxNodeAttribute::EType GetAttributeType() const override;
+    FbxStringList GetTypeFlags() const override;
 
 	FbxArray<int> mControlPointIndices;
 #endif /* !DOXYGEN_SHOULD_SKIP_THIS *****************************************************************************************/

@@ -453,6 +453,71 @@ public:
     */
     bool NamespaceExport(const char* pNamespace, const char* pFilePath, bool pASCIIFormat = false);
 
+    /** Remove all empty groups present in the scene.
+    *	\return The number of empty groups removed.
+    */
+	int CleanEmptyGroups();
+
+    /** Remove all empty sets present in the scene.
+    *	\return The number of empty sets removed.
+    */
+	int CleanEmptySets();
+
+    /** Remove all unused materials present in the scene.
+    *	\return The number of unused material removed.
+    */
+	int CleanUnusedMaterials();
+
+    /** Remove all unused textures present in the scene.
+    *	\return The number of unused textures removed.
+    */
+	int CleanUnusedTextures();
+
+    /** Remove all unused shaders present in the scene.
+    *	\return The number of unused shaders removed.
+    */
+	int CleanUnusedShaders();
+
+    /** Remove all unused video clips present in the scene.
+    *	\return The number of unused video clips removed.
+    */
+	int CleanUnusedVideoClips();
+
+    /** Remove all unused audio clips present in the scene.
+    *	\return The number of unused audio clips removed.
+    */
+	int CleanUnusedAudioClips();
+
+    /** Remove all inactive constraints present in the scene.
+    *	\return The number of inactive constraints removed.
+    */
+	int CleanInactiveConstraints();
+
+    /** Remove all unused boxes in relations constraints present in the scene.
+    *	\return The number of unused boxes in relations constraints removed.
+    */
+	int CleanRelationConstraintsUnusedBoxes();
+
+    /** Remove all empty relation constraints present in the scene.
+    *	\return The number of empty relation constraints removed.
+    */
+	int CleanEmptyRelationConstraints();
+
+#if !defined(K_NO_NAMESPACE_UPGRADE)
+    /** Upgrade Namespace to FileReference and save the referenced file to disk
+    *	\param	pNamespace		the namespace to use, must exist
+    *   \param  pFilePath       the reference file path to export.
+    *   \param  pASCIIFormat    save reference file as ASCII format if \b True
+    *   \return \b True if upgrade & export successfully.
+    */
+    bool NamespaceUpgradeToFileReference(const char* pNamespace, const char* pFilePath, bool pASCIIFormat = false);
+
+    /** Downgrade FileReference to namespace (won't touch the original referenced file)
+    *	\param	pNamespace		the FileReference's namespace to use, must exist
+    *   \return \b True if downgrade successfully.
+    */
+    bool NamespaceDowngradeFromFileReference(const char* pNamespace);
+#endif
     //@}
 
     FBPropertyListTake				Takes;			//!< <b>List:</b> Takes for scene.

@@ -55,8 +55,8 @@ public:
 	bool GetIsPlaying(  ) { return mFBPlayerControl->IsPlaying; }
 	bool GetIsRecording(  ) { return mFBPlayerControl->IsRecording; }
 	bool GetIsPlotting(  ) { return mFBPlayerControl->IsPlotting; }
-	void SetLoopActive( bool pLoopActive ) { mFBPlayerControl->LoopActive = pLoopActive; }
-	bool GetLoopActive(  ) { return mFBPlayerControl->LoopActive; }
+	/* K_DEPRECATED_2019 */ void SetLoopActive( bool pLoopActive ) { mFBPlayerControl->LoopActive = pLoopActive; }
+	/* K_DEPRECATED_2019 */ bool GetLoopActive(  ) { return mFBPlayerControl->LoopActive; }
 	void SetLoopStart( FBTime_Wrapper& pLoopStart ) { mFBPlayerControl->LoopStart = *pLoopStart.mFBTime; }
 	FBTime_Wrapper* GetLoopStart(  ) { return FBTime_Wrapper_Factory( mFBPlayerControl->LoopStart ); }
 	void SetLoopStop( FBTime_Wrapper& pLoopStop ) { mFBPlayerControl->LoopStop = *pLoopStop.mFBTime; }
@@ -65,6 +65,8 @@ public:
 	FBTime_Wrapper* GetPreviousMarker(  ) { return FBTime_Wrapper_Factory( mFBPlayerControl->PreviousMarker ); }
 	void SetSnapMode( FBTransportSnapMode pSnapMode ) { mFBPlayerControl->SnapMode = pSnapMode; }
 	FBTransportSnapMode GetSnapMode(  ) { return mFBPlayerControl->SnapMode; }
+	void SetLoopMode(FBTransportLoopMode pLoopMode) { mFBPlayerControl->LoopMode = pLoopMode; }
+	FBTransportLoopMode GetLoopMode() { return mFBPlayerControl->LoopMode; }
 	void SetTransportTimeFormat( FBTransportTimeFormat pTransportTimeFormat ) { mFBPlayerControl->TransportTimeFormat = pTransportTimeFormat; }
 	FBTransportTimeFormat GetTransportTimeFormat(  ) { return mFBPlayerControl->TransportTimeFormat; }
 	void SetZoomWindowStart( FBTime_Wrapper& pZoomWindowStart ) { mFBPlayerControl->ZoomWindowStart = *pZoomWindowStart.mFBTime; }

@@ -73,6 +73,9 @@ public:
 	object GetRenderer(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBSystem->Renderer ); }
 	object GetRootModel(  ) { return FBModel_Wrapper_Factory( mFBSystem->RootModel ); }
 	object GetScene(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBSystem->Scene ); }
+#if !defined(K_NO_CONSTRUCTION_HISTORY)
+	object GetConstructionHistory(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBSystem->ConstructionHistory); }
+#endif
 	object GetSceneRootModel(  ) { return FBModel_Wrapper_Factory( mFBSystem->SceneRootModel ); }
 	FBTime_Wrapper* GetSystemTime(  ) { return FBTime_Wrapper_Factory( mFBSystem->SystemTime ); }
 	object GetVideoInputs(  ) { return FBPropertyListVideoIn_Wrapper_Factory( mFBSystem->VideoInputs ); }

@@ -57,6 +57,9 @@ enum PYSDK_DLL FBEventName
     kFBEventConnectionStateNotify,
     kFBEventConnectionKeyingNotify,
     kFBEventHUDDisplay, 
+	kFBEventClipChange,
+	kFBEventPlayerControlChange,
+	kFBEventOverrideFileOpen,
 
     // Pyfbsdk for Callback processing events (only Type of event change)
     kFBEventOnClick,
@@ -90,13 +93,8 @@ enum PYSDK_DLL FBEventName
     kFBEventRedoCompleted,
     kFBEventRedo,
     kFBEventUnbindSDK, 
-
-    // When the time comes for integration into mainline, this should be moved up.
-    // This enum is added here for SDK compatibility.
-    // Normal FB event to which corresponds an event class
-    kFBEventClipChange,
-    kFBEventPlayerControlChange,
-	kFBEventOverrideFileOpen,
+	kFBEventPropertyChanged,
+	kFBEventFCurveChanged,
 };
 
 /** 
@@ -454,5 +452,37 @@ public:
 
 	str	            FilePath;        //!< <b>Read Only Property:</b> Path to the file that will be opened/merged.
     bool			WillOverride;    //!< <b>Read/Write Property:</b> Set to true for handling the file load, false by default. If the return value is false, MotionBuilder will proceed with the normal file open/merge process.
+};
+
+class PYSDK_DLL FBPropertyStateEvent_Wrapper : public FBEvent_Wrapper
+{
+public:
+	FBPropertyStateEvent_Wrapper()
+		: FBEvent_Wrapper( kFBEventPropertyChanged )
+	{
+	}	
+
+	FBPropertyStateEventType			EventType;			//!< <b>Read Only Property:</b> Event type, please see the FBPropertyStateEventType for the possible types.
+	object								Property;			//!< <b>Read Only Property:</b> FBProperty related to the event.
+	object								ParentComponent;	//!< <b>Read Only Property:</b> Parent object holding the property if possible.
+};
+
+class PYSDK_DLL FBFCurveEvent_Wrapper : public FBEvent_Wrapper
+{
+public:
+	FBFCurveEvent_Wrapper()
+		: FBEvent_Wrapper( kFBEventFCurveChanged )
+	{
+	}	
+
+	FBFCurveEventType					EventType;				//!< <b>Read Only Property:</b> Type of fcurve event.
+	int									KeyIndexStart;			//!< <b>Read Only Property:</b> Index of the first key which is involved in the event.
+	int									KeyIndexStop;			//!< <b>Read Only Property:</b> Index of the last key which is involved in the event.
+	object								Curve;					//!< <b>Read Only Property:</b> Curve that will receive the new key.
+	str									CurveName;				//!< <b>Read Only Property:</b> Name of curve.
+	int									CurveIndex;				//!< <b>Read Only Property:</b> Index of curve.
+	object								ParentProperty;			//!< <b>Read Only Property:</b> Parent FBProperty of the curve if possible.
+	object								ParentAnimationNode;	//!< <b>Read Only Property:</b> Parent FBAnimationNode of the curve if possible.
+	object								ParentComponent;		//!< <b>Read Only Property:</b> Parent object (FBComponent) holding the FBAnimationNode of the curve if possible.
 };
 #endif // pyfbcallback_h__

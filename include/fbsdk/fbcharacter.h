@@ -1481,6 +1481,7 @@ public:
 	void GetParentROffset( FBBodyNodeId pBodyNodeId, FBRVector* pRVector );
 
 	/** Plot the animation of the character.
+	*	When plotting onto Control Rig while the Control Rig being the source of the Character, only the selected properties, based on the active keying group, will be plotted.
 	*	\param pPlotWhere  Where to plot a character, control rig or Skeleton
 	*   \param pPlotOptions Option parameters for plotting
 	*	\return	True if the operation completed successfully.
@@ -1646,11 +1647,26 @@ public:
     *   \return		True if the effector is pinned in Rotation
     */
     bool        IsRotationPin(FBEffectorId pEffectorIndex);
+
+	/** Set the object Pinned in Rotation (Manipulation) status.
+	*   \param		pEffectorIndex	Given Index to obtain Model.
+	*   \param		pValue	The object Pinned in Rotation status.
+	*   \return		True if the operation is successful, false otherwise.
+	*/
+	bool        SetRotationPin(FBEffectorId pEffectorIndex, bool pValue);
+
 	/** Return true if the object is Pinned in Translation (Manipulation).
 	*   \param		pEffectorIndex	Given Index to obtain Model
     *   \return		True if the effector is pinned in Translation
     */
     bool        IsTranslationPin(FBEffectorId pEffectorIndex);
+
+	/** Set the object Pinned in Translation (Manipulation) status.
+	*   \param		pEffectorIndex	Given Index to obtain Model
+	*   \param		pValue	The object Pinned in Translation status.
+	*   \return		True if the operation is successful, false otherwise.
+	*/
+	bool        SetTranslationPin(FBEffectorId pEffectorIndex, bool pValue);
 
     /** Return true Ctrl Set is Ready to be used.
     *	\return return true if character is active, characterized and is in input control rig
@@ -1951,7 +1967,24 @@ FBSDK_DLL bool FBGetActorMarkerSetVisibility();
 */
 FBSDK_DLL bool FBSetActorMarkerSetVisibility(bool pShow);
 
+/** Loads a pinning preset in the Character Controls Tool.
+*	\param  pPresetName	The preset name to load (not the file path nor the filename of the preset).
+*	\return	True if the operation is successful, false otherwise.
+*/
+FBSDK_DLL bool FBLoadCharacterPinningPreset( const char* pPresetName );
 
+/** Saves a pinning preset from the current pinning values in the Character Controls Tool.
+*	\param  pPresetName	The preset name to save (not the file path nor the filename of the preset).
+*	\param  pAllowOverwriting	True to allow overwriting an existing preset having the same name as the one provided, false otherwise.
+*	\return	True if the operation is successful, false otherwise.
+*/
+FBSDK_DLL bool FBSaveCharacterPinningPreset( const char* pPresetName, bool pAllowOverwriting = false );
+
+/** Deletes a pinning preset from the Character Controls Tool.
+*	\param  pPresetName	The preset name to delete (not the file path nor the filename of the preset).
+*	\return	True if the operation is successful, false otherwise.
+*/
+FBSDK_DLL bool FBDeleteCharacterPinningPreset( const char* pPresetName );
 
 #ifdef FBSDKUseNamespace
 	}

@@ -64,6 +64,12 @@ public:
 	bool GetRenderAudio() { return mFBVideoGrabOptions->mRenderAudio; }
 	void SetAudioRenderFormat( FBAudioFmt pValue ) { mFBVideoGrabOptions->mAudioRenderFormat = pValue; }
 	FBAudioFmt GetAudioRenderFormat() { return mFBVideoGrabOptions->mAudioRenderFormat; }
+	void SetAudioOutputLocation( FBAudioOutputLocation pValue ) { mFBVideoGrabOptions->mAudioOutputLocation = pValue; }
+	FBAudioOutputLocation GetAudioOutputLocation() { return mFBVideoGrabOptions->mAudioOutputLocation; }
+	void SetAudioUseCustomStandaloneFileName( bool pValue ) { mFBVideoGrabOptions->mAudioUseCustomStandaloneFileName = pValue; }
+	bool GetAudioUseCustomStandaloneFileName() { return mFBVideoGrabOptions->mAudioUseCustomStandaloneFileName; }
+	void SetAudioCustomStandaloneFileName( const char* pValue ) { mFBVideoGrabOptions->mAudioCustomStandaloneFileName = pValue; }
+	const char* GetAudioCustomStandaloneFileName() { return mFBVideoGrabOptions->mAudioCustomStandaloneFileName; }
     void SetStillImageCompression ( int pValue ) { mFBVideoGrabOptions->mStillImageCompression = pValue; }
     int  GetStillImageCompression ( ) { return mFBVideoGrabOptions->mStillImageCompression; }
 };

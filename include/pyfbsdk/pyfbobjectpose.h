@@ -52,7 +52,7 @@ public:
 	void CopyPoseTransformFrom(FBObjectPose_Wrapper& pFromPose, const char * pObjectName, FBPoseTransformType pPoseTransformType = kFBPoseTransformInvalid) { mFBObjectPose->CopyPoseTransformFrom( *pFromPose.mFBObjectPose, pObjectName, pPoseTransformType ); }
 	void CopyTransform(const char * pObjectName, FBComponent_Wrapper& pObject, FBObjectPoseOptions_Wrapper& pObjectPoseOptions) { mFBObjectPose->CopyTransform( pObjectName, *pObject.mFBComponent, *pObjectPoseOptions.mFBObjectPoseOptions ); }
 	void GetPropertyValue(list &pValue, int pSize, const char * pObjectName, const char * pPropertyName);
-	bool GetTransform(FBTVector & pT, FBMatrix_Wrapper& pRM, FBMatrix_Wrapper& pSM, const char * pObjectName, FBPoseTransformType pPoseTransformType) { return mFBObjectPose->GetTransform( pT, *pRM.mFBMatrix, *pSM.mFBMatrix, pObjectName, pPoseTransformType ); }
+	bool GetTransform(FBVector4d_Wrapper& pT, FBMatrix_Wrapper& pRM, FBMatrix_Wrapper& pSM, const char * pObjectName, FBPoseTransformType pPoseTransformType) { return mFBObjectPose->GetTransform( *(FBTVector*)pT.mFBVector4d, *pRM.mFBMatrix, *pSM.mFBMatrix, pObjectName, pPoseTransformType ); }
 	bool IsPropertyPoseable(FBProperty_Wrapper& pProperty) { return mFBObjectPose->IsPropertyPoseable( *pProperty.mFBProperty ); }
 	bool IsPropertyStored(const char * pObjectName, const char * pPropertyName) { return mFBObjectPose->IsPropertyStored( pObjectName, pPropertyName ); }
 	bool IsTransformStored(const char * pObjectName, FBPoseTransformType pPoseTransformType = kFBPoseTransformInvalid) { return mFBObjectPose->IsTransformStored( pObjectName, pPoseTransformType ); }
@@ -66,6 +66,7 @@ public:
 	void RemoveStanceOffsetAllObjects(FBObjectPose_Wrapper& pStancePose, FBPoseTransformType pPoseTransformType = kFBPoseTransformInvalid) { mFBObjectPose->RemoveStanceOffsetAllObjects( *pStancePose.mFBObjectPose, pPoseTransformType ); }
 	void RemoveStanceOffset(const char * pObjectName, FBObjectPose_Wrapper& pStancePose, FBPoseTransformType pPoseTransformType = kFBPoseTransformInvalid) { mFBObjectPose->RemoveStanceOffset( pObjectName, *pStancePose.mFBObjectPose, pPoseTransformType ); }
 	void SetPropertyValue(const char * pObjectName, const char * pPropertyName, double * pValue, int pSize) { mFBObjectPose->SetPropertyValue( pObjectName, pPropertyName, pValue, pSize ); }
-	void SetTransform(FBTVector & pT, FBMatrix_Wrapper& pRM, FBMatrix_Wrapper& pSM, const char * pObjectName, FBPoseTransformType pPoseTransformType) { mFBObjectPose->SetTransform( pT, *pRM.mFBMatrix, *pSM.mFBMatrix, pObjectName, pPoseTransformType ); }
+	void SetTransform(FBVector4d_Wrapper& pT, FBMatrix_Wrapper& pRM, FBMatrix_Wrapper& pSM, const char * pObjectName, FBPoseTransformType pPoseTransformType) { mFBObjectPose->SetTransform( *(FBTVector*)pT.mFBVector4d, *pRM.mFBMatrix, *pSM.mFBMatrix, pObjectName, pPoseTransformType ); }
+	FBStringList_Wrapper* GetStoredObjectNames() { return FBStringList_Wrapper_Factory( mFBObjectPose->GetStoredObjectNames() ); }
 };
 #endif // pyfbobjectpose_h__

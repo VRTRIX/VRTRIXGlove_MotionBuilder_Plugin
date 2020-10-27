@@ -52,5 +52,6 @@ public:
 	object GetMarkers()      { return FBPropertyListModelMarkerOptical_Wrapper_Factory( mFBModelOptical->Markers ); }
 	object GetSegments()     { return FBPropertyListOpticalSegment_Wrapper_Factory( mFBModelOptical->Segments ); }
 	object GetRigidBodies()  { return FBPropertyListRigidBody_Wrapper_Factory( mFBModelOptical->RigidBodies ); }
+	FBRigidBody_Wrapper* CreateRigidBody( const char* pRigidBodyName, list pMarkers );
 };
 #endif // pyfbmodeloptical_h__

@@ -78,6 +78,16 @@ enum FBSyncActivationAndVisibilityMode
 };
 FB_DEFINE_ENUM( FBSDK_DLL, SyncActivationAndVisibilityMode );
 
+/*!  Character Extension Stance Pose mode when the stance pose is activated on a character. */
+enum FBCharacterExtensionStancePoseMode
+{
+	kFBStancePose_Never,						/*!< Character extension will never go in stance pose. */
+	kFBStancePose_Selected,						/*!< Character extension will go in stance pose if it is selected. */
+	kFBStancePose_Reference_Selected,			/*!< Character extension will go in stance pose if its reference is selected. */
+	kFBStancePose_Self_Or_Reference_Selected,	/*!< Character extension will go in stance pose if it is selected or if its reference is selected. */
+	kFBStancePose_Always						/*!< Character extension will always go in stance pose. */
+};
+FB_DEFINE_ENUM( FBSDK_DLL, CharacterExtensionStancePoseMode );
 
 FB_DEFINE_COMPONENT( FBSDK_DLL, CharacterExtension );
 FB_DEFINE_LIST( FBSDK_DLL, CharacterExtension );
@@ -138,8 +148,9 @@ public:
 	FBPropertyInt				MirrorLabel;	            //!< <b>Read Write Property:</b> Enum that indicate which extension is used as mirror, 0 is none, 1 is self, 2-n represent the (ith - 2)character extension in the attached character excluding self.
 	FBPropertyPlotAllowed		PlotAllowed;	            //!< <b>Read Write Property:</b> Controls if objects in the set are transformable.
     FBPropertyModel             ReferenceModel;             //!< <b>Read Write Property:</b> Controls the referential of the extension.
-    FBPropertyCharacterExtensionRetargetMode		RetargetMode;	     //!< <b>Read Write Property:</b> Character extension retarget mode.
+    FBPropertyCharacterExtensionRetargetMode		RetargetMode;		//!< <b>Read Write Property:</b> Character extension retarget mode.
 	FBPropertySyncActivationAndVisibilityMode		SyncActivationAndVisibilityMode;		//!< <b>Read Write Property:</b> The "Sync Activation & Visibility" mode.
+	FBPropertyCharacterExtensionStancePoseMode		StancePoseMode;		//!< <b>Read Write Property:</b> Character extension stance pose mode.
 	
 	
 	/** Update the stance pose to the current position of the character extension element.

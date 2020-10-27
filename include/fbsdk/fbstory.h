@@ -54,9 +54,13 @@
 #include <fbsdk/fbmodel.h>
 #include <fbsdk/fbcamera.h>
 
-#include <fbxsdk/fbxsdk_nsbegin.h>
+#ifndef FBXSDK_NAMESPACE
+	#define FBXSDK_NAMESPACE fbxsdk
+#endif
+
+namespace FBXSDK_NAMESPACE {
 	class FbxScene;
-#include <fbxsdk/fbxsdk_nsend.h>
+}
 
 #ifdef FBSDKUseNamespace
 	namespace FBSDKNamespace {
@@ -538,11 +542,18 @@ public:
 	FBStory();
 	FBPropertyBool			Mute;						//!< <b>Read Write Property:</b> If true, the Story mode will be globally disabled.
 	FBPropertyBool			LockedShot;					//!< <b>Read Write Property:</b> If true, shots will be locked (no time discontinuity).
+	FBPropertyBool			MaintainShotAndClipShotLengthsSynced; //!< <b>Read Write Property:</b> When working in time discontinuity, if true, shots and their corresponding shot clips will be kept in sync in regards of their lengths.
 	FBPropertyBool			SummaryClip;				//!< <b>Read Write Property:</b> If true, summary clips for story folders will be created to help manipulating folder content.
 	FBPropertyBool			RecordToDisk;				//!< <b>Read Write Property:</b> If true, record to story will record directly to disk.
 	FBPropertyBool			NoneBlockingPostprocess;	//!< <b>Read Write Property:</b> If true, record to disk will post process recorded data in low priority thread without affecting application performance. Clip in story will remain unloaded.
+	FBPropertyBool			ClipsTextsVisible;			//!< <b>Read Write Property:</b> If true, clips' texts are visible.
 	FBPropertyStoryFolder	RootFolder;					//!< <b>Read Only Property:</b> Story's root folder
 	FBPropertyStoryFolder	RootEditFolder;				//!< <b>Read Only Property:</b> Story's root edit folder
+
+    /** Remove all empty tracks and folders present in the Story Tool.
+    *	\return The number of empty story tracks and/or folders removed.
+    */
+	int CleanEmptyTracksAndFolders();
 
     /**	Get the global story object
     *	\return	the global object.

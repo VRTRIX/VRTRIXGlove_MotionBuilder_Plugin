@@ -95,10 +95,16 @@ public:
 	int Segment_PathKeyAdd(double pSegmentPercent, FBVector4d_Wrapper& pTLocal, FBEvaluateInfo_Wrapper *pEvalInfo = NULL)
 	{
 		PyErr_WarnEx( PyExc_UserWarning, "Segment_PathKeyAdd() is deprecated. Use PathKeyStartAdd(), PathKeyEndAdd(), PathKeyInsertAfter(), or PathKeySet() instead.", 1 );
-#pragma warning(push)
-#pragma warning(disable : 4996)
+#ifdef _MSC_VER
+	#pragma warning(push)
+	#pragma warning(disable : 4996)
+#else
+	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 		return mFBModelPath3D->Segment_PathKeyAdd( pSegmentPercent, *pTLocal.mFBVector4d, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL );
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 	}
 	void ShowCurveControls(bool pShow) { mFBModelPath3D->ShowCurveControls( pShow ); }
 	void ShowCurvePoints(bool pShow) { mFBModelPath3D->ShowCurvePoints( pShow ); }
@@ -110,10 +116,16 @@ public:
 	int Total_PathKeyAdd(double pTotalPercent, FBVector4d_Wrapper& pTLocal, FBEvaluateInfo_Wrapper *pEvalInfo = NULL)
 	{
 		PyErr_WarnEx( PyExc_UserWarning, "Total_PathKeyAdd() is deprecated. Use PathKeyStartAdd(), PathKeyEndAdd(), PathKeyInsertAfter(), or PathKeySet() instead.", 1 );
-#pragma warning(push)
-#pragma warning(disable : 4996)
+#ifdef _MSC_VER
+	#pragma warning(push)
+	#pragma warning(disable : 4996)
+#else
+	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 		return mFBModelPath3D->Total_PathKeyAdd( pTotalPercent, *pTLocal.mFBVector4d, pEvalInfo ? pEvalInfo->mFBEvaluateInfo : NULL );
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 	}
 	void UpdateGeometry() { mFBModelPath3D->UpdateGeometry(); }
 };

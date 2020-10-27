@@ -388,7 +388,7 @@ public:
             }
         }
 
-        inline const int GetBlackDepth() { return mBlackDepth; }
+        inline int GetBlackDepth() { return mBlackDepth; }
 
     private:
         enum ETreeType {eRed, eBlack};

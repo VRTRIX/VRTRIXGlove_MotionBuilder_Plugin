@@ -1462,7 +1462,8 @@ private:
     bool DoConvert(FbxAnimCurve** pCurve, 
                     double pT[eAxisCount], 
                     double pR[eAxisCount], 
-                    double pS[eAxisCount]);
+                    double pS[eAxisCount],
+					FbxStatus* pStatus);
 
     void FindTimeInterval
     (

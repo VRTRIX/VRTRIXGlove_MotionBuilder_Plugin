@@ -826,7 +826,6 @@ public:
     FbxPropertyT<FbxDouble>             SnSScaleNeck;
     FbxPropertyT<FbxDouble>             SnSNeckFreedom;
     FbxPropertyT<FbxDouble>             SnSReachHead;
-
     
     // HIK 2016.5.0 roll properties
     // Leaf roll properties
@@ -933,17 +932,17 @@ public:
     
     FbxCharacterLink*	GetCharacterLinkPtr(ENodeId pCharacterNodeId);
 
-    virtual FbxObject*	Clone(FbxObject::ECloneType pCloneType=eDeepClone, FbxObject* pContainer=NULL, void* pSet = NULL) const;    
+    FbxObject*	Clone(FbxObject::ECloneType pCloneType=eDeepClone, FbxObject* pContainer=NULL, void* pSet = NULL) const override;
 
 protected:
-	virtual void Construct(const FbxObject* pFrom);
-	virtual void ConstructProperties(bool pForceSet);
-	virtual void Destruct(bool pRecursive);
+	void Construct(const FbxObject* pFrom) override;
+	void ConstructProperties(bool pForceSet) override;
+	void Destruct(bool pRecursive) override;
 
-	virtual FbxObject&		Copy(const FbxObject& pObject);
-	virtual EType			GetConstraintType() const;
-	virtual FbxStringList	GetTypeFlags() const;
-	virtual bool			ConnectNotify (FbxConnectEvent const &pEvent);
+	FbxObject&		Copy(const FbxObject& pObject) override;
+	EType			GetConstraintType() const override;
+	FbxStringList	GetTypeFlags() const override;
+	bool			ConnectNotify (FbxConnectEvent const &pEvent) override;
 
 private:
 	bool					InverseProperty(FbxProperty& pProp);

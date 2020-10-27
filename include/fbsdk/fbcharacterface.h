@@ -137,10 +137,10 @@ public:
 	*/
 	void GotoRest();
 
-	/** Add a blendshape model group containing models.
-	*	\param pList List of models to be associated with this blendshape group.
-	*	\param pName Optional name for this model group.
-	*	\return True if the operation completed successfully.
+	/** Add a blendshape model group for each input model.
+	*	\param pList List of models to create a blendshape model group.
+	*	\param pName Unused. Instead, use the ShapeGroupGetName member function to set the name of each added blendshape model group individually.
+	*	\return True if the operation completed successfully, false otherwise.
 	*/
 	bool ShapeGroupAdd( FBModelList* pList, const char* pName = NULL );
 

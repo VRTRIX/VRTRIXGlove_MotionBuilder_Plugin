@@ -1,6 +1,6 @@
 /****************************************************************************************
  
-   Copyright (C) 2015 Autodesk, Inc.
+   Copyright (C) 2018 Autodesk, Inc.
    All rights reserved.
  
    Use of this software is subject to the terms of the Autodesk license agreement
@@ -117,7 +117,15 @@ class FbxXRefManager;
 	\li Version 7500
 	Added support for large files (>2GB). NOTE: This breaks forward compatibility (i.e. older products won't be able to open these files!!)
    
- */
+	\li Version 7700
+	Changed FBXSDK_TC_MILLISECOND from 46186158 to 141120 to support accurately frame rates like ~23.976, ~29.97, 72 and 96 fps.
+	This new value is already used in Maya 2018 and will be in MotionBuilder 2019. Althought the changes only affect the timing, it is big
+	enough to break the compatibility with version 7500. However, to minimize adoption issues, the change in this version is triggerable
+    with a global setting.  By default, we keep using the old value and "opt in" for the new one. Over time, the "opt in" will become the
+    default and the file version will be bumped to 8000 (so previous versions of the FBX SDK can detect that the new file is incompatible).
+    In the meantime, it is expected that 7700 files saved with the new precision, will still be read by previous FBX SDKs (2016,2017 and 2018)
+    BUT with totally bad timings. 
+   */
 
 //File version numbers
 #define FBX_FILE_VERSION_2000		2000	//FBX 2.0
@@ -137,7 +145,14 @@ class FbxXRefManager;
 #define FBX_FILE_VERSION_7200		7200	//FBX 7.2 (guarantee compatibility with Autodesk 2012 products)
 #define FBX_FILE_VERSION_7300		7300	//FBX 7.3 (guarantee compatibility with Autodesk 2013 products)
 #define FBX_FILE_VERSION_7400		7400	//FBX 7.4 (guarantee compatibility with Autodesk 2014/2015 products)
-#define FBX_FILE_VERSION_7500		7500	//FBX 7.5 (guarantee compatibility with Autodesk 2016 products)
+#define FBX_FILE_VERSION_7500		7500	//FBX 7.5 (guarantee compatibility with Autodesk 2016/2017/2018 products)
+#define FBX_FILE_VERSION_7700		7700	//FBX 7.7 (guarantee compatibility with Autodesk 2019 products)
+
+#define FBX_FILE_VERSION_7600       7600    // Needed to support the few existing files generated with this version.
+// Files with this version, are written using the new FBXSDK_TC_MILLISECOND but without the flag to identify this.
+// Old readers are unable to figure this out and will still assume that the millisecond is 46186158 (so all the timings
+// are wrong).
+
 
 //File version compatibility strings
 #define FBX_53_MB55_COMPATIBLE		"FBX53_MB55"
@@ -154,10 +169,12 @@ class FbxXRefManager;
 #define FBX_2013_00_COMPATIBLE		"FBX201300"
 #define FBX_2014_00_COMPATIBLE		"FBX201400"
 #define FBX_2016_00_COMPATIBLE		"FBX201600"
+#define FBX_2018_00_COMPATIBLE      "FBX201800"
+#define FBX_2019_00_COMPATIBLE      "FBX201900"
 
 //Default file version number used when writing new FBX files
-#define FBX_DEFAULT_FILE_VERSION		FBX_FILE_VERSION_7500
-#define FBX_DEFAULT_FILE_COMPATIBILITY	FBX_2016_00_COMPATIBLE
+#define FBX_DEFAULT_FILE_VERSION		FBX_FILE_VERSION_7700
+#define FBX_DEFAULT_FILE_COMPATIBILITY	FBX_2019_00_COMPATIBLE
 
 /** Convert the FBX file version string to an integral number for <= or >= tests purposes.
   * \param pFileVersion File version string.
@@ -1674,6 +1691,9 @@ public:
     bool ProjectOpen (FbxFile * pFile, FbxReader* pReader, bool pCheckCRC = false, bool pOpenMainSection = true, FbxIOFileHeaderInfo* pFileHeaderInfo = NULL);
 	FbxStatus& GetStatus() { return mStatus; }
 
+    int GetTCDefinition();
+    bool NeedTCConversion();
+
 private:
     // to resolve warning C4512: 'class' : assignment operator could not be generated
     FbxIO& operator=(const FbxIO& pOther);
@@ -1710,7 +1730,7 @@ private:
     bool ProjectClearSection();
     bool ProjectOpenSection(int pSection);
     bool BinaryReadSectionHeader();
-    FbxInt64 BinaryReadSectionFooter(char* pSourceCheck);
+    FbxInt64 BinaryReadSectionFooter(unsigned char* pSourceCheck);
     bool BinaryReadExtensionCode(FbxInt64 pFollowingSectionStart, FbxInt64& pSectionStart, FbxUInt32& pSectionVersion);
     void BinaryReadSectionPassword();
 
@@ -1720,11 +1740,11 @@ private:
 
     FbxString GetCreationTime() const;
     void SetCreationTime(FbxString pCreationTime);
-    void CreateSourceCheck(char* lSourceCheck);
-    bool TestSourceCheck(char* pSourceCheck, char* pSourceCompany);
+    void CreateSourceCheck(unsigned char* lSourceCheck);
+    bool TestSourceCheck(unsigned char* pSourceCheck, unsigned char* pSourceCompany);
     FbxString GetMangledCreationTime();
-    void EncryptSourceCheck(char* pSourceCheck, char* pEncryptionData);
-    void DecryptSourceCheck(char* pSourceCheck, const char* pEncryptionData);
+    void EncryptSourceCheck(unsigned char* pSourceCheck, unsigned char* pEncryptionData);
+    void DecryptSourceCheck(unsigned char* pSourceCheck, const unsigned char* pEncryptionData);
 
     void EncryptPasswordV1(FbxString pOriginalPassword, FbxString &pEncryptedPassword);
     void DecryptPasswordV1(FbxString pEncryptedPassword, FbxString &pDecryptedPassword);

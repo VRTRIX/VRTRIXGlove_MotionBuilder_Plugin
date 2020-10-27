@@ -50,6 +50,12 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 #define FBSDK_DLL K_DLLEXPORT
 #endif
 
+#include <fbxsdk/fbxsdk_nsbegin.h>
+	class FbxAnimCurveNode;
+	class FbxAnimStack;
+	class FbxProperty;
+#include <fbxsdk/fbxsdk_nsend.h>
+
 #include <fbsdk/fbcomponent.h>
 
 K_FORWARD( IKtLayoutRegion );
@@ -627,13 +633,15 @@ __FB_FORWARD(FBMenuItem);
     FBClassDeclare( ClassName,Parent ); \
 public: \
     ClassName():Parent() { FBClassInit; FBCreate(); } \
+	static ClassName* g##ClassName; \
 private:
 
 /**	Menu item class implementation.
-*	\param	ThisComponent	Menu item class to implement.
+*	\param	ClassName	Menu item class to implement.
 */
-#define FBMenuItemImplementation( ThisComponent ) \
-    FBClassImplementation( ThisComponent )
+#define FBMenuItemImplementation( ClassName ) \
+    FBClassImplementation( ClassName ) \
+	ClassName* ClassName::g##ClassName = nullptr
 
 /**	Menu item registration.
 *	\param	ClassName	Menu item class to register.
@@ -645,24 +653,21 @@ private:
 }\
     FBLibraryModule( ClassName )	\
 {	\
-}	\
-    ClassName* g##ClassName;
+}
 
 /**	Menu item activation.
 *	\param	ClassName	Menu item class to activate.
 */
 #define FBMenuItemActivation( ClassName )	\
-    extern ClassName* g##ClassName;			\
-    g##ClassName = new ClassName;			\
-    g##ClassName->Activate();
+    ClassName::g##ClassName = new ClassName;			\
+    ClassName::g##ClassName->Activate()
 
 /**	Get the handle of a menu item.
 *	\param	ClassName	Menu item class to get a handle for.
 *	\retval	Handle		Handle to the menu item.	
 */
 #define FBMenuItemHandle( ClassName, Handle )	\
-    extern ClassName* g##ClassName;				\
-    Handle = g##ClassName;
+    Handle = ClassName::g##ClassName
 
 //! Types of menu items available.
 enum FBMenuItemType {	
@@ -1674,14 +1679,6 @@ public:
 	*/
 	bool ItemIconSet( kReference pRef, FBImage* pImage, bool pUseACopyOfTheImage=true );
 
-	/**	\deprecated Set an item's icon. Useless function to be removed. 
-	*	\param	pRef					Reference to item in container.
-    *	\param	pFilename	Name of file where image is located.
-	*	\param	pUseACopyOfTheImage		Create a copy of the image?(default=true)
-	*	\return	Operation was successful (\b true or \b false).
-	*/
-	K_DEPRECATED_2014 virtual bool ItemIconSet( kReference pRef, FBImageContainer* pImage, bool pUseACopyOfTheImage=true );
-
     /**	Set an item's icon.
     *	\param	pRef		Reference to item in container.
     *	\param	pFilename	Name of file where image is located.
@@ -2196,6 +2193,213 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
+// FBFCurveEvent
+////////////////////////////////////////////////////////////////////////////////////
+
+/**
+*	This enum indicates what event happened in the FCurve Editor.
+*/
+enum FBFCurveEditorEventType	{
+	kFBUnspecified,				//!< Unspecified event
+	kFBGhostKeep,				//!< Ghost Keep button pressed
+	kFBGhostSwap,				//!< Ghost Swap button pressed
+	kFBGhostClear,				//!< Ghost Clear button pressed
+};
+
+FB_DEFINE_ENUM( FBSDK_DLL, FCurveEditorEventType );
+
+//! This class is used when receiving a callback about an interaction that the user has done in the FCurve Editor.
+class FBSDK_DLL FBFCurveEditorEvent : public FBEvent 
+{
+public:
+	/**	Constructor.
+	*	\param pEvent Base event (internal) to obtain information from.
+	*/
+	FBFCurveEditorEvent( HKEventBase pEvent );
+	
+	FBPropertyFCurveEditorEventType	EventType;    //!< <b>Read Only Property:</b> Event type, please see the FBFCurveEditorEventType for the possible types.
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+// FBFCurveEditorUtility
+////////////////////////////////////////////////////////////////////////////////////
+__FB_FORWARD( FBFCurveEditorUtility );
+
+/**	FBFCurveEditor Utility class
+*	Utility class allowing different operations on a FBFCurveEditor or on the main FCurveEditor
+*/
+class FBSDK_DLL FBFCurveEditorUtility : public FBComponent 
+{
+    __FBClassDeclare( FBFCurveEditorUtility, FBComponent );
+	
+public:
+	/**	Add external FCurves to the FCurve Editor, all layers will be copied.
+	*	\param	pObjectName		Name of the object that will contain the property/curves.
+	*	\param	pPropertyName	Name of the property that will contain the curves. A search will be done to see if that property exists, if so, it will be used, otherwise a new one will be created.
+	*	\param	pPropertyType	Property type for the new property.
+	*	\param	pFCurve			Original FCurves to be copied.
+	*	\param	pEditor			Pointer to a FBFCurveEditor for adding the FCurve to that custom editor, if required. The default FCurve Editor will always add the external FCurves.
+    *	\return	A pointer to a FBProperty object if successful, NULL otherwise.
+    */
+	FBProperty* AddExternalCurves(const char* pObjectName, const char* pPropertyName, const FBPropertyType pPropertyType, FBAnimationNode* pFCurve, FBFCurveEditor* pEditor = NULL);
+
+	/**	Add external FCurves to the FCurve Editor, all layers will be copied.
+	*	\param	pObjectName		Name of the object that will contain the property/curves.
+	*	\param	pPropertyName	Name of the property that will contain the curves. A search will be done to see if that property exists, if so, it will be used, otherwise a new one will be created
+	*	\param	pProperty		Property containing the original FCurves; all layers will be copied.
+	*	\param	pEditor			Pointer to a FBFCurveEditor for adding the FCurve to that custom editor, if required. The default FCurve Editor will always add the external FCurves.
+    *	\return	A pointer to a FBProperty object if successful, NULL otherwise.
+    */
+	FBProperty* AddExternalCurves(const char* pObjectName, const char* pPropertyName, FBProperty* pProperty, FBFCurveEditor* pEditor = NULL);
+
+	/**	Add external FCurves to the FCurve Editor, only the base layer will be copied.
+	*	\param	pObjectName		Name of the object that will contain the property/curves.
+	*	\param	pPropertyName	Name of the property that will contain the curves. A search will be done to see if that property exists, if so, it will be used, otherwise a new one will be created
+	*	\param	pPropertyType	Property type for the new property.
+	*	\param	pFCurve			Original FCurves to be copied.
+	*	\param	pEditor			Pointer to a FBFCurveEditor for adding the FCurve to that custom editor, if required. The default FCurve Editor will always add the external FCurves.
+    *	\return	A pointer to a FBProperty object if successful, NULL otherwise.
+    */
+	FBProperty* AddExternalCurves(const char* pObjectName, const char* pPropertyName, const FBPropertyType pPropertyType, FBXSDK_NAMESPACE::FbxAnimCurveNode* pFCurve, FBFCurveEditor* pEditor = NULL);
+
+	/**Add external FCurves to the FCurve Editor, all layers will be copied if the stack is provided.
+	*	\param	pObjectName		Name of the object that will contain the property/curves.
+	*	\param	pPropertyName	Name of the property that will contain the curves. A search will be done to see if that property exists, if so, it will be used, otherwise a new one will be created
+	*	\param	pProperty		Property containing the original FCurves.
+	*	\param	pStack			Animation stack for getting all the animation layers, NULL to use only the base layer.
+	*	\param	pEditor			Pointer to a FBFCurveEditor for adding the FCurve to that custom editor, if required. The default FCurve Editor will always add the external FCurves.
+    *	\return	A pointer to a FBProperty object if successful, NULL otherwise.
+    */
+	FBProperty* AddExternalCurves(const char* pObjectName, const char* pPropertyName, FBXSDK_NAMESPACE::FbxProperty* pProperty, FBXSDK_NAMESPACE::FbxAnimStack* pStack = NULL, FBFCurveEditor* pEditor = NULL);
+
+	/**	Remove external FCurve from the FCurve Editor.
+	*	\param	pProperty		Property to remove.
+    *	\return	True if successful, false otherwise.
+    */
+	bool RemoveExternalCurves(FBProperty * pProperty);
+
+	/**	Update the FCurve for a particular property, without creating a new property. All layers will be copied.
+	*	\param	pProperty		Property to update.
+	*	\param	pFCurve			Original FCurves to be copied.
+    *	\return	True if successful, false otherwise.
+    */
+	bool UpdateCurves(FBProperty* pProperty, FBAnimationNode* pFCurve);
+
+	/**	Update the FCurve for a particular property, without creating a new property. All layers will be copied.
+	*	\param	pProperty		Property to update.
+	*	\param	pSrcProperty	Original FCurves from the property to be copied.
+    *	\return	True if successful, false otherwise.
+    */
+	bool UpdateCurves(FBProperty* pProperty, FBProperty* pSrcProperty);
+
+	/**	Update the FCurve for a particular property, without creating a new property. Only the base layer will be copied.
+	*	\param	pProperty		Property to update.
+	*	\param	pFCurve			Original FCurves to be copied.
+    *	\return	True if successful, false otherwise.
+    */
+	bool UpdateCurves(FBProperty* pProperty, FBXSDK_NAMESPACE::FbxAnimCurveNode* pFCurve);
+
+	/**	Update the FCurve for a particular property, without creating a new property. All layers will be copied if the stack is provided.
+	*	\param	pProperty		Property to update.
+	*	\param	pFbxProperty	Property to get the curves from.
+	*	\param	pStack			Animation stack for getting all the animation layers, NULL to use only the base layer.
+    *	\return	True if successful, false otherwise.
+    */
+	bool UpdateCurves(FBProperty* pProperty, FBXSDK_NAMESPACE::FbxProperty* pFbxProperty, FBXSDK_NAMESPACE::FbxAnimStack* pStack);
+
+	/**	Get the FCurve of a particular property. This will copy all layers.
+	*	\param	pProperty		Property to get the curves from.
+	*	\param	pFCurve			FCurve that will receive the data from the property.
+    *	\return	True if successful, false otherwise.
+    */
+	bool GetCurves(FBProperty* pProperty, FBAnimationNode* pFCurve);
+
+	/**	Get the FCurve of a particular property. This will copy all layers.
+	*	\param	pProperty		Property to get the curves from.
+	*	\param	pDestProperty	Property that will receive the data from the source property.
+    *	\return	True if successful, false otherwise.
+    */
+	bool GetCurves(FBProperty* pProperty, FBProperty* pDestProperty);
+
+	/**	Get the FCurve of a particular property. Only the base layer will be copied.
+	*	\param	pProperty		Property to get the curves from.
+	*	\param	pFCurve			FCurve that will receive the data from the property.
+    *	\return	True if successful, false otherwise.
+    */
+	bool GetCurves(FBProperty* pProperty, FBXSDK_NAMESPACE::FbxAnimCurveNode* pFCurve);
+
+	/**	Get the FCurve of a particular property. All layers will be copied if the stack is provided.
+	*	\param	pProperty		Property to get the curves from.
+	*	\param	pFbxProperty	Property that will receive the data from the property.
+	*	\param	pStack			Animation stack for getting all the animation layers, NULL to use only the base layer.
+    *	\return	True if successful, false otherwise.
+    */
+	bool GetCurves(FBProperty* pProperty, FBXSDK_NAMESPACE::FbxProperty* pFbxProperty, FBXSDK_NAMESPACE::FbxAnimStack* pStack);
+
+	/**	Frame keys in the FCurve Editor interface.
+	*	\param	pSelectedKeysOnly	If true, only the selected keys will be framed, otherwise all keys will be framed.
+	*	\param	pEditor				Pointer to a FBFCurveEditor for framing the keys in that custom editor, NULL to frame in the default editor.
+	*	\note	pEditor is currently not supported in this implementation, as the FBFCurveEditor is still in development.
+    *	\return	True if successful, false otherwise.
+    */
+	bool Frame(bool pSelectedKeysOnly, FBFCurveEditor* pEditor = NULL);
+
+	/**	Get all the objects displayed in the left pane of the FCurve Editor.
+	*	\param	pObjectList			A list that will be filled with the objects displayed in the FCurve Editor.
+    *	\return	True if successful, false otherwise.
+    */
+	bool GetObjects(FBArrayTemplate<FBComponent *> &pObjectList);
+
+	/**	Get the displayed properties.
+	*	\param	pPropertyList		Array that will contain the properties displayed.
+	*	\param	pSelectedOnly		If true, only the selected properties will be returned.
+   	*	\param	pEditor				Pointer to a FBFCurveEditor for getting the properties in that custom editor, NULL to frame in the default editor.
+	*	\return	True if successful, false otherwise.
+    */
+	bool GetProperties(FBArrayTemplate<FBProperty*> &pProperties, bool pSelectedOnly, FBFCurveEditor* pEditor = NULL);
+
+	/**	Get the displayed time range of the FCurve Editor.
+	*	\param	pEditor				Pointer to a FBFCurveEditor where the time span will be get, NULL to get the time span from the default editor.
+	*	\return	FCurve Editor time span, default FBTimeSpan if not successful.
+    */
+	FBTimeSpan GetTimeSpan(FBFCurveEditor* pEditor = NULL);
+
+	/**	Set the displayed time range of the FCurve Editor.
+	*	\param	pTimeSpan			The time span that will be set.
+	*	\param	pEditor				Pointer to a FBFCurveEditor where the time span will be set, NULL to set the time span on the default editor.
+    *	\return	True if successful, false otherwise.
+    */
+	bool SetTimeSpan(FBTimeSpan pTimeSpan, FBFCurveEditor* pEditor = NULL);
+
+    /** Register to FCurve Editor event.
+    *	\param	pOwner	    Owner of the callback that will be called when an event is sent from the FCurve Editor.
+    *	\param	pHandler	Callback to call when receiving an event.
+ 	*	\param	pEditor		Pointer to a FBFCurveEditor to receive the event from that editor, NULL to receive those from the default editor.
+    *	\return	True if successful, false otherwise.
+   */
+    bool RegisterToFCurveEditorEvent(HICallback pOwner, kICallbackHandler pHandler, FBFCurveEditor* pEditor = NULL);
+
+    /** Unregister to FCurve Editor event.
+    *	\param	pOwner	    Owner of the callback to unregister.
+    *	\param	pHandler	Callback to unregister.
+ 	*	\param	pEditor		Pointer to the FBFCurveEditor that should be unregistered, NULL to unregister the default editor.
+    *	\return	True if successful, false otherwise.
+	*/
+    bool UnregisterToFCurveEditorEvent(HICallback pOwner, kICallbackHandler pHandler, FBFCurveEditor* pEditor = NULL);
+
+	/**	Get the global object for this class
+    *	\return	the global object.
+    */
+    static FBFCurveEditorUtility& TheOne();
+
+private:
+	/**	Constructor.
+    *   Protected constructor, use TheOne() access instead. 
+    */
+    FBFCurveEditorUtility();
+};
+
+////////////////////////////////////////////////////////////////////////////////////
 // FBPropertyConnectionEditor
 ////////////////////////////////////////////////////////////////////////////////////
 __FB_FORWARD( FBPropertyConnectionEditor );
@@ -2430,6 +2634,13 @@ public:
     FBPropertyBool			EnableSmartPlotControls;			//!< <b>Read Write Property:</b> Enable Smart Plot option for popup.
     FBPropertyBool			EnablePlotCharacterExtension;		//!< <b>Read Write Property:</b> Enable Plot Character Extension option for popup.
     FBPropertyBool			EnablePlotLockedProperties;			//!< <b>Read Write Property:</b> Enable Plot Locked Properties option for popup.
+    FBPropertyBool			EnablePlotAuxEffectors;				//!< <b>Read Write Property:</b> Enable Plot Aux Effectors option for popup.
+    FBPropertyBool			EnableEvaluateDeformation;			//!< <b>Read Write Property:</b> Enable Evaluate Deformation option for popup.
+
+    /**	Set plot options.
+	*	\param	pPlotOptions		Set the plot options that will be used when displaying the plot popup. First use the GetPlotOptions(), change the options and use the SetPlotOptions() to set them before calling the Popup() function.
+    */
+	void SetPlotOptions(const FBPlotOptions& pPlotOptions);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

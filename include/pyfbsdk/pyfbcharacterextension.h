@@ -88,5 +88,7 @@ public:
     object GetStancePose() { return FBWrapperFactory::TheOne().WrapFBObject( mFBCharacterExtension->GetStancePose() ); }
 	void SetSyncActivationAndVisibilityMode( FBSyncActivationAndVisibilityMode pSyncMode ) { mFBCharacterExtension->SyncActivationAndVisibilityMode = pSyncMode; }
 	FBSyncActivationAndVisibilityMode GetSyncActivationAndVisibilityMode(  ) { return mFBCharacterExtension->SyncActivationAndVisibilityMode; }
+	void SetStancePoseMode( FBCharacterExtensionStancePoseMode pStanceMode ) { mFBCharacterExtension->StancePoseMode = pStanceMode; }
+	FBCharacterExtensionStancePoseMode GetStancePoseMode(  ) { return mFBCharacterExtension->StancePoseMode; }
 };
 #endif // pyfbcharacterextension_gen_h__

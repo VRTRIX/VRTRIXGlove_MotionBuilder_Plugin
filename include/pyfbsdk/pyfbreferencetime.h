@@ -37,5 +37,20 @@ public:
 	int GetCount(  ) { return mFBReferenceTime->Count; }
 	void SetItemIndex( int pItemIndex ) { mFBReferenceTime->ItemIndex = pItemIndex; }
 	int GetItemIndex(  ) { return mFBReferenceTime->ItemIndex; }
+	void SetCurrentTimeReferenceID( int pCurrentTimeReferenceID ) { mFBReferenceTime->CurrentTimeReferenceID = pCurrentTimeReferenceID; }
+	int GetCurrentTimeReferenceID(  ) { return mFBReferenceTime->CurrentTimeReferenceID; }
+    const char* GetReferenceTimeName( int pID ) { return mFBReferenceTime->GetReferenceTimeName(pID); }
+	list GetUniqueIDList()
+	{
+		list lUniqueID;
+		
+		FBArrayTemplate<int> lIDArray;
+		mFBReferenceTime->GetUniqueIDList(&lIDArray);
+
+		for( int i = 0; i < lIDArray.GetCount(); i++ )
+			lUniqueID.append( lIDArray[ i ] );
+
+		return lUniqueID;
+	}
 };
 #endif // pyfbreferencetime_h__

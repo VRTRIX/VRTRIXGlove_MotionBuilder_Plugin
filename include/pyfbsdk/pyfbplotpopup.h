@@ -37,6 +37,7 @@ public:
 	bool Popup(const char* pWindowName)							{ return mFBPlotPopup->Popup(pWindowName); }
 	
 	FBPlotOptions_Wrapper* GetPlotOptions()						{ return FBPlotOptions_Wrapper_Factory(mFBPlotPopup->GetPlotOptions()); }
+	void SetPlotOptions(FBPlotOptions_Wrapper* pOptions)		{ mFBPlotPopup->SetPlotOptions(*pOptions->mFBPlotOptions); }
 
 	bool GetEnablePlotTranslationOnRootOnly()					{ return (bool)mFBPlotPopup->EnablePlotTranslationOnRootOnly; }
 	void SetEnablePlotTranslationOnRootOnly(bool pEnable)		{ mFBPlotPopup->EnablePlotTranslationOnRootOnly = pEnable; }
@@ -49,5 +50,11 @@ public:
 	
 	bool GetEnablePlotLockedProperties()						{ return (bool)mFBPlotPopup->EnablePlotLockedProperties; }
 	void SetEnablePlotLockedProperties(bool pEnable)			{ mFBPlotPopup->EnablePlotLockedProperties = pEnable; }
+
+	bool GetEnablePlotAuxEffectors()							{ return (bool)mFBPlotPopup->EnablePlotAuxEffectors; }
+	void SetEnablePlotAuxEffectors(bool pEnable)				{ mFBPlotPopup->EnablePlotAuxEffectors = pEnable; }
+
+	bool GetEnableEvaluateDeformation()							{ return (bool)mFBPlotPopup->EnableEvaluateDeformation; }
+	void SetEnableEvaluateDeformation(bool pEnable)				{ mFBPlotPopup->EnableEvaluateDeformation = pEnable; }
 };
 #endif // pyfbplotpopup_h__

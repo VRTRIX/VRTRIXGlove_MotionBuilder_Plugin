@@ -34,8 +34,6 @@ public:
 	virtual ~FBImageContainer_Wrapper( ) {  }
 
 	DECLARE_DEFINE_ORSDK_PROPERTY_PYTHON_ACCESS( FBImageContainer, Filename, const char* );
-    DECLARE_DEFINE_ORSDK_PROPERTY_PYTHON_ACCESS( FBImageContainer, Height, int );
-    DECLARE_DEFINE_ORSDK_PROPERTY_PYTHON_ACCESS( FBImageContainer, Width, int );
 
     object OnDragAndDrop();
 protected:

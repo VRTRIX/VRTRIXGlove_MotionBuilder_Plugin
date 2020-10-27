@@ -773,21 +773,23 @@ namespace FBSDKNamespace {
         /** FBPropertyBaseEnum
         *	\param pValue FBPropertyBaseEnum.
         */
-        inline FBPropertyBaseEnum(const FBPropertyBaseEnum<tType> &pValue)	{ operator=((tType)pValue ); }
+        inline FBPropertyBaseEnum(const FBPropertyBaseEnum<tType> &pValue) :
+            FBPropertyBase<tType,kFBPT_enum>(pValue)
+        { operator=((tType)pValue ); }
 
         //@{
         /**	Overloaded = operator.
         *	Set the value of the current object using Set function.
         *	\param	pValue	Value to set for object.
         */
-        inline void operator=(tType pValue)					{ SetData( &pValue ); }
+        inline void operator=(tType pValue)					{ this->SetData( &pValue ); }
         //@}
 
         /**	Overloaded cast to \b tType operator.
         *	Get the value of the current object using Get function.
         *	\return	\b tType cast of current object.
         */
-        inline operator tType() const						{ tType Value; GetData( &Value,sizeof(Value) ); return Value; } 
+        inline operator tType() const						{ tType Value; this->GetData( &Value,sizeof(Value) ); return Value; } 
 
         virtual const char* EnumList( int pIndex ) override	
         { 	
@@ -824,14 +826,14 @@ namespace FBSDKNamespace {
         */
         virtual bool SetString( const char *pString ) override
         {
-            int			Count=0;
+            int	count=0;
             const char *	tmpstr;
-            while ((tmpstr=EnumList( Count ))!=NULL) {
+            while ((tmpstr=EnumList( count ))!=NULL) {
                 if (strcmp(tmpstr,pString)==0) {
-                    FBPropertyBaseEnum::SetData( &Count );
+                    FBPropertyBaseEnum::SetData( &count );
                     return true;
                 }
-                Count++;
+                count++;
             }
             return false;
         }
@@ -1219,7 +1221,9 @@ namespace FBSDKNamespace {
         /** Constructor
         *	\param pValue Value to set for component.
         */
-        inline FBPropertyBaseComponent(const FBPropertyBaseComponent<tType> &pValue)	{ FBPropertyBase< tType,kFBPT_object >::operator=((tType)pValue ); }
+        inline FBPropertyBaseComponent(const FBPropertyBaseComponent<tType> &pValue) :
+            FBPropertyBase< tType, kFBPT_object >(pValue)
+        { FBPropertyBase< tType,kFBPT_object >::operator=((tType)pValue ); }
 
         //! Destructor
         ~FBPropertyBaseComponent()
@@ -1648,6 +1652,38 @@ namespace FBSDKNamespace {
         */
         void	SetMemberMuted( int pIndex , bool pMuted );
 
+		/** Set the color of the FCurves for the property.
+	    *   \param  pColor  Color to set for the FCurve(s).
+	    *   \param  pIndex  Index of the FCurve to set the new color, use -1 to set the color for all FCurves.
+        *	\return	\b true if the color was changed, false otherwise
+	    */
+		bool SetColor(const FBColor& pColor, int pIndex);
+
+		/** Get the color of a particular FCurve of the property.
+	    *   \param  pIndex  Index of the FCurve to get the color.
+        *	\return	The color of the FCurve at the specified index, a default FBColor object if the index is invalid.
+	    */
+		FBColor GetColor(int pIndex);
+
+		/** Revert the FCurves to their default color.
+	    *   \param  pIndex  Index of the FCurve to reset the color, use -1 to reset the color for all FCurves of the property.
+        *	\return	\b true if the color was reverted to its default value, false otherwise
+	    */
+		bool ResetColor(int pIndex);		
+
+		/** Get the focus (keyable) state of child component.
+	    *   \param  pIndex  Index of the child FCurve component.
+        *	\return	\b true if the component is in focus, false otherwise
+	    */
+		bool IsFocusedChild(int pIndex);
+
+		/** Set the focus (keyable) state of child component.
+	    *   \param  pIndex  Index of the child FCurve component.
+        *	\param	pState	Focus (keyable) state to set for the property component.
+        *	\return	\b true if the operation was successful, false otherwise
+	    */
+		bool SetFocusChild(int pIndex, bool pState);
+
         //@}
 
     };
@@ -1655,7 +1691,7 @@ namespace FBSDKNamespace {
     /**	\internal
     *	Base template class for animatable properties
     */
-    template <class tType, FBPropertyType pPT> class FBPropertyBaseAnimatable : public FBPropertyAnimatable
+    template <class tType, FBPropertyType pPT> class FBSDK_DLL FBPropertyBaseAnimatable : public FBPropertyAnimatable
     {
     public:
 
@@ -1663,23 +1699,34 @@ namespace FBSDKNamespace {
         typedef tType ValueType;
 
         //! Constructors.
-        FBPropertyBaseAnimatable( );
-        FBPropertyBaseAnimatable( const FBPropertyBaseAnimatable<tType,pPT> &pValue);
+        FBPropertyBaseAnimatable( ) {}
+        FBPropertyBaseAnimatable( const FBPropertyBaseAnimatable<tType,pPT> &pValue)
+        {
+            FBPropertyBaseAnimatable< tType,pPT >::operator=((tType)pValue);
+        }
 
         //! Destructor.
-        ~FBPropertyBaseAnimatable( );
+        ~FBPropertyBaseAnimatable( ) {}
 
         //@{
         /**	Overloaded = operator
         *	\param	pValue	Value to set for property.
         */
-        void operator=(tType pValue);
+        void operator=(tType pValue)
+        {
+            FBPropertyAnimatable::SetData(&pValue);
+        }
         //@}
 
         /**	Overloaded cast to \b tType operator.
         *	\return	\b tType cast of current object.
         */
-        operator tType() const;
+        operator tType() const
+        {
+            tType val;
+            FBPropertyAnimatable::GetData(&val,sizeof(val));
+            return val;
+        }
 
         /**	Get the property's type.
         *	\return	The property's type.

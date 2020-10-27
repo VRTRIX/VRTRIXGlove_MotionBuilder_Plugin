@@ -122,6 +122,7 @@ public:
 	void GetContentList(FBComponentList& pContentList, FBPlugModificationFlag pModificationFlags = kFBPlugAllContent, bool pRecursive = true, int pTypeInfo = FBPlug::TypeInfo, bool pExactTypeMatch = false);
 
 	FBPropertyListNamespace		    ChildrenNamespaces;			//!< <b>List:</b> Direct Children Namespace Objects.
+	FBPropertyBool					ContentLocked;				//!< <b>Read Write Property:</b> Content locking state.
 };
 
 //////////////////////////////////////////////////////////////////////////

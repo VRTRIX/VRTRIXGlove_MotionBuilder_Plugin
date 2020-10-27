@@ -143,9 +143,9 @@ public:
 	*	\param	pFieldName	Name of the field to read data from.
 	*	\return	Value (int,char,double) to read from field.
 	*/
-	int		FieldReadI(const char *pFieldName);
-	const char* FieldReadC(const char *pFieldName);
-	double	FieldReadD(const char *pFieldName);
+	int		FieldReadI(const char *pFieldName, int pDefault=0);
+	const char* FieldReadC(const char *pFieldName, const char* pDefault="");
+	double	FieldReadD(const char *pFieldName, double pDefault=0);
 	//@}
 
 	/**	Write an object reference (handle) to the field \e pFieldName.

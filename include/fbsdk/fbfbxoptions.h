@@ -99,7 +99,9 @@ enum FBFileFormatAndVersion
     kFBFBX2013,                             //!< FBX Version 2013. 
     kFBFBX2014_2015,                        //!< FBX Version 2014/2015. 
     kFBFBX2016,                             //!< FBX Version 2016. 
-    kFBDefaultFormatAndVersion = kFBFBX2016 //!< Default Format and Version
+	kFBFBX2018,                             //!< FBX Version 2018. 
+	kFBFBX2019,                             //!< FBX Version 2019. 
+	kFBDefaultFormatAndVersion = kFBFBX2019 //!< Default Format and Version
 };
 FB_DEFINE_ENUM(FBSDK_DLL, FileFormatAndVersion);
 
@@ -347,6 +349,22 @@ public:
     *   \param  pDestinationName take description to set
     */
     void SetTakeDestinationName(int pTakeIndex,  const char* pDestinationName);
+    //@}
+
+    /** Get take key range
+    *   \param  pTakeIndex index of take to get.
+    *   \return A time range, keys inside that time range will be kept. Keys outside that time range will be removed when importing the animation, by default the time range is FBTime::MinusInfinity -> FBTime::Infinity
+	*	\remark Valid only on load/merge, not when saving a file.
+    */
+	FBTimeSpan GetTakeKeyRange(int pTakeIndex);
+    //@}
+
+    /** Set take key range
+    *   \param  pTakeIndex index of take to set.
+    *   \param  pKeyTimeSpan Timespan indicating the time range to keep the keys. Keys that are outside the time range for this take will be removed, by default the time range is FBTime::MinusInfinity -> FBTime::Infinity
+	*	\remark Valid only on load/merge, not when saving a file.
+    */
+	void SetTakeKeyRange(int pTakeIndex,  FBTimeSpan pKeyTimeSpan);
     //@}
 
     /** SetNamespaceList upon save or load

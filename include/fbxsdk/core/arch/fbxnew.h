@@ -358,13 +358,14 @@ template<typename T> void FbxDelete(const T* p)
 
 template<typename T> T* FbxNewArray(const int n)
 {
+	size_t lSize = FbxAllocSize((size_t)n, sizeof(T));
 	if( FBXSDK_IS_SIMPLE_TYPE(T) )
 	{
-		return (T*)FbxMalloc(sizeof(T)*n);
+		return (T*)FbxMalloc(lSize);
 	}
 	else
 	{
-		void* pTmp = FbxMalloc(sizeof(T) * n + sizeof(int));
+		void* pTmp = FbxMalloc(lSize + sizeof(int));
 		T* p = (T*)((int*)pTmp+1);
 		*((int*)pTmp) = n;
 		for( int i = 0; i < n; ++i )

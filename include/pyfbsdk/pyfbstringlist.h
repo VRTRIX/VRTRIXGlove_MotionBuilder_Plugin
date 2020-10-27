@@ -54,7 +54,7 @@ public:
 	int Find(kReference pRef) { return mFBStringList->Find( pRef ); }
 	int Find(const char *pString, bool pCaseSensitive = true, bool pStartWith = false) { return mFBStringList->Find( pString, pCaseSensitive, pStartWith ); }
 	const char* GetAt(int pIndex) { return mFBStringList->GetAt( GetIndex( pIndex )); }
-	int GetCount() { return mFBStringList->GetCount(  ); }
+	int GetCount() { return mFBStringList ? mFBStringList->GetCount(  ) : 0; }
 	kReference GetReferenceAt(int pIndex) { return mFBStringList->GetReferenceAt( GetIndex( pIndex )); }
 	int IndexOf(const char * S) { return mFBStringList->IndexOf( S ); }
 	void InsertAt(int pIndex, const char * S, kReference pRef = 0) { mFBStringList->InsertAt( GetIndex( pIndex ), S , pRef ); }

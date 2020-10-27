@@ -67,6 +67,7 @@ namespace FBSDKNamespace {;
     static HIObject RegisterTool##ClassName( HIObject pOwner,const char* pName,void * pData) \
 {\
     ClassName *Class = new ClassName( Label ); \
+    Class->mAllocated = true; \
     if( Class->FBCreate() )	{\
     return Class->GetHIObject(); \
     } else { \

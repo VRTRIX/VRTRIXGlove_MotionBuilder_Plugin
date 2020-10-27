@@ -78,11 +78,11 @@ class FBXSDK_DLL FbxEventBase
   public: virtual const char* GetEventName() const { return FbxEventName(); }      \
   private:                                                                         \
      static const char* FbxEventName() {                                           \
-     static FbxString lEventName = FbxString(#Class) + FbxString("<") +                  \
-     FbxGetDataTypeFromEnum(FbxTypeOf(*((const FBXType *)0))).GetName() + ">";               \
+         static FbxString lEventName = FbxString(#Class) + FbxString("<") +        \
+         FbxGetDataTypeFromEnum(FbxTypeOf(FBXType())).GetName() + ">";             \
                                                                                    \
-     return lEventName.Buffer();                                                   \
-  }                                                                                \
+         return lEventName.Buffer();                                               \
+      }                                                                            \
   friend class FbxEvent< Class<FBXType> >;
 
 

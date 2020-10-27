@@ -68,7 +68,7 @@ public:
     FBColor_Wrapper* GetNormalMap(  ) { return FBColor_Wrapper_Factory( mFBMaterial->NormalMap );}
 
 	void SetBumpFactor( double pBumpFactor ) { mFBMaterial->BumpFactor = pBumpFactor; }
-	double GetBumpFactor( double pBumpFactor ) { return mFBMaterial->BumpFactor; }
+    double GetBumpFactor() { return mFBMaterial->BumpFactor; }
 
     void SetReflection( FBColor_Wrapper& pReflection ) { mFBMaterial->Reflection = *pReflection.mFBColor; }
     FBColor_Wrapper* GetReflection(  ) { return FBColor_Wrapper_Factory( mFBMaterial->Reflection );}

@@ -206,7 +206,7 @@ static const FbxCharacterPropertyInfo gHIK2FbxCharacterPropertyBridge[] =
 	{ "AnkleStabilizationFloorProximity" ,"AnkleStabilizationFloorProximityMode","AnkleStabilizationFloorProximity",0,FbxCharacter::ePropertyCentimeter},
 	{ "AnkleStabilizationDamping" ,"AnkleStabilizationDampingMode","AnkleStabilizationDamping",0,FbxCharacter::ePropertySecond},
 	{ "AnkleStabilizationRecoveryTime" ,"AnkleStabilizationRecoveryTimeMode","AnkleStabilizationRecoveryTime",0,FbxCharacter::ePropertySecond},
-    { "ContactBehaviour" ,NULL,"ContactBehaviour",0},
+    { "ContactBehaviour" ,NULL,"ContactBehaviour",0,FbxCharacter::ePropertyNoUnit},
     { "ShoulderCorrection", NULL, "RealisticShoulder",0,FbxCharacter::ePropertyReal},
     { "CollarStiffnessX", NULL, "CollarStiffnessX",0,FbxCharacter::ePropertyReal},
     { "CollarStiffnessY", NULL, "CollarStiffnessY",0,FbxCharacter::ePropertyReal}, 

@@ -55,12 +55,27 @@ public:
     bool NamespaceImport(const char* pNamespace, const char* pFilePath, bool pAsFileReference = false )  { return mFBScene->NamespaceImport(pNamespace, pFilePath, pAsFileReference); }
     bool NamespaceImportToMultiple(const FBStringList_Wrapper& pDstNamespaceList, const char* pFilePath, bool pAsFileReference = false )  { return mFBScene->NamespaceImportToMultiple(*(pDstNamespaceList.mFBStringList), pFilePath, pAsFileReference); }
     bool NamespaceExport(const char* pNamespace, const char* pFilePath, bool pASCIIFormat = false)  { return mFBScene->NamespaceExport(pNamespace, pFilePath, pASCIIFormat); }
+#if !defined(K_NO_NAMESPACE_UPGRADE)
+    bool NamespaceUpgradeToFileReference(const char* pNamespace, const char* pFilePath, bool pASCIIFormat = false)  { return mFBScene->NamespaceUpgradeToFileReference(pNamespace, pFilePath, pASCIIFormat); }
+    bool NamespaceDowngradeFromFileReference(const char* pNamespace) { return mFBScene->NamespaceDowngradeFromFileReference(pNamespace); }
+#endif
     FBStringList_Wrapper* GetScriptsPaths()
     {
         FBStringList lList;
         mFBScene->GetScriptsPaths( lList );
         return FBStringList_Wrapper_Factory( lList ); 
     }
+
+	int CleanEmptyGroups() 						{ return mFBScene->CleanEmptyGroups(); }
+	int CleanEmptySets() 						{ return mFBScene->CleanEmptySets(); }
+	int CleanUnusedMaterials() 					{ return mFBScene->CleanUnusedMaterials(); }
+	int CleanUnusedTextures() 					{ return mFBScene->CleanUnusedTextures(); }
+	int CleanUnusedShaders() 					{ return mFBScene->CleanUnusedShaders(); }
+	int CleanUnusedVideoClips() 				{ return mFBScene->CleanUnusedVideoClips(); }
+	int CleanUnusedAudioClips() 				{ return mFBScene->CleanUnusedAudioClips(); }
+	int CleanInactiveConstraints() 				{ return mFBScene->CleanInactiveConstraints(); }
+	int CleanRelationConstraintsUnusedBoxes() 	{ return mFBScene->CleanRelationConstraintsUnusedBoxes(); }
+	int CleanEmptyRelationConstraints() 		{ return mFBScene->CleanEmptyRelationConstraints(); }
 
 #ifndef K_NO_ACTOR
     object GetActorFaces(  ){ return FBPropertyListActorFace_Wrapper_Factory( mFBScene->ActorFaces ); }

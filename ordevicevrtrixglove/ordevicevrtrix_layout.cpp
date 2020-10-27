@@ -402,19 +402,9 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 {
 	int lS, lW, lH;		// space, width, height.
-	lS = 4;
-	lW = 250;
-	lH = 18;
-
-	int lS_y	= -15;
+	lS			= 4;
 	lW			= 100 *2;
 	lH			= 25;
-	int lHlr	= 150 *2;
-	int lWlr	= 260 *2;
-	int lWrb	= 140*1.5;
-	int lSlbx	= 30;
-	int lSlby	= 12;
-	int lWlb	= (80 + 50)*2;
 
 	mLayoutOrientationAlign.AddRegion("LabelServerIP", "LabelServerIP",
 													lS, kFBAttachLeft, "", 1.00,

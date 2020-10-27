@@ -48,14 +48,12 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	    #define K_DLLEXPORT __declspec(dllexport)
 	#endif
 	#define K_DLLNO_IMPORT_EXPORT __declspec()
-#elif defined(__MACH__)
+	#define K_DLLVISIBILITY
+#else
 	#define K_DLLIMPORT
-	#define K_DLLEXPORT __attribute__ ((visibility("default")))
+	#define K_DLLEXPORT		__attribute__ ((visibility("default")))
 	#define K_DLLNO_IMPORT_EXPORT
-#else 
-	#define K_DLLIMPORT
-	#define K_DLLEXPORT
-	#define K_DLLNO_IMPORT_EXPORT
+	#define K_DLLVISIBILITY __attribute__ ((visibility("default")))
 #endif
 
 #endif // _K_KAYDARADEF_H

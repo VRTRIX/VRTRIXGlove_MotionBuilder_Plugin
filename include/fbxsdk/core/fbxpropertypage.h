@@ -1534,8 +1534,10 @@ protected:
 
         if (mInstanceOf) {
             int lIndex = mInstanceOf->mInstances.Find(this);
-            mInstanceOf->mInstances.SetAt(lIndex, mInstanceOf->mInstances[mInstanceOf->mInstances.GetCount()-1]);
-            mInstanceOf->mInstances.RemoveAt(mInstanceOf->mInstances.GetCount()-1);
+            int lLastItem = mInstanceOf->mInstances.GetCount() - 1;
+            if (lIndex != lLastItem) // try to avoid valgrind error: Source and destination overlap in memcpy (inside Set())
+                mInstanceOf->mInstances.SetAt(lIndex, mInstanceOf->mInstances[lLastItem]);
+            mInstanceOf->mInstances.RemoveAt(lLastItem);
 
             //mInstanceOf->mInstances.RemoveIt(this);
         }

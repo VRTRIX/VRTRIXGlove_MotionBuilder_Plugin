@@ -173,5 +173,96 @@ public:
 
         mFBTake->PlotAllTakesOnProperties( *pPlotPeriod.mFBTime, &lPropertiesToPlot ); 
     }
+
+	bool OffsetAnimationOnProperties
+	(
+		list					pProperties,
+		FBTime_Wrapper&			pOffsetTime,
+		FBTime_Wrapper&			pStartTime = FBTime_Wrapper::MinusInfinity,
+		FBTime_Wrapper&			pStopTime = FBTime_Wrapper::Infinity,
+		bool					pInclusive = true,
+		int						pLayerID = -1,
+		bool					pOnLockedProperties = false,
+		FBPropertyComponents	pPropertyComponents = kFBPropertyComponentAll )
+	{
+		// Convert Boost Python list to FBArrayTemplate
+		FBArrayTemplate<FBProperty*> lProperties;
+		ConvertListToPropertyArray( &pProperties, &lProperties );
+
+		return mFBTake->OffsetAnimationOnProperties( &lProperties, *pOffsetTime.mFBTime, *pStartTime.mFBTime, *pStopTime.mFBTime, pInclusive, pLayerID, pOnLockedProperties, pPropertyComponents );
+	}
+
+	bool DeleteAnimationOnProperties
+	(
+		list					pProperties,
+		FBTime_Wrapper&			pStartTime = FBTime_Wrapper::MinusInfinity,
+		FBTime_Wrapper&			pStopTime = FBTime_Wrapper::Infinity,
+		bool					pInclusive = true,
+		int						pLayerID = -1,
+		bool					pOnLockedProperties = false,
+		FBPropertyComponents	pPropertyComponents = kFBPropertyComponentAll )
+	{
+		// Convert Boost Python list to FBArrayTemplate
+		FBArrayTemplate<FBProperty*> lProperties;
+		ConvertListToPropertyArray( &pProperties, &lProperties );
+
+		return mFBTake->DeleteAnimationOnProperties( &lProperties, *pStartTime.mFBTime, *pStopTime.mFBTime, pInclusive, pLayerID, pOnLockedProperties, pPropertyComponents );
+	}
+
+	bool OffsetAnimationOnObjects
+	(
+		list			pObjects,
+		FBTime_Wrapper& pOffsetTime,
+		FBTime_Wrapper& pStartTime = FBTime_Wrapper::MinusInfinity,
+		FBTime_Wrapper& pStopTime = FBTime_Wrapper::Infinity,
+		bool			pInclusive = true,
+		int				pLayerID = -1,
+		bool			pOnLockedProperties = false )
+	{
+		// Convert Boost Python list to FBArrayTemplate
+		FBArrayTemplate<FBBox*> lObjects;
+		ConvertListToBoxArray( &pObjects, &lObjects );
+
+		return mFBTake->OffsetAnimationOnObjects( &lObjects, *pOffsetTime.mFBTime, *pStartTime.mFBTime, *pStopTime.mFBTime, pInclusive, pLayerID, pOnLockedProperties );
+	}
+
+	bool DeleteAnimationOnObjects
+	(
+		list			pObjects,
+		FBTime_Wrapper& pStartTime = FBTime_Wrapper::MinusInfinity,
+		FBTime_Wrapper& pStopTime = FBTime_Wrapper::Infinity,
+		bool			pInclusive = true,
+		int				pLayerID = -1,
+		bool			pOnLockedProperties = false )
+	{
+		// Convert Boost Python list to FBArrayTemplate
+		FBArrayTemplate<FBBox*> lObjects;
+		ConvertListToBoxArray( &pObjects, &lObjects );
+
+		return mFBTake->DeleteAnimationOnObjects( &lObjects, *pStartTime.mFBTime, *pStopTime.mFBTime, pInclusive, pLayerID, pOnLockedProperties );
+	}
+
+	bool OffsetAnimation
+	(
+		FBTime_Wrapper& pOffsetTime,
+		FBTime_Wrapper& pStartTime = FBTime_Wrapper::MinusInfinity,
+		FBTime_Wrapper& pStopTime = FBTime_Wrapper::Infinity,
+		bool			pInclusive = true,
+		int				pLayerID = -1,
+		bool			pOnLockedProperties = false )
+	{
+		return mFBTake->OffsetAnimation( *pOffsetTime.mFBTime, *pStartTime.mFBTime, *pStopTime.mFBTime, pInclusive, pLayerID, pOnLockedProperties );
+	}
+
+	bool DeleteAnimation
+	(
+		FBTime_Wrapper& pStartTime = FBTime_Wrapper::MinusInfinity,
+		FBTime_Wrapper& pStopTime = FBTime_Wrapper::Infinity,
+		bool			pInclusive = true,
+		int				pLayerID = -1,
+		bool			pOnLockedProperties = false )
+	{
+		return mFBTake->DeleteAnimation( *pStartTime.mFBTime, *pStopTime.mFBTime, pInclusive, pLayerID, pOnLockedProperties );
+	}
 };
 #endif // pyfbtake_h__

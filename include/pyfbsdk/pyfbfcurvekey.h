@@ -57,6 +57,8 @@ public:
     bool GetTangentBreak( ) { return mFBFCurveKey->TangentBreak; }
     void SetTangentConstantMode( FBTangentConstantMode pTangentConstantMode ) { mFBFCurveKey->TangentConstantMode = pTangentConstantMode; }
     FBTangentConstantMode GetTangentConstantMode(  ) { return mFBFCurveKey->TangentConstantMode; }
+	void SetTangentWeightMode( FBTangentWeightMode pMode ) { mFBFCurveKey->TangentWeightMode = pMode; }
+	FBTangentWeightMode GetTangentWeightMode(  ) { return mFBFCurveKey->TangentWeightMode; }
     void SetSelected( bool pSelected) { mFBFCurveKey->Selected = pSelected; }
     bool GetSelected( ) { return mFBFCurveKey->Selected; }
     void SetMarkedForManipulation( bool pMarked) { mFBFCurveKey->MarkedForManipulation = pMarked; }
@@ -67,6 +69,10 @@ public:
     FBTime_Wrapper* GetTime(  ) { return FBTime_Wrapper_Factory( mFBFCurveKey->Time ); }
     void SetValue( float pValue ) { mFBFCurveKey->Value = pValue; }
     float GetValue(  ) { return mFBFCurveKey->Value; }
+    void SetExtrapolationMode( FBExtrapolationMode pValue ) { mFBFCurveKey->ExtrapolationMode = pValue; }
+    FBExtrapolationMode GetExtrapolationMode(  ) { return mFBFCurveKey->ExtrapolationMode; }
+    void SetTangentCustomIndex( FBTangentCustomIndex pValue ) { mFBFCurveKey->TangentCustomIndex = pValue; }
+    FBTangentCustomIndex GetTangentCustomIndex(  ) { return mFBFCurveKey->TangentCustomIndex; }
 };
 
 PYSDK_DLL inline FBFCurveKey_Wrapper* FBFCurveKey_Wrapper_Factory( const FBFCurveKey& pFBFCurveKey )

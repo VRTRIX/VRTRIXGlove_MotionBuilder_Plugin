@@ -35,7 +35,6 @@ DATA OR ITS USE OR ANY OTHER PERFORMANCE, WHETHER OR NOT AUTODESK HAS
 BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 **************************************************************************/
-
 #if defined(KARCH_ENV_WIN32)
 //	#include <windows.h> // must include before this include if needed
 // Now redefining those if not already defined
@@ -47,24 +46,10 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 		#define APIENTRY		WINAPI
 	#endif
 	#ifndef _WCHAR_T_DEFINED
-		#ifndef KARCH_ENV_MING32
-			typedef unsigned short wchar_t;
-		#endif
+		typedef unsigned short wchar_t;
 		#define _WCHAR_T_DEFINED
 	#endif
 #else
-	#ifdef __sgi
-		#define glDeleteTextures	glDeleteTexturesEXT
-		#define glGenTextures		glGenTexturesEXT
-		#define glBindTexture		glBindTextureEXT
-		#define glCopyTexImage2D	glCopyTexImage2DEXT
-		#define glCopyTexSubImage2D glCopyTexSubImage2DEXT
-		#define glTexSubImage2D		glTexSubImage2DEXT
-		#define glIsTexture 		glIsTextureEXT
-		#define glCopyTexImage2D	glCopyTexImage2DEXT
-		#define GL_BGRA_EXT			GL_BGRA				// On SGI only this is not an extension				
-		#define GL_BGR_EXT			GL_BGR				// On SGI only this is not an extension						
-	#endif
 	#ifndef CALLBACK
 		#define CALLBACK
 	#endif
@@ -79,48 +64,25 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 #endif
 
 #if defined(KARCH_ENV_WIN32) || defined(KARCH_ENV_WIN64)
-	#if defined(KARCH_ENV_MING32)
-		#include <GL/glext.h>
-	#endif
-	#ifdef GL_EXT_bgra
+	#ifndef GL_BGR
 		#define GL_BGR									GL_BGR_EXT
+	#endif
+	#ifndef GL_BGRA
 		#define GL_BGRA									GL_BGRA_EXT
 	#endif
-	#define GL_POST_COLOR_MATRIX_COLOR_TABLE_EXT	0x80D2		// glEnable
 
 	#ifndef GL_EXT_abgr
 		#define GL_ABGR_EXT							0x8000
 		#define GL_EXT_abgr 1
 	#endif
-
-	#ifndef GL_LIGHT_MODEL_COLOR_CONTROL_EXT
-		#define GL_LIGHT_MODEL_COLOR_CONTROL_EXT		0x81F8		// glLightModel OpenGL 1.2
-	#endif
-
-	#ifndef GL_SINGLE_COLOR_EXT
-		#define GL_SINGLE_COLOR_EXT						0x81F9		// glLightModel OpenGL 1.2
-	#endif
-	
-	#ifndef GL_SEPARATE_SPECULAR_COLOR_EXT
-		#define GL_SEPARATE_SPECULAR_COLOR_EXT			0x81FA		// glLightModel OpenGL 1.2
-	#endif
-
-	#define	GL_DISPLAY_CGP							0x6001
-	#define	GL_GLTARGET_CGP							0x6003
 #endif
 
 #if defined(KARCH_ENV_LINUX)
 	#include <GL/glext.h>
-	#define GL_POST_COLOR_MATRIX_COLOR_TABLE_EXT	GL_POST_COLOR_MATRIX_COLOR_TABLE
-#endif
-
-#if defined(KARCH_ENV_IRIX)
-	#define GL_POST_COLOR_MATRIX_COLOR_TABLE_EXT    GL_POST_COLOR_MATRIX_COLOR_TABLE
 #endif
 
 #if defined(KARCH_ENV_MACOSX)
     #include <OpenGl/glext.h>
-	#define GL_POST_COLOR_MATRIX_COLOR_TABLE_EXT	GL_POST_COLOR_MATRIX_COLOR_TABLE
 #endif
 
 #ifndef GL_LIGHT_MODEL_COLOR_CONTROL

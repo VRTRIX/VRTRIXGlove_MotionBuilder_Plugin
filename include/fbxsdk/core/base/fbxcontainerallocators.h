@@ -53,7 +53,7 @@ public:
 	  */
 	void* AllocateRecords(const size_t pRecordCount=1)
 	{
-		return FbxMalloc(pRecordCount * mRecordSize);
+		return FbxMalloc(FbxAllocSize(pRecordCount, mRecordSize));
 	}
 
 	/** Frees a block of memory returned by AllocateRecords. 

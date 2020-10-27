@@ -213,9 +213,9 @@ enum FBModelCullingMode {
 };
 
 enum FBModelEvaluationTaskType {
-    kFBModelEvaluationTranform, //!< Model's transformation evaluation task (Global )
-    kFBModelEvaluationBBox,     //!< Model's bouding box computation task (approximately for deformable model)
-    kFBModelEvaluationDeform    //!< Model's deformation task (for deformable model)
+    kFBModelEvaluationTransform, //!< Model's transformation evaluation task (Global )
+    kFBModelEvaluationBBox,      //!< Model's bouding box computation task (approximately for deformable model)
+    kFBModelEvaluationDeform     //!< Model's deformation task (for deformable model)
 };
 
 //! Types of hierarchy traverser search type

@@ -211,11 +211,6 @@ namespace FBSDKNamespace {
         */
         bool& ShowCameraLabel();
 
-        /** Is the rendering routine during picking status
-        *   \deprecated use IsInSelectionBufferPicking() / IsInColorBufferPicking() instead.
-        */
-        K_DEPRECATED_2014 bool InPicking() const;
-
         /** Is the rendering routine during picking status with GL selection buffer method.
         */
         bool IsInSelectionBufferPicking() const;

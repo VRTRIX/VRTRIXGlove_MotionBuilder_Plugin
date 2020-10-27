@@ -423,6 +423,8 @@ public:
 	void KeyRemoveAt( FBTime_Wrapper& pTime );
     void SetAnimated( bool pValue, bool pCheckLocked = false );
     void SetFocus( bool pValue );
+	bool IsFocusedChild(int pIndex);
+	void SetFocusChild(int pIndex, bool pState);
 
     bool AllowsMuting() const;
     bool HasSomethingMuted() const;
@@ -434,6 +436,10 @@ public:
     virtual object GetData() const;
     virtual void SetData( object pData );
 	const char* GetDataTypeName();
+
+	bool SetColor(FBColor_Wrapper &pColor, int pIndex);
+	FBColor_Wrapper* GetColor(int pIndex);
+	bool ResetColor(int pIndex);		
 };
 PYSDK_DLL object FBPropertyAnimatable_Wrapper_Factory( FBPropertyAnimatable& pFBPropertyAnimatable );
 void FBPropertyAnimatable_Init();

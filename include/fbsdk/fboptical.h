@@ -616,6 +616,13 @@ namespace FBSDKNamespace {
         */
         virtual void ClearSegments( bool pUnUsedOnly = true );
 
+        /** Create a new rigid body from the given optical markers.
+        *	\param	pRigidBodyName 	The name for the new rigid body to create. If left empty, the default "Rigid Body" name will be used.
+        *	\param	pMarkers 		The optical markers for creating the new rigid body.
+        *	\return	The created rigid body if successful, and invalid rigid body otherwise. You can use the FBRigidBody.IsValid() method to test if the returned rigid body object is valid or not.
+        */
+        FBRigidBody CreateRigidBody( const char* pRigidBodyName, FBArrayTemplate<FBModelMarkerOptical*> pMarkers );
+
         FBPropertyDouble					MarkerSize;			//!< <b>Read Write Property:</b> Size of markers.
         FBPropertyTime						SamplingStart;		//!< <b>Read Write Property:</b> Sampling start time.
         FBPropertyTime						SamplingStop;		//!< <b>Read Write Property:</b>Sampling stop time.

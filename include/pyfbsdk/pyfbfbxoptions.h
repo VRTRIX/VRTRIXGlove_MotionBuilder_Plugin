@@ -220,6 +220,9 @@ public:
     const char* GetTakeDestinationName(int pTakeIndex) const { return mFBFbxOptions->GetTakeDestinationName(pTakeIndex); }
     void SetTakeDestinationName(int pTakeIndex,  const char* pDestinationName) { mFBFbxOptions->SetTakeDestinationName(pTakeIndex, pDestinationName); }
 
+	FBTimeSpan_Wrapper* GetTakeKeyRange(int pTakeIndex) const { return FBTimeSpan_Wrapper_Factory(mFBFbxOptions->GetTakeKeyRange(pTakeIndex)); }
+    void SetTakeKeyRange(int pTakeIndex,  FBTimeSpan_Wrapper &pKeyTimeSpan) { mFBFbxOptions->SetTakeKeyRange(pTakeIndex, *pKeyTimeSpan.mFBTimeSpan); }
+
 	void SetObjectsToSave( list pObjectsToSave )
 	{ 
 		FBArrayTemplate<FBComponent *> lObjectsToSave;

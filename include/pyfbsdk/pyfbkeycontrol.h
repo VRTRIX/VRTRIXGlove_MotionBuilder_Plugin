@@ -38,5 +38,7 @@ public:
     { 
         mFBKeyControl->MoveKeys( *pTimeSpan.mFBTimeSpan, pPivot.mFBModel, *pT.mFBVector3d, *pR.mFBVector3d, *pS.mFBVector3d, *pTime.mFBTime, pModelList ? pModelList->mFBModelList : NULL ); 
     }
+	void SetNewKeyInterpolationType(FBNewKeyInterpolationType pInterpolation) { mFBKeyControl->NewKeyInterpolationType = pInterpolation; }
+	FBNewKeyInterpolationType GetNewKeyInterpolationType() { return mFBKeyControl->NewKeyInterpolationType; }
 };
 #endif // pyfbkeycontrol_h__

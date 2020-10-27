@@ -355,12 +355,6 @@ private:
 		int GetRenderFrameId() const;
 
         /** Get IDBuffer Rendering request status (for display or picking)
-        *   \deprecated As the function name is confuing, use IsIDBufferRendering() instead.
-        *   \return true if need to render Model (or subitem)'s UniqueColorID into GL Color Buffer.
-        */
-        K_DEPRECATED_2014 bool IsIDBufferPicking() const;
-
-        /** Get IDBuffer Rendering request status (for display or picking)
         *   \return true if need to render Model (or subitem)'s UniqueColorID into GL Color Buffer.
         */
         bool IsIDBufferRendering() const;

@@ -108,6 +108,9 @@ public:
         return FBMatrix_Wrapper(*mFBMatrix); 
     } 
  
+	bool operator==(const FBMatrix_Wrapper& pFBMatrix)const { return *mFBMatrix == *pFBMatrix.mFBMatrix; }
+	bool operator!=(const FBMatrix_Wrapper& pFBMatrix)const { return *mFBMatrix != *pFBMatrix.mFBMatrix; }
+
     bool NotEqual (const FBMatrix_Wrapper &pFBMatrix) 
     { 
         return mFBMatrix->operator !=(*( pFBMatrix.mFBMatrix )); 

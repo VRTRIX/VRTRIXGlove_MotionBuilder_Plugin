@@ -94,7 +94,9 @@ public:
 	object GetCurrentControlSet( ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBCharacter->GetCurrentControlSet( ) ); }
     object GetCharacterMarkerSet( bool pForce ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBCharacter->GetCharacterMarkerSet( pForce ) ); }
     bool IsRotationPin(FBEffectorId pEffectorIndex) { return mFBCharacter->IsRotationPin( pEffectorIndex ); }
+	bool SetRotationPin(FBEffectorId pEffectorIndex, bool pValue) { return mFBCharacter->SetRotationPin( pEffectorIndex, pValue ); }
     bool IsTranslationPin(FBEffectorId pEffectorIndex) { return mFBCharacter->IsTranslationPin( pEffectorIndex ); }
+	bool SetTranslationPin(FBEffectorId pEffectorIndex, bool pValue) { return mFBCharacter->SetTranslationPin( pEffectorIndex, pValue ); }
     object GetFloorContactModel( FBFloorContactID pMemberIndex ) { return FBModel_Wrapper_Factory(mFBCharacter->GetFloorContactModel( pMemberIndex )); }
     void GetTOffset( FBBodyNodeId pBodyNodeId, FBVector4d_Wrapper& pTVector ) { mFBCharacter->GetTOffset( pBodyNodeId, pTVector.mFBVector4d ); }
     void GetROffset( FBBodyNodeId pBodyNodeId, FBVector3d_Wrapper& pRVector ) { mFBCharacter->GetROffset( pBodyNodeId, pRVector.mFBVector3d ); }

@@ -132,12 +132,6 @@ public:
 
 
 	/** Access image data buffer, allow modifications.
-    *   \deprecated for naming consistence purpose, use GetBufferAddress() instead.
-	*	\return	Pointer to the image data, values ranging from 0 to 255.
-	*/
-	K_DEPRECATED_2014 unsigned char* GetDataBuffer();
-
-	/** Access image data buffer, allow modifications.
 	*	\return	Pointer to the image data, values ranging from 0 to 255.
 	*/
 	unsigned char* GetBufferAddress();

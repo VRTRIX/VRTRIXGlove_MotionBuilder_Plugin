@@ -148,7 +148,8 @@ namespace FBSDKNamespace {
         bool TransactionAddProperty(FBProperty* pProperty);
 
         /** Add Transaction if transaction stack is open. 
-        *   Function to add object to destroy in Undo Stack
+        *   Function to add object to destroy in Undo Stack.
+        *   No need to call FBDelete() on the object after calling this function.
         *   \param      pObject   Object to backup
         *   \return     true if add transaction successfully.
         */

@@ -84,11 +84,18 @@ enum FBVideoRenderDepth		{
 	FBVideoRender32Bits,		//!< 32 bits
 	FBVideoRenderDepthCount		//!< Depth Count
 };	
+//! Type of locations where the audio is rendered when rendering a scene using a video format.
+enum FBAudioOutputLocation		{
+	FBAudioOutputLocationEmbedded,				//!< The audio is embedded within the video output file.
+	FBAudioOutputLocationStandalone,			//!< The audio is rendered in a standalone output file.
+	FBAudioOutputLocationEmbeddedAndStandalone,	//!< The audio is embedded within the video output file and is also rendered in a standalone output file.
+	FBAudioOutputLocationCount					//!< Count
+};
 
 /** Video Grabbing Options structure.
 *	Contain options to control how the grabbing process will occur.
 */
-struct FBVideoGrabOptions
+struct FBSDK_DLL FBVideoGrabOptions
 {
 	FBTimeSpan					mTimeSpan;				//!< Start and stop selection time to grab.
 	FBTime						mTimeSteps;				//!< Time step length between each grab.
@@ -104,9 +111,12 @@ struct FBVideoGrabOptions
 	bool						mShowTimeCode;			//!< If true, display time code information. NOTE: If you use your own FBView, set also this option in FBViewingOptions.
 	bool						mShowCameraLabel;		//!< If true, display camera label information. NOTE: If you use your own FBView, set also this option in FBViewingOptions.
 	bool						mAntiAliasing;			//!< If true, video frames will be anti-aliased.
-	bool						mRenderAudio;			//!< If true and there's audio in the scene, add audio to the output file.
+	bool						mRenderAudio;			//!< If true and there's audio in the scene, render the audio as well.
 	FBAudioFmt					mAudioRenderFormat;		//!< Audio render format.
     int                         mStillImageCompression;	//!< Compression ratio for image(jpg) 0-100 where 0=Greatest compression, 100=Least Compression.
+	FBAudioOutputLocation		mAudioOutputLocation;	//!< Audio output location when rendering using a video format (for still image formats & SWF (Flash) format, the audio is always rendered in a standalone file).
+	bool						mAudioUseCustomStandaloneFileName;	//!< If true and if the audio is rendered in a standalone output file, the audio file is generated at the file location specified by mAudioCustomStandaloneFileName, otherwise the audio file is generated in the same directory as the rendered images/video files based on their names.
+	FBString					mAudioCustomStandaloneFileName;		//!< Destination for the custom audio standalone file, if mAudioUseCustomStandaloneFileName is set to true.
 };
 
 /** Video Grabbing Statistics structure.

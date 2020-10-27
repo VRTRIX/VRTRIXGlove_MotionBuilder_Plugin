@@ -61,12 +61,12 @@
 //! FBSDKUseNamespace define
 #define FBSDKUseNamespace 
 //! FBSDKNamespace define
-#define FBSDKNamespace             ORSDK2018
+#define FBSDKNamespace             ORSDK2019
 //! FBSDKNamespaceFunc define
 #define FBSDKNamespaceFunc( Name ) FBSDKNamespace::Name
 
 /**
-*	\mainpage	Open Reality SDK for MotionBuilder 2018 - Reference Guide
+*	\mainpage	Open Reality SDK for MotionBuilder 2017 - Reference Guide
 *	\section	intro	Introduction
 *		\subsection	welcome		Welcome To Open Reality
 *	The Open Reality SDK is a C++ software development kit (SDK) that lets you 

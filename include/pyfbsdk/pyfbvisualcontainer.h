@@ -20,14 +20,12 @@
 
 #include "pyfbvisualcomponent.h"
 #include "pyfbimage.h"
-#include "pyfbimagecontainer.h"	// to remove K_DEPRECATED_2014
 
 // =======================================================================================
 // FBVisualContainer
 // =======================================================================================
 void FBVisualContainer_Init();
 class FBImage_Wrapper;
-class FBImageContainer_Wrapper;	// to remove K_DEPRECATED_2014
 class PYSDK_DLL FBVisualContainer_Wrapper : public FBVisualComponent_Wrapper  {
 public:
 	FBVisualContainer* mFBVisualContainer;
@@ -37,7 +35,6 @@ public:
 	virtual ~FBVisualContainer_Wrapper( ) {  }
 	int GetSelection() { return mFBVisualContainer->GetSelection(  ); }
 	bool ItemIconSet(kReference pRef, FBImage_Wrapper* pImage, bool pUseACopyOfTheImage = true) { return mFBVisualContainer->ItemIconSet( pRef, pImage->mFBImage, pUseACopyOfTheImage ); }
-	bool ItemIconSet(kReference pRef, FBImageContainer_Wrapper* pImage, bool pUseACopyOfTheImage = true);
 	bool ItemIconSet(kReference pRef, const char * pFilename) { return mFBVisualContainer->ItemIconSet( pRef, pFilename ); }
 	bool ItemNameEdit(kReference pRef) { return mFBVisualContainer->ItemNameEdit( pRef ); }
 	void SetIconPosition( FBIconPosition pIconPosition ) { mFBVisualContainer->IconPosition = pIconPosition; }

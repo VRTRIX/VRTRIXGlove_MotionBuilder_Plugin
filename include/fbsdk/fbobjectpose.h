@@ -211,6 +211,11 @@ class FBSDK_DLL FBObjectPose : public FBPose
 	*/
 	bool IsPropertyPoseable( FBProperty &pProperty );
 
+	/** Get all the object names currently stored in this pose.
+	*	\return All the object names currently stored in this pose.
+	*/
+	FBStringList GetStoredObjectNames();
+
 	/** Copy the pose of all the properties of an object.
 	*	\remarks You can specify a pObjectName different from the name of pObject.
 	*	\param pObjectName	Name of the object to store in the pose.

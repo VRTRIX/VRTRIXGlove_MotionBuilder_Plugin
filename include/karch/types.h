@@ -85,11 +85,7 @@ typedef double				kVector4[4];   /* 4 x 64-bit real              */
 #define K_UINT32_MIN		(0)
 #define K_UINT32_MAX		(0xffffffff)
 
-#if defined (KARCH_ARCH_POWERPC)
-	#define KARCH_BIG_ENDIAN
-#else
-	#define KARCH_LITTLE_ENDIAN
-#endif
+#define KARCH_LITTLE_ENDIAN
 
 #define K_CHAR(x)			char(x)
 #define K_SCHAR(x)			kSChar(x)
@@ -117,9 +113,13 @@ typedef double				kVector4[4];   /* 4 x 64-bit real              */
 #ifdef __LP64__
 	typedef signed int			kLong;
 	typedef unsigned int		kULong;
+    #define zlufmt              "%0u"
+    #define lufmt               "%u"
 #else
 	typedef signed long			kLong;
 	typedef unsigned long		kULong;
+    #define zlufmt              "%0lu"
+    #define lufmt               "%lu"
 #endif
 
 #define K_LONG(x)			(x)
@@ -130,9 +130,9 @@ typedef double				kVector4[4];   /* 4 x 64-bit real              */
 #define K_ULONG_MAX			K_ULONG(0xffffffff)
 
 typedef signed long long	kLongLong;
-#define K_LONGLONG(x)		(x##LL)
+#define K_LONGLONG(x)		((kLongLong)(x##LL))
 typedef unsigned long long	kULongLong;
-#define K_ULONGLONG(x)		(x##ULL)
+#define K_ULONGLONG(x)		((kULongLong)(x##ULL))
 
 #define K_LONGLONG_MIN		K_LONGLONG(0x8000000000000000)
 #define K_LONGLONG_MAX		K_LONGLONG(0x7fffffffffffffff)

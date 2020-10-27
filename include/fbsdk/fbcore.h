@@ -143,7 +143,7 @@ private:
     FBLibraryModule( ClassName )	\
     {\
     FBRegisterObject(ClassName##R1,"Boxes",UniqueNameStr,Description,RegisterBox##ClassName##Create,true, IconFilename );\
-    FBRegisterObject(ClassName##R2,"Boxes/Functions/"FolderName,Label,Description,RegisterBox##ClassName##Create,true, IconFilename );\
+    FBRegisterObject(ClassName##R2,"Boxes/Functions/" FolderName,Label,Description,RegisterBox##ClassName##Create,true, IconFilename );\
     FBRegisterObject(ClassName##R3,"FbxStorable/Box",UniqueNameStr,Description,RegisterBox##ClassName##Create,true, IconFilename ); \
     }
 

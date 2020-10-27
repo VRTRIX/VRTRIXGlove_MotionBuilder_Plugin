@@ -75,14 +75,14 @@ typedef unsigned long kInterfaceID;
 #define IObject_Declare(IsPure)\
 public:\
     virtual HIObject	IQuery(kInterfaceID pInterfaceID, int IsLocal=0)IsPure;\
-    virtual void		Destroy(int IsLocal=0)IsPure;\
+    virtual void		Destroy(int IsLocal=0)IsPure
 
 #define IQuery_Declare(IsPure)\
 public:\
-    virtual HIObject IQuery (kInterfaceID pInterfaceID, int IsLocal=0)IsPure;\
+    virtual HIObject IQuery (kInterfaceID pInterfaceID, int IsLocal=0)IsPure;
     
 class IObject {
-    IObject_Declare(abstract);
+	IObject_Declare(abstract);
 };
 
 typedef HIObject (* kObjectCreatorFnc)(HIObject pOwner,const char *pName,void *pData);

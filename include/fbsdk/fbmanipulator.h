@@ -70,6 +70,7 @@ FB_DEFINE_COMPONENT( FBSDK_DLL, Camera	);
 	HIObject RegisterManipulator##ClassName( HIObject /*pOwner*/,const char* pName,void * /*pData*/) \
 	{ \
 	  ClassName *Class = new ClassName( Label ); \
+	    Class->mAllocated = true; \
 		if (Class->FBCreate()) { \
 			return Class->GetHIObject(); \
 		} else { \
