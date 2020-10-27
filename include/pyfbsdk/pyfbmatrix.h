@@ -58,24 +58,24 @@ public:
         return new FBMatrix_Wrapper(*mFBMatrix); 
     } 
   
-    FBMatrix_Wrapper*   operator + (const FBMatrix_Wrapper &pFBMatrix) 
+    FBMatrix_Wrapper   operator + (const FBMatrix_Wrapper &pFBMatrix) 
     { 
-        return new FBMatrix_Wrapper(mFBMatrix->operator + (*( pFBMatrix.mFBMatrix ))); 
+        return FBMatrix_Wrapper(mFBMatrix->operator + (*( pFBMatrix.mFBMatrix ))); 
     } 
   
-    FBMatrix_Wrapper*   operator - (const FBMatrix_Wrapper &pFBMatrix) 
+    FBMatrix_Wrapper   operator - (const FBMatrix_Wrapper &pFBMatrix) 
     { 
-        return new FBMatrix_Wrapper(mFBMatrix->operator - (*( pFBMatrix.mFBMatrix ))); 
+        return FBMatrix_Wrapper(mFBMatrix->operator - (*( pFBMatrix.mFBMatrix ))); 
     } 
   
-    FBMatrix_Wrapper*   operator * (const FBMatrix_Wrapper &pFBMatrix) 
+    FBMatrix_Wrapper   operator * (const FBMatrix_Wrapper &pFBMatrix) 
     { 
-        return new FBMatrix_Wrapper(mFBMatrix->operator * (*( pFBMatrix.mFBMatrix ))); 
+        return FBMatrix_Wrapper(mFBMatrix->operator * (*( pFBMatrix.mFBMatrix ))); 
     } 
   
-    FBMatrix_Wrapper*   operator * (const double pN) 
+    FBMatrix_Wrapper   operator * (const double pN) 
     { 
-        return new FBMatrix_Wrapper(mFBMatrix->operator * (pN)); 
+        return FBMatrix_Wrapper(mFBMatrix->operator * (pN)); 
     } 
  
     FBMatrix_Wrapper& operator += (const FBMatrix_Wrapper &pFBMatrix) 
@@ -102,10 +102,10 @@ public:
         return *this;  
     } 
   
-    FBMatrix_Wrapper* operator- ()  
+    FBMatrix_Wrapper operator- ()  
     { 
         mFBMatrix->operator - (); 
-        return new FBMatrix_Wrapper(*mFBMatrix); 
+        return FBMatrix_Wrapper(*mFBMatrix); 
     } 
  
     bool NotEqual (const FBMatrix_Wrapper &pFBMatrix) 

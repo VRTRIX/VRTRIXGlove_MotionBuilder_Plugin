@@ -261,6 +261,8 @@ enum FBOneClickApplication
 };
 #endif
 
+FB_FORWARD(FBMotionFileOptions);
+
 /** FBApplication is used mainly to manage files.
 It provides functionality like that in the MotionBuilder file menu, for example, open file, save file. 
 
@@ -404,6 +406,16 @@ public:
     */
     bool FileImport( FBString pFilename, bool pMatchModels = false, bool pCreateUnmatchedModels = true );
 
+    /**	Import a motion file with the ability to specify options.
+    *	Command File->Motion File Import... in the menus.
+    *	\param	pOptions	    A FBMotionFileOptions object that contains the path to the files, as well as the options to load those motion files.
+    *	\return					True if the import succeeded.
+    *	\remark					The import will only work if you open files of the same type.
+    *	\remark					For now, you cannot import custom file types.
+    *	\remark					Not all options can be applied to a particular motion file type, please use the Motion File Import UI as a reference.
+    */
+    bool FileImportWithOptions( FBMotionFileOptions* pOptions );
+
     /**	Export a motion file.
     *	Command File->Motion File Export... in the menus.
     *	\param	pFilename		The file to create. To create two files at the same time (ex: .amc & .asf), separate the two files path with a comma ("Path1,Path2").
@@ -542,6 +554,60 @@ public:
     *	\return	the global object.
     */
     static FBApplication& TheOne();
+
+	/**	Return the scene title from the scene properties.
+	*/
+	const char* GetSceneTitle();
+
+	/**	Set the scene title.
+	*	\param	pTitle		The title to set in the scene properties.
+	*/
+	void SetSceneTitle(const char* pTitle);
+
+	/**	Return the scene subject from the scene properties.
+	*/
+	const char* GetSceneSubject();
+
+	/**	Set the scene subject.
+	*	\param	pSubject		The subject to set in the scene properties.
+	*/
+	void SetSceneSubject(const char* pSubject);
+
+	/**	Return the scene author from the scene properties.
+	*/
+	const char* GetSceneAuthor();
+
+	/**	Set the scene author.
+	*	\param	pAuthor		The author to set in the scene properties.
+	*/	
+	void SetSceneAuthor(const char* pAuthor);
+
+	/**	Return the scene keywords from the scene properties.
+	*/
+	const char* GetSceneKeywords();
+
+	/**	Set the scene keywords.
+	*	\param	pKeywords		The keywords to set in the scene properties.
+	*/
+	void SetSceneKeywords(const char* pKeywords);
+
+	/**	Return the scene revision number from the scene properties.
+	*/
+	const char* GetSceneRevisionNumber();
+
+	/**	Set the scene revision number.
+	*	\param	pRevNumber		The revision number to set in the scene properties.
+	*/
+	void SetSceneRevisionNumber(const char* pRevNumber);
+
+	/**	Return the scene comment from the scene properties.
+	*/
+	const char* GetSceneComment();
+	
+	/**	Set the scene comment.
+	*	\param	pComment		The comment to set in the scene properties.
+	*/	
+	void SetSceneComment(const char* pComment);
 };
 
 /** \defgroup File Merge Transaction Optimization. 

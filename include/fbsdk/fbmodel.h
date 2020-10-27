@@ -636,6 +636,18 @@ public:
     */
     unsigned int GetHierarchyWorldMatrices(FBMatrix* pMatricesArray, unsigned int pMatricesArrayCount, FBModelHiercharyTraverserType pHiercharyTraverserType, FBEvaluateInfo* pEvaluateInfo=NULL);
 
+    /** Collapse the model in the schematic view.
+    */
+    void CollapseInSchematic();
+
+    /** Expand the model in the schematic view.
+    */
+    void ExpandInSchematic();
+
+    /** Returns if the model is collapsed or not (expanded) in the schematic view.
+    *	\return true if the model is collapsed in the schematic view, false if it is expanded.
+    */
+    bool IsCollapsedInSchematic() const;
 };
 
 //! typedef class FBSDK_DLL

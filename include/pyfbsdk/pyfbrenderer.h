@@ -62,8 +62,10 @@ public:
     void OGLModelDisplay(FBRenderOptions_Wrapper& pRenderOptions, FBModel_Wrapper& pModel) { return mFBRenderer->OGLModelDisplay(*pRenderOptions.mFBRenderOptions, *pModel.mFBModel) ; }
     bool SetViewingOptions(FBViewingOptions_Wrapper& pOptions) { return mFBRenderer->SetViewingOptions( *pOptions.mFBViewingOptions ); }
     void SetViewport(int pX, int pY, int pW, int pH) { mFBRenderer->SetViewport( pX, pY, pW, pH ); }
-    void SetCurrentCamera( FBCamera_Wrapper& pCurrentCamera ) { mFBRenderer->CurrentCamera = pCurrentCamera.mFBCamera; }
-    object GetCurrentCamera(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->CurrentCamera ); }
+    void SetCurrentCamera( FBCamera_Wrapper& pCurrentCamera );
+    object GetCurrentCamera();
+    bool GetUseCameraSwitcher();
+    void SetUseCameraSwitcher( bool pUseCameraSwitcher );
     object GetDisplayableGeometry(int pIndex) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->GetDisplayableGeometry(pIndex)); }
     object GetDisplayableLight(int pIndex) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->GetDisplayableLight(pIndex)); }
     void GetDisplayableGeometryInCameraFrustum(FBModelList_Wrapper& pFBModelList, FBCamera_Wrapper& pCamera);
@@ -71,16 +73,17 @@ public:
     void SetScene( FBScene_Wrapper& pScene ) { mFBRenderer->Scene = pScene.mFBScene; }
     object GetScene(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->Scene ); }
     object GetRendererCallbacks(  ) { return FBPropertyListRendererCallback_Wrapper_Factory( mFBRenderer->RendererCallbacks ); }
-	void SetCameraInPane(FBCamera_Wrapper& pCamera, unsigned int pPaneIndex = 0) { mFBRenderer->SetCameraInPane( pCamera.mFBCamera, pPaneIndex ); }
-	object GetCameraInPane(unsigned int pPaneIndex = 0) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->GetCameraInPane( pPaneIndex ) ); }
-	void SetPaneCount(unsigned int pPaneCount) { mFBRenderer->SetPaneCount( pPaneCount ); }
-	unsigned int GetPaneCount() { return mFBRenderer->GetPaneCount(); }
-	void SetSchematicViewInPane(unsigned int pPaneIndex, bool pActive) { mFBRenderer->SetSchematicViewInPane( pPaneIndex, pActive ); }
-	int GetSchematicViewPaneIndex() { return mFBRenderer->GetSchematicViewPaneIndex(); }
-	void SetCameraSwitcherInPane( unsigned int pPaneIndex, bool pActive ) { mFBRenderer->SetCameraSwitcherInPane( pPaneIndex, pActive ); }
-	bool IsCameraSwitcherInPane( unsigned int pPaneIndex ) { return mFBRenderer->IsCameraSwitcherInPane( pPaneIndex ); }
-    
-    DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(UseCameraSwitcher, bool);
+    void SetCameraInPane(FBCamera_Wrapper& pCamera, unsigned int pPaneIndex) { mFBRenderer->SetCameraInPane( pCamera.mFBCamera, pPaneIndex ); }
+    object GetCameraInPane(unsigned int pPaneIndex = 0) { return FBWrapperFactory::TheOne().WrapFBObject( mFBRenderer->GetCameraInPane( pPaneIndex ) ); }
+    void SetPaneCount(unsigned int pPaneCount) { mFBRenderer->SetPaneCount( pPaneCount ); }
+    unsigned int GetPaneCount() { return mFBRenderer->GetPaneCount(); }
+	bool SetSelectedPaneIndex( unsigned int pPaneIndex ) { return mFBRenderer->SetSelectedPaneIndex( pPaneIndex ); }
+	unsigned int GetSelectedPaneIndex() { return mFBRenderer->GetSelectedPaneIndex(); }
+    void SetSchematicViewInPane(unsigned int pPaneIndex, bool pActive) { mFBRenderer->SetSchematicViewInPane( pPaneIndex, pActive ); }
+    int GetSchematicViewPaneIndex() { return mFBRenderer->GetSchematicViewPaneIndex(); }
+    void SetCameraSwitcherInPane( unsigned int pPaneIndex, bool pActive ) { mFBRenderer->SetCameraSwitcherInPane( pPaneIndex, pActive ); }
+    bool IsCameraSwitcherInPane( unsigned int pPaneIndex ) { return mFBRenderer->IsCameraSwitcherInPane( pPaneIndex ); }
+
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(AutoEvaluate,      bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(Background,        bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(ShowStats,         bool);    

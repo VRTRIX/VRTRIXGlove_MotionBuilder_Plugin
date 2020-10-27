@@ -88,7 +88,21 @@ public:
 	void SetEditZoomStop( FBTime_Wrapper& pEditZoomStop ) { mFBPlayerControl->SetEditZoomStop(*pEditZoomStop.mFBTime); }
 	void EvaluationPause() { mFBPlayerControl->EvaluationPause(); }
 	void EvaluationResume() { mFBPlayerControl->EvaluationResume(); }
-
+	int AddGlobalTimeMark( FBTime_Wrapper& pTime ) { return mFBPlayerControl->AddGlobalTimeMark( *pTime.mFBTime ); }
+	bool DeleteGlobalTimeMark( int pIndex ) { return mFBPlayerControl->DeleteGlobalTimeMark( pIndex ); }
+	void DeleteAllGlobalTimeMarks() { mFBPlayerControl->DeleteAllGlobalTimeMarks(); }
+	int GetGlobalTimeMarkCount() { return mFBPlayerControl->GetGlobalTimeMarkCount(); }
+	FBTime_Wrapper* GetGlobalTimeMarkTime( int pIndex ) { return FBTime_Wrapper_Factory( mFBPlayerControl->GetGlobalTimeMarkTime( pIndex ) ); }
+	int SetGlobalTimeMarkTime( int pIndex, FBTime_Wrapper& pTime ) { return  mFBPlayerControl->SetGlobalTimeMarkTime( pIndex, *pTime.mFBTime ); }
+	const char* GetGlobalTimeMarkName( int pIndex ) { return mFBPlayerControl->GetGlobalTimeMarkName( pIndex ); }
+	bool SetGlobalTimeMarkName( int pIndex, const char* pName ) { return mFBPlayerControl->SetGlobalTimeMarkName( pIndex, pName ); }
+	FBTimeMarkAction GetGlobalTimeMarkAction( int pIndex ) { return mFBPlayerControl->GetGlobalTimeMarkAction( pIndex ); }
+	bool SetGlobalTimeMarkAction( int pIndex, FBTimeMarkAction pAction ) { return mFBPlayerControl->SetGlobalTimeMarkAction( pIndex, pAction ); }
+	FBColor_Wrapper* GetGlobalTimeMarkColor( int pIndex ) { return FBColor_Wrapper_Factory( mFBPlayerControl->GetGlobalTimeMarkColor( pIndex ) ); }
+	bool SetGlobalTimeMarkColor( int pIndex, FBColor_Wrapper& pColor ) { return mFBPlayerControl->SetGlobalTimeMarkColor( pIndex, *pColor.mFBColor ); }
+	int GetNextGlobalTimeMarkIndex() { return mFBPlayerControl->GetNextGlobalTimeMarkIndex(); }
+	int GetPreviousGlobalTimeMarkIndex() { return mFBPlayerControl->GetPreviousGlobalTimeMarkIndex(); }
+	
 	object OnChange();
 
 protected:

@@ -1559,8 +1559,9 @@ namespace FBSDKNamespace {
 
         /**	Set the animation state of the property.
         *	\param	pState	State of animation for property, true to animate, false to remove curves.
+        *	\param	pCheckLocked	Decides whether to check the locked status.
         */
-        void SetAnimated( bool pState );
+        void SetAnimated( bool pState, bool pCheckLocked = false );
 
         /**	Get the animation node for the property.
         *	\param	pTake to get the animation node from.

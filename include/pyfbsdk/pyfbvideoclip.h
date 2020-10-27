@@ -74,7 +74,7 @@ public:
 	FBTime_Wrapper* GetTimeOffset(  ) { return FBTime_Wrapper_Factory( mFBVideoClip->TimeOffset ); }
 	int GetWidth(  ) { return mFBVideoClip->Width; }
     int GetTextureID( ) { return mFBVideoClip->GetTextureID(); }
-
+	FBTime_Wrapper* GetCurrentFrameTimeCode(  ) { return FBTime_Wrapper_Factory( mFBVideoClip->CurrentFrameTimeCode ); }
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(FrameRate,double);
 };
 #endif // pyfbvideoclip_h__

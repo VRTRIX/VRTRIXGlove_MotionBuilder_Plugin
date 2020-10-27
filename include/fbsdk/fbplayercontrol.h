@@ -409,6 +409,93 @@ public:
 	*   \param  pTime The new stop value for the edit zoom window.
 	*/
 	void SetEditZoomStop(FBTime pTime);
+
+	/** Add a global time mark. It doesn't allow creating a time mark at the same time of another time mark.
+	*   Note: Internally, the global time marks are stored in time order. Adding a time mark before other existing time marks will modify the index of these other time marks.
+	*   \param pTime Time where to add the time mark.
+	*   \param pName Name of the time mark to add.
+	*   \return The index of the time mark added if the operation is successful, -1 otherwise.
+	*/
+	int AddGlobalTimeMark( FBTime pTime, const char* pName = NULL );
+
+	/** Delete a global time mark.
+	*   Note: Internally, the global time marks are stored in time order. Deleting a time mark will modify the index of time marks laying after the deleted time mark.
+	*   \param pIndex Index of the time mark to delete.
+	*   \return True if the operation is successful, false otherwise.
+	*/
+	bool DeleteGlobalTimeMark( int pIndex );
+
+	/** Delete all global time marks.
+	*/
+	void DeleteAllGlobalTimeMarks();
+
+	/** Returns the number of global time marks.
+	*   \return The number of global time marks.
+	*/
+	int GetGlobalTimeMarkCount();
+
+	/** Returns the time associated with a global time mark.
+	*   \param pIndex Index of the time mark.
+	*   \return The time associated with the time mark.
+	*/
+	FBTime GetGlobalTimeMarkTime( int pIndex );
+
+	/** Sets a new time for an existing global time mark.
+	*   Note: Internally, the global time marks are stored in time order. Modifying the time of a time mark may modify the index of all time marks.
+	*   \param pIndex Index of the time mark.
+	*   \param pTime The new time for the time mark.
+	*   \return The new index of the modified time mark.
+	*/
+	int SetGlobalTimeMarkTime( int pIndex, FBTime pTime );
+
+	/** Returns the name associated with a global time mark.
+	*   \param pIndex Index of the time mark.
+	*   \return The name associated with the time mark.
+	*/
+	const char* GetGlobalTimeMarkName( int pIndex );
+
+	/** Sets a new name for an existing global time mark.
+	*   \param pIndex Index of the time mark.
+	*   \param pName The new name for the time mark.
+	*   \return True if the operation is successful, false otherwise.
+	*/
+	bool SetGlobalTimeMarkName( int pIndex, const char* pName );
+
+	/** Returns the action associated with a global time mark.
+	*   \param pIndex Index of the time mark.
+	*   \return The action associated with the time mark.
+	*/
+	FBTimeMarkAction GetGlobalTimeMarkAction( int pIndex );
+
+	/** Sets a new action for an existing global time mark.
+	*   \param pIndex Index of the time mark.
+	*   \param pAction The new action for the time mark.
+	*   \return True if the operation is successful, false otherwise.
+	*/
+	bool SetGlobalTimeMarkAction( int pIndex, FBTimeMarkAction pAction );
+
+	/** Returns the color associated with a global time mark.
+	*   \param pIndex Index of the time mark.
+	*   \return The color associated with the time mark.
+	*/
+	FBColor GetGlobalTimeMarkColor( int pIndex );
+
+	/** Sets a new color for an existing global time mark.
+	*   \param pIndex Index of the time mark.
+	*   \param pColor The new color for the time mark.
+	*   \return True if the operation is successful, false otherwise.
+	*/
+	bool SetGlobalTimeMarkColor( int pIndex, FBColor pColor );
+
+	/** Returns the next global time mark index, based on the current local time.
+	*   \return The next global time mark index, -1 if any next time mark is available.
+	*/
+	int GetNextGlobalTimeMarkIndex();
+
+	/** Returns the previous global time mark index, based on the current local time.
+	*   \return The previous global time mark index, -1 if any previous time mark is available.
+	*/
+	int GetPreviousGlobalTimeMarkIndex();
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

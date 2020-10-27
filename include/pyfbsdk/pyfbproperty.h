@@ -421,7 +421,7 @@ public:
     void Key();
     void KeyAt( FBTime_Wrapper& pTime );
 	void KeyRemoveAt( FBTime_Wrapper& pTime );
-    void SetAnimated( bool pValue );
+    void SetAnimated( bool pValue, bool pCheckLocked = false );
     void SetFocus( bool pValue );
 
     bool AllowsMuting() const;

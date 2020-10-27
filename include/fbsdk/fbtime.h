@@ -288,7 +288,7 @@ class FBSDK_DLL FBTimeCode
 	/**	Constructor.
     *	\param	pRate		Framerate value.
 	*/
-	FBTimeCode(float pRate=NTSC_DROP);
+	FBTimeCode(float pRate=FRAMES_30);
 
 	/**	Set timecode.
 	*	\param	pHour		Hour value.

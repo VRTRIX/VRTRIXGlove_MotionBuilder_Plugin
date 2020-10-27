@@ -82,15 +82,109 @@ enum FBTriggerStyle {
 	kFBTriggerStyleToggle		//!< If a previously triggered clip is playing, it will only be stopped, otherwise a new starts playing. No mixing and no loop.
 };
 
+//! Action to perform, when preparing an Audio In object to record, when the action clip associated to the recording path is already in the scene.
+enum FBExistingClipAction {
+	kFBExistingClipAskUser,			//!< Ask the user for desired operation via a dialog.
+	kFBExistingClipRemove,			//!< Remove the action clip from the scene.
+	kFBExistingClipAbortOperation	//!< Cancel preparing the audio in to record.
+};
+
+//! Action to perform, when preparing an Audio In object to record, when the action clip associated to the recording path already exists on disk and is not empty.
+enum FBExistingFileAction {
+	kFBExistingFileAskUser,			//!< Ask the user for desired operation via a dialog.
+	kFBExistingFileOverwrite,		//!< Overwrite the existing file on disk.
+	kFBExistingFileAppend,			//!< Append the new recording to existing recording. Warning: Be sure that the current file format match your recording option!
+	kFBExistingFileAbortOperation,	//!< Cancel preparing the audio in to record.
+};
+
 FB_DEFINE_ENUM(FBSDK_DLL, AccessMode);
 FB_DEFINE_ENUM(FBSDK_DLL, UseChnMode);
 FB_DEFINE_ENUM(FBSDK_DLL, TriggerStyle);
+FB_DEFINE_ENUM(FBSDK_DLL, ExistingClipAction);
+FB_DEFINE_ENUM(FBSDK_DLL, ExistingFileAction);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FBAudioIn
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /** Audio In class.
-*	Properties of this class are work in progress, but you can still list them and get their names.
+	Used to control Audio In objects (like a Microphone Audio Device).
+    
+    @code
+    # This example shows how to prepare an FBAudioIn object for recording
+    # by redirecting the audio to an FBAudioOut object and
+    # by specifying a desired audio format and target audio file
+    
+    from pyfbsdk import *
+    
+    # Let's see how many FBAudioIn objects are available
+    lAudioIns = FBSystem().AudioInputs
+    print "The number of Audio Inputs:", len( lAudioIns )
+    if len( lAudioIns ) > 0:
+        # Work with the first Audio In object available
+        lAudioIn = lAudioIns[0]
+        print "Audio Input Name:", lAudioIn.Name
+        
+        # Let's turn it offline, if not already
+        if lAudioIn.IsOnline():
+            print "Turned offline successful?", lAudioIn.SetOnline( False )
+        
+        # Let's set the first AudioOut available as the Audio In destination
+        # if any destination is set yet
+        # (Windows Only)
+        if lAudioIn.GetDestination() == None:
+            lAudioOuts = FBSystem().AudioOutputs
+            print "The number of Audio Outputs:", len( lAudioOuts )
+            if len( lAudioOuts ) > 0:
+                # Work with the first Audio Out object available
+                lAudioOut = lAudioOuts[0]
+                print "Audio Output Name:", lAudioOut.Name
+                print "Setting destination successful?", lAudioIn.SetDestination( lAudioOut )
+            else:
+                print "No available Audio Out object available for destination"
+        else:
+            print "Audio Output <", lAudioIn.GetDestination().Name, "> already set for destination"
+        
+        # Let's try to record an audio file in 8-bit, 22060 hz and in stereo
+        # Make sure this Audio In object supports this format
+        lSupportedFormats = lAudioIn.GetSupportedFormats()
+        if lSupportedFormats & FBAudioFmt_ConvertBitDepthMode( FBAudioBitDepthMode.kFBAudioBitDepthMode_8 ) != 0 and \
+           lSupportedFormats & FBAudioFmt_ConvertRateMode( FBAudioRateMode.kFBAudioRateMode_22050 ) != 0 and \
+           lSupportedFormats & FBAudioFmt_ConvertChannelMode( FBAudioChannelMode.kFBAudioChannelModeStereo ) != 0:
+            
+            # This format is supported, let's set it now
+            lNewFormat  = FBAudioFmt_ConvertBitDepthMode( FBAudioBitDepthMode.kFBAudioBitDepthMode_8 )
+            lNewFormat |= FBAudioFmt_ConvertRateMode( FBAudioRateMode.kFBAudioRateMode_22050 )
+            lNewFormat |= FBAudioFmt_ConvertChannelMode( FBAudioChannelMode.kFBAudioChannelModeStereo )
+            print "Setting recording format successful?", lAudioIn.SetRecordingFormat( lNewFormat )
+            
+            # Let's add a delay of 3 frames
+            # (Windows only)
+            print "Setting delay successful?", lAudioIn.SetDelay( FBTime( 0, 0, 0, 3 ) )
+            
+            # Let's turn it online now
+            print "Turned online successful?", lAudioIn.SetOnline( True )
+            
+            # Now, prepare the Audio In object for recording
+            # To turn it off first, if already in "Record" state
+            if lAudioIn.IsReadyToRecord():
+                print "Turned Off Recording?", lAudioIn.TurnOffRecording()
+            
+            lAudioFilePath = "C:\\temp\\myRecordedAudioFile.wav"
+            
+            # Note: To remove pop-ups that may occurs, if required, 
+            # look at the optional parameters of the PrepareToRecord method
+            print "Preparing to record successful?", lAudioIn.PrepareToRecord( lAudioFilePath )
+            
+            if lAudioIn.IsReadyToRecord():
+                print "You are now ready to start recording and playback!"
+            else:
+                print "Something failed while preparing to record! Tip: Do you have a C:\temp folder?"
+            
+        else:
+            print "This format (8-bit, 22060 hz, stereo) is not supported!"
+    else:
+        print "No available Audio In object available"
+    @endcode
 */
 class FBSDK_DLL FBAudioIn : public FBComponent
 {
@@ -102,6 +196,82 @@ public:
 	*	\param	pObject	For internal use only.
 	*/
 	FBAudioIn(HIObject pObject=NULL);
+
+
+	/** Turns Audio In online or offline.
+	*	\param	pOnline				True to turn the Audio In online, false to turn it offline.
+	*	\return	True if operation is successful, false otherwise.
+	*/
+	bool SetOnline( bool pOnline );
+
+	/** Is the Audio In online?
+	*	\return	True if the Audio In is online, false if it is offline.
+	*/
+	bool IsOnline() const;
+
+
+	/** Prepares the Audio In for recording (similar as checking the "Record" checkbox in the UI).
+	*	If the Audio In is not already online, it will turn it online automatically.
+	*	If the Audio In is already ready to record, it will turn it off first automatically.
+	*	\param	pRecordingPath			The file path for the desired output wav file. The file must have the .wav extension.
+	*	\param	pExistingClipAction		The action to perform when the action clip associated to the recording path is already in the scene.
+	*	\param	pExistingFileAction		The action to perform when the file associated to the recording path already exists on disk and it not empty.
+	*	\return	True if operation is successful, false otherwise. It could fail for different reasons (e.g. the specified file is not a WAV file or is invalid, the operation is abort by the user, etc.).
+	*/
+	bool PrepareToRecord(	const char*				pRecordingPath, 
+							FBExistingClipAction	pExistingClipAction = kFBExistingClipAskUser,
+							FBExistingFileAction	pExistingFileAction = kFBExistingFileAskUser );
+
+	/** Turns off the Audio In recording (similar as un-checking the "Record" checkbox in the UI).
+	*	\return	True if operation is successful, false otherwise.
+	*/
+	bool TurnOffRecording();
+
+	/** Is the Audio In ready to record (has it been prepared properly)?
+	*	\return	True if the audio is ready to record, false otherwise. 
+	*/
+	bool IsReadyToRecord() const;
+
+
+	/** Returns all the Audio In supported formats (i.e. Bit Depths, Rates and Channels).
+	*	\return	The Audio In supported formats.
+	*/
+	FBAudioFmt GetSupportedFormats() const;
+
+	/** Sets the recording format (i.e. Bit Depth, Rate and Channel(s)) to use. The Audio In must be offline when this method is called.
+	*	\param	pAudioFormat			The audio format to use for recording. It must specify a unique Bit Depth, Rate and Channels.
+	*	\return	True if operation is successful, false otherwise. It could fail for different reasons (e.g. the specified audio format is not supported, more than one Bit Depth is specified, etc.).
+	*/
+	bool SetRecordingFormat( FBAudioFmt pAudioFormat );
+
+	/** Returns the recording format (i.e. Bit Depth, Rate and Channel(s)) currently set.
+	*	\return	The audio format currently set for recording.
+	*/
+	FBAudioFmt GetRecordingFormat() const;
+
+
+	/** Sets the delay to use. The Audio In must be offline when this method is called. (Windows only).
+	*	\param	pDelay				The delay to use. To mimic the UI, the FBTime should refer to a frame number.
+	*	\return	True if operation is successful, false otherwise.
+	*/
+	bool SetDelay( FBTime& pDelay );
+
+	/** Returns the delay currently set. (Windows only).
+	*	\return	The delay currently set.
+	*/
+	FBTime GetDelay() const;
+
+
+	/** Sets the Audio Out object to be used as the destination. The Audio In must be offline when this method is called. (Windows only).
+	*	\param	pAudioOut				The Audio Out object to be used as the destination. Use a NULL pointer (None in Python) to unset the destination.
+	*	\return	True if operation is successful, false otherwise.
+	*/
+	bool SetDestination( FBAudioOut* pAudioOut );
+
+	/** Returns the Audio Out object currently used as the destination. (Windows only).
+	*	\return	The Audio Out object currently used as the destination. Returns a NULL pointer (None in Python) if any Audio Out object is currently set.
+	*/
+	FBAudioOut* GetDestination() const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

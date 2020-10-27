@@ -208,7 +208,7 @@ namespace FBSDKNamespace {
         *   \deprecated use IsInSelectionBufferPicking() / IsInColorBufferPicking() instead.
         */
         K_DEPRECATED_2014 bool InPicking() const;
-                 
+
         /** Is the rendering routine during picking status with GL selection buffer method.
         */
         bool IsInSelectionBufferPicking() const;
@@ -305,7 +305,7 @@ namespace FBSDKNamespace {
         //--- Open Reality declaration.
         __FBClassDeclare( FBRendererCallback,FBComponent );
     public:
-        
+
         /**	Constructor 
         */
         FBRendererCallback(const char* pName);
@@ -636,8 +636,8 @@ private:
         bool IsModelInsideCameraFrustum(FBModel* pGeometry, FBCamera* pCamera = NULL);
 
         // Properties
-        FBPropertyCamera				CurrentCamera;			//!< \deprecated <b>Read Write Property:</b> Current camera. if UseCameraSwitcher is on, this will Get/Set camera switcher's current camera; Deprecated. Should use SetCameraInPane/GetCameraInPane methods instead.
-        FBPropertyBool					UseCameraSwitcher;		//!< \deprecated <b>Read Write Property:</b> Activate/Deactivate usage of camera switcher for the first model view of main viewer. Deprecated. Should use SetCameraSwitcherInPane/IsCameraSwitcherInPane methods instead.
+        FBPropertyCamera				CurrentCamera;			//!< \deprecated Use SetCameraInPane/GetCameraInPane methods instead.  
+        FBPropertyBool					UseCameraSwitcher;		//!< \deprecated Use SetCameraSwitcherInPane/IsCameraSwitcherInPane methods instead.
 
 #if !defined(K_NO_MANIPULATOR)
         FBPropertyManipulatorTransform  ManipulatorTransform;	//!< <b>Read Only Property:</b> Manipulator responsible of moving objects
@@ -646,7 +646,7 @@ private:
 
         FBPropertyScene					Scene;					//!< <b>Read Write Property:</b> Scene that the renderer will use/draw
         FBPropertyBool					AutoEvaluate;			//!< <b>Read Write Property:</b> Indicate if a call to RenderBegin will also cause a re-evaluation of the scene.
-		FBPropertyBool					EvaluateMode;			//!< <b>Read Write Property:</b> When true (default), call to Render will perform evaluation. Useful when rendering and evaluation needs to be decoupled.
+        FBPropertyBool					EvaluateMode;			//!< <b>Read Write Property:</b> When true (default), call to Render will perform evaluation. Useful when rendering and evaluation needs to be decoupled.
         FBPropertyBool					Background;				//!< <b>Read Write Property:</b> The renderer.
         FBPropertyBool					ShowStats;				//!< <b>Read Write Property:</b> Show the stats about FPS, Evaluation rate ... like when using Shift-F in main viewer.
         FBPropertyBool                  FrustumCulling;         //!< <b>Read Write Property:</b> Turn on/off the early frustum culling optimization. 
@@ -671,7 +671,7 @@ private:
         *   \note MoBu default render won't utilize those advanced material properties, they're provided for pipeline interop and custom plugin development purpose. 
         */
         FBPropertyBool                  AdvancedMaterialMode;   
-        
+
         /** <b>Read write Property:</b> Turn on/off advanced lighting setting UI widgets. 
         *   Include UI widgets for various advanced lighting setting, includes: 
         *   Light: area light, spot light inner/outer angles, barndoors and etc.,; 
@@ -685,87 +685,109 @@ private:
         */
         FBPropertyBool                  AdvancedLightingMode;   
 
-		/** Viewer texture Id.
+        /** Viewer texture Id.
         *   This function is returning the texture Id of the viewer pane and also making sure the opengl context is current
         *   \return						Texture Id of the viewer when Videoout is Online.
         */
-		int GetViewerTextureId();
+        int GetViewerTextureId();
 
-		/** Add a new clone view to call when rendering main viewer
-		*   \param  pView           View to be called for expose.
+        /** Add a new clone view to call when rendering main viewer
+        *   \param  pView           View to be called for expose.
         */
-		void CloneViewAdd(FBView* pView);
+        void CloneViewAdd(FBView* pView);
 
-		/** Remove a new clone view to call when rendering main viewer
-		*   \param  pView           View to be called for expose.
+        /** Remove a new clone view to call when rendering main viewer
+        *   \param  pView           View to be called for expose.
         */
-		void CloneViewRemove(FBView* pView);
+        void CloneViewRemove(FBView* pView);
 
-		/** Viewer texture Id.
+        /** Viewer texture Id.
         *   This function starts/stop rendering to an additional buffer which can be accessed with GetViewerTextureId() without the need to turn VideoOut Online.
-		*   \param  pState           Set On/Off texture viewer generation. If false, GetViewerTextureId() will not return a valid texture.
+        *   \param  pState           Set On/Off texture viewer generation. If false, GetViewerTextureId() will not return a valid texture.
         */
-		void CloneViewRender(int pWidth, int pHeight);
+        void CloneViewRender(int pWidth, int pHeight);
 
-		/**	Set the camera to display in the given pane index.
-		*	If the Schematic View is displayed in the pane associated with the given pane index,
-		*	the camera will be displayed when the Schematic View will be deactivated from this pane.
-		*	If the Camera Switcher is on in the pane associated with the given pane index,
-		*	the camera will be set to the camera switcher's current camera.
-		*	\param pCamera			The camera to set.
+        /** Set the camera to display in the given pane index.
+        *   If the Schematic View is displayed in the pane associated with the given pane index,
+        *   the camera will be displayed when the Schematic View will be deactivated from this pane.
+        *
+        *   Note:
+        *   If current pane uses Camera Switcher, it will be set to use Camera, rather than old behavior
+        *   that still uses Camera Switcher and sets Camera to be Camera Switcher's current camera,
+        *   which introduce a Zombie Camera Switcher problem.  By using Camera, the problem is gone.
+        *   
+        *   Note:
+        *   To operate current camera in Camera Switcher, it is recommended to use FBCameraSwitcher().
+        *
+        *   \param pCamera          The camera to set.
+        *   \param pPaneIndex       The pane index.
+        */
+        void SetCameraInPane( FBCamera* pCamera, unsigned int pPaneIndex );
+
+        /** Return the camera displayed in the given pane index.
+        *   If the Schematic View is displayed in the pane associated with the given pane index,
+        *   the returned camera is the camera that would be displayed if the Schematic View was deactivated.
+        *   If the Camera Switcher is on in the pane associated with the given pane index,
+        *   the returned camera is the switcher's current camera.
+        *   
+        *   Note:
+        *   To operate current camera in Camera Switcher, it is recommended to use FBCameraSwitcher().
+        *
+        *   \param pPaneIndex       The pane index.
+        *   \return                 The camera used in the given pane index, NULL if the pane index is invalid.
+        */
+        FBCamera* GetCameraInPane( unsigned int pPaneIndex );
+
+        /** Set the number of panes to display in the viewer's layout.
+        *   \param pPaneCount       The number of panes to display.
+        */
+        void SetPaneCount( unsigned int pPaneCount );
+
+        /** Return the number of panes displayed in the viewer's layout.
+        *   \return                 The number of panes displayed.
+        */
+        unsigned int GetPaneCount();
+
+		/**	Select the pane associated with the given pane index in the active viewer's layout.
 		*	\param pPaneIndex		The pane index.
+		*	\return					True if the operation is successful, False otherwise.
 		*/
-		void SetCameraInPane( FBCamera* pCamera, unsigned int pPaneIndex );
+		bool SetSelectedPaneIndex( unsigned int pPaneIndex );
 
-		/**	Return the camera displayed in the given pane index.
-		*	If the Schematic View is displayed in the pane associated with the given pane index,
-		*	the returned camera is the camera that would be displayed if the Schematic View was deactivated.
-		*	If the Camera Switcher is on in the pane associated with the given pane index,
-		*	the returned camera is the switcher's current camera.
-		*	\param pPaneIndex		The pane index.
-		*	\return					The camera used in the given pane index, NULL if the pane index is invalid.
+		/**	Return the pane index associated with the selected pane in the active viewer's layout.
+		*	\return					The selected pane index.
 		*/
-		FBCamera* GetCameraInPane( unsigned int pPaneIndex );
+		unsigned int GetSelectedPaneIndex() const;
 
-		/**	Set the number of panes to display in the viewer's layout.
-		*	\param pPaneCount		The number of panes to display.
-		*/
-		void SetPaneCount( unsigned int pPaneCount );
+        /** Set/Remove the Schematic View in the given pane index.
+        *   When activating the Schematic View in the pane, if the Schematic View is already activated in another pane,
+        *   the Schematic View will be removed from latter before being activated into the new pane.
+        *   \param pPaneIndex       The pane index.
+        *   \param pActive          True to activate the Schematic View in the given pane, False to remove it.
+        */
+        void SetSchematicViewInPane( unsigned int pPaneIndex, bool pActive );
 
-		/**	Return the number of panes displayed in the viewer's layout.
-		*	\return					The number of panes displayed.
-		*/
-		unsigned int GetPaneCount();
+        /** Return the pane index of the pane displaying the Schematic View.
+        *   \return                 The pane index of the pane displaying the Schematic View, -1 if the Schematic View is currently not displayed in any pane.
+        */
+        int GetSchematicViewPaneIndex();
 
-		/**	Set/Remove the Schematic View in the given pane index.
-		*	When activating the Schematic View in the pane, if the Schematic View is already activated in another pane,
-		*	the Schematic View will be removed from latter before being activated into the new pane.
-		*	\param pPaneIndex		The pane index.
-		*	\param pActive			True to activate the Schematic View in the given pane, False to remove it.
-		*/
-		void SetSchematicViewInPane( unsigned int pPaneIndex, bool pActive );
+        /** Set/Remove the Camera Switcher in the given pane index.
+        *   To specify which camera the Camera Switcher should be displaying, use the SetCameraInPane method.
+        *   If the Schematic View is displayed in the pane associated with the given pane index,
+        *   the camera switcher will be displayed (if activated) when the Schematic View will be deactivated from this pane.
+        *   \param pPaneIndex       The pane index.
+        *   \param pActive          True to activate the Camera Switcher in the given pane, False to remove it.
+        */
+        void SetCameraSwitcherInPane( unsigned int pPaneIndex, bool pActive );
 
-		/**	Return the pane index of the pane displaying the Schematic View.
-		*	\return					The pane index of the pane displaying the Schematic View, -1 if the Schematic View is currently not displayed in any pane.
-		*/
-		int GetSchematicViewPaneIndex();
-
-		/**	Set/Remove the Camera Switcher in the given pane index.
-		*	To specify which camera the Camera Switcher should be displaying, use the SetCameraInPane method.
-		*	If the Schematic View is displayed in the pane associated with the given pane index,
-		*	the camera switcher will be displayed (if activated) when the Schematic View will be deactivated from this pane.
-		*	\param pPaneIndex		The pane index.
-		*	\param pActive			True to activate the Camera Switcher in the given pane, False to remove it.
-		*/
-		void SetCameraSwitcherInPane( unsigned int pPaneIndex, bool pActive );
-
-		/**	Return the Camera Switcher activeness in the given pane index.
-		*	If the Schematic View is displayed in the pane associated with the given pane index,
-		*	the returned value is the value that would be returned if the Schematic View was deactivated.
-		*	\param pPaneIndex		The pane index.
-		*	\return					True if the Camera Switcher is active in the pane associated with the given pane index, False otherwise.
-		*/
-		bool IsCameraSwitcherInPane( unsigned int pPaneIndex );
+        /** Return the Camera Switcher activeness in the given pane index.
+        *   If the Schematic View is displayed in the pane associated with the given pane index,
+        *   the returned value is the value that would be returned if the Schematic View was deactivated.
+        *   \param pPaneIndex       The pane index.
+        *   \return                 True if the Camera Switcher is active in the pane associated with the given pane index, False otherwise.
+        */
+        bool IsCameraSwitcherInPane( unsigned int pPaneIndex );
     };
 
 #ifdef FBSDKUseNamespace

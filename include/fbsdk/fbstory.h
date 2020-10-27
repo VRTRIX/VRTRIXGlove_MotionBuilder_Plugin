@@ -66,10 +66,12 @@ __FB_FORWARD( FBStory );
 __FB_FORWARD( FBStoryFolder );
 __FB_FORWARD( FBStoryTrack );
 __FB_FORWARD( FBStoryClip );
+__FB_FORWARD( FBStoryGroupClip );
 FB_DEFINE_COMPONENT( FBSDK_DLL, Story );
 FB_DEFINE_COMPONENT( FBSDK_DLL, StoryFolder );
 FB_DEFINE_COMPONENT( FBSDK_DLL, StoryTrack );
 FB_DEFINE_COMPONENT( FBSDK_DLL, StoryClip );
+FB_DEFINE_COMPONENT( FBSDK_DLL, StoryGroupClip );
 FB_DEFINE_COMPONENT( FBSDK_DLL, AnimationNode );
 FB_DEFINE_COMPONENT( FBSDK_DLL, Video );
 FB_DEFINE_COMPONENT( FBSDK_DLL, AudioClip );
@@ -122,10 +124,32 @@ enum FBStoryTrackBodyPart {
     kFBStoryTrackBodyPartExtensions		= 1 << 12
 };
 
+//! Ghost Show Modes for story animation tracks.
+enum FBStoryTrackGhostShowMode {
+    kFBStoryTrackShowAllClips,                  //!< Show the ghosts for all the clips on the track.
+    kFBStoryTrackShowCurrentTimeAdjacentClips	//!< Show the ghosts only for the previous clip, current clip, and next clip relative to current time.
+};
+
 //! Show Ghost Modes for story animation clips.
 enum FBStoryClipShowGhostMode {
 	kFBStoryClipAlways,		//!< Always show the ghost.
-	kFBStoryClipTimeCursor	//!< Show the ghost only on time cursor.
+	kFBStoryClipTimeCursor,	//!< Show the ghost only on time cursor.
+    kFBStoryClipTimeCustom	//!< Show the ghost for custom time frame.
+};
+
+//! Time mode to display ghost.
+enum FBStoryClipGhostTimeMode {
+	kFBStoryClipGhostCurrent,	//!< Show the ghost at current time of the clip.
+	kFBStoryClipGhostStart,		//!< Show the ghost at start time of the clip.
+	kFBStoryClipGhostStop,		//!< Show the ghost at stop time of the clip.
+	kFBStoryClipGhostCustom		//!< Show the ghost at custom time of the clip. See GhostManipulatorCustomTime property.
+};
+
+//! Node function. 
+enum FBStoryClipNodeFunction {
+	kFBStoryClipNodeAverage,				//!< Average.
+	kFBStoryClipNodeFloorProjection,		//!< Project on XZ plane.
+	kFBStoryClipNodeNone					//!< None.
 };
 
 //! Solve Modes for story character clips.
@@ -134,6 +158,13 @@ enum FBStoryClipSolveMode {
 	kFBStoryClipAnimSkeleton,		//!< Solve skeleton animation.
 	kFBStoryClipAnimFkIk,			//!< Solve forward and inverse kinematic animation.
 	kFBStoryClipAnimSkeletonIk		//!< Solve skeleton inverse kinematic animation.
+};
+
+//! Several mirror planes to mirror animation.
+enum FBStoryClipMirrorPlane {
+    kFBStoryClipMirrorPlaneXY,	//!< X-Y plane.
+    kFBStoryClipMirrorPlaneZY,	//!< Z-Y plane.
+    kFBStoryClipMirrorPlaneXZ   //!< X-Z plane.
 };
 
 //! Compensation Modes for story character clips.
@@ -187,6 +218,13 @@ enum FBStoryClipAlignmentType {
 	kFBStoryClipAlignmentBeginningNextWithOffset	//!< Align selected clips to the beginning of the next clip, while keeping the relative offset.
 };
 
+//! Alignment Types when aligning groups.
+enum FBStoryGroupClipAlignmentType {
+	kFBStoryGroupClipAlignmentCurrentTimeline,			//!< Align the clips contained in the group clip with the current time.
+	kFBStoryGroupClipAlignmentEndPreviousWithOffset,		//!< Align the clips contained in the group clip to the end of the previous clip, while keeping the relative offset.
+	kFBStoryGroupClipAlignmentBeginningNextWithOffset,	//!< Align the clips contained in the group clip to the beginning of the next clip, while keeping the relative offset.
+};
+
 //! Types of clip change events, matching KEventClip.eType
 //! Expose only kFBStoryClipMoveClip and kFBStoryClipRemoved for now
 enum FBStoryClipChangeType {
@@ -214,8 +252,12 @@ enum FBStoryClipTimeWarpInterpolatorType {
 FB_DEFINE_ENUM(FBSDK_DLL, StoryClipChangeType );
 FB_DEFINE_ENUM(FBSDK_DLL, StoryTrackType);
 FB_DEFINE_ENUM(FBSDK_DLL, StoryTrackRefMode);
+FB_DEFINE_ENUM(FBSDK_DLL, StoryTrackGhostShowMode);
 FB_DEFINE_ENUM(FBSDK_DLL, StoryClipShowGhostMode);
+FB_DEFINE_ENUM(FBSDK_DLL, StoryClipGhostTimeMode);
+FB_DEFINE_ENUM(FBSDK_DLL, StoryClipNodeFunction);
 FB_DEFINE_ENUM(FBSDK_DLL, StoryClipSolveMode);
+FB_DEFINE_ENUM(FBSDK_DLL, StoryClipMirrorPlane);
 FB_DEFINE_ENUM(FBSDK_DLL, StoryClipCompMode);
 FB_DEFINE_ENUM(FBSDK_DLL, StoryClipAlignmentType);
 FB_DEFINE_ENUM(FBSDK_DLL, StoryClipTimeWarpInterpolatorType);
@@ -550,6 +592,11 @@ public:
 	*/
 	void AlignSelectedClips(FBStoryClipAlignmentType pType, FBComponent* pReferenceClip);
 
+	/** Used to align clips inside a group.
+	*	\param	pType				Type of alignment that will be done.
+	*/
+	void AlignSelectedClipsGroup(FBStoryGroupClipAlignmentType pType);
+
 	/** Used to expand selected clips .
 	*	\param	pPreserveOverlap	If true, portion of clips that overlap other clips won't be modified.
 	*/
@@ -561,6 +608,12 @@ public:
 	*	\remark	Currently only animation clips are supported in the Root Folder
 	*/
 	void ConvertClipsToReadOnly(bool pSelected, char* pFilePath);
+
+	/** ExpandSelectedClipsGroup
+	*	Used to expand group clip dependent clips.
+	*	\param	pPreserveOverlap	If true, portion of clips that overlap other clips won't be modified.
+	*/
+	void ExpandSelectedClipsGroup(bool pPreserveOverlap);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -568,6 +621,10 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /** Story Track class.
 *	Tracks are containers for clips (medias), have a specific type which offer different functions.
+*	Note: To change the travelling node of a track, search for the "TravellingNode" property on the track and then connect/disconnect the appropriate object.
+*	Python example:
+*	lPropTravellingNode = lAnimTrack.PropertyList.Find("TravellingNode")
+*	lCube.ConnectDst(lPropTravellingNode)
 */
 class FBSDK_DLL FBStoryTrack : public FBConstraint
 {
@@ -666,6 +723,7 @@ public:
 	FBPropertyBool				GhostModel;		//!< <b>Read Write Property:</b> Show ghost of models
 	FBPropertyBool				GhostTravelling;//!< <b>Read Write Property:</b> Show ghost of clip vector or traveling node
 	FBPropertyBool				GhostPivot;		//!< <b>Read Write Property:</b> Show ghost of match object
+    FBPropertyStoryTrackGhostShowMode	GhostShowTrackMode;	//!< <b>Read Write Property:</b> Show the ghosts for all the clips or only the adjacent clips. See FBStoryTrackGhostShowMode
 	FBPropertyBool				AcceptKey;		//!< <b>Read Write Property:</b> Allow track to accept keys
 	FBPropertyStoryTrackRefMode	ReferenceMode;	//!< <b>Read Write Property:</b> Track composition mode, kFBStoryTrackOverride or kFBStoryTrackAdditive
 	FBPropertyBool				OffsetEnable;	//!< <b>Read Write Property:</b> When enabled, allow clip to be offset
@@ -881,6 +939,11 @@ public:
 	*/
 	FBXSDK_NAMESPACE::FbxScene* GetFbxScene();
 
+    /** Update clip animation from current take animation for clip track's scope, works only for clip created by Insert Current Take and connected to current take.
+    *   \return	Returns true if succeed.
+	*/
+	bool UpdateFromCurrentTake();
+
 	//--- All clip properties -----------------------------------------------------------------------------------------------------------
 	FBPropertyColor		Color;			//!< <b>Read Write Property:</b> Color of the clip.
 	FBPropertyTime		Start;			//!< <b>Read Write Property:</b> Start time of the clip local to its track.
@@ -926,14 +989,22 @@ public:
 	FBPropertyBool						GhostTravelling;	//!< <b>Read Write Property:</b> Show ghost of clip vector or traveling node
 	FBPropertyBool						GhostPivot;			//!< <b>Read Write Property:</b> Show ghost of match object
 	FBPropertyStoryClipShowGhostMode	ShowGhostClipMode;	//!< <b>Read Write Property:</b> Show the ghost depending on the time. See FBStoryClipShowGhostMode
+    FBPropertyTime						GhostCustomTime;	//!< <b>Read Write Property:</b> Custom time to display ghost, only applicable if ShowGhostClipMode is kFBStoryClipTimeCustom.
 	FBPropertyAnimationNode				PreBlendData;		//!< <b>Read Only Property:</b>	To get the animation of the Pre blend curve
 	FBPropertyAnimationNode				PostBlendData;		//!< <b>Read Only Property:</b> To get the animation of the Post blend curve
 	FBPropertyListPivot					Pivots;				//!< <b>List:</b> Pivots models (Generally, only one model is necessary)
 	FBPropertyBool						Loaded;				//!< <b>Read Write Property:</b> If true, clip file is loaded into memory and can be evaluated (will affect track content).
 	FBPropertyVector3d					GhostManipulatorOffset;	//!< <b>Read Write Property:</b> Animation clip's ghost manipulator offset.
+    FBPropertyListObject				TravellingNode;		//!< <b>List:</b> Travelling node(s). If set, this property will overwrite the Track's Travelling node(s).
+	FBPropertyStoryClipNodeFunction		TravellingNodeFunction;	//!< <b>Read Write Property:</b> Travelling node function. If set, this property will overwrite the Track's Travelling node function. See FBStoryClipNodeFunction.
+	FBPropertyStoryClipGhostTimeMode	GhostManipulatorMode;	//!< <b>Read Write Property:</b> Time mode to display ghost manipulator. See FBStoryClipGhostTimeMode.
+	FBPropertyTime						GhostManipulatorCustomTime;	//!< <b>Read Write Property:</b> Custom time to display ghost manipulator, only applicable if GhostManipulatorMode is kFBStoryClipGhostCustom.
+    FBPropertyBool						ConnectedToTake;	//!< <b>Read Write Property:</b> When connected to current take, user can do updating from current take, but user can't edit clip animation by adding keys, only works for clips created by Insert Current Take.
 
 	//--- Character clip properties -----------------------------------------------------------------------------------------------------
 	FBPropertyStoryClipSolveMode		SolvingMode;		//!< <b>Read Write Property:</b> Solve Modes for story character clips. See FBStoryClipSolveMode
+    FBPropertyBool						MirrorAnimation;    //!< <b>Read Write Property:</b> If true, clip animation will be mirrored
+    FBPropertyStoryClipMirrorPlane      MirrorPlane;    	//!< <b>Read Write Property:</b> Several mirror planes to mirror animation. See FBStoryClipMirrorPlane
 
 	FBPropertyEvent						OnChange;			//!< <b>Event:</b> Something in the clip has changed. (FBEventClip)
 
@@ -941,6 +1012,58 @@ public:
 	FBPropertyStoryClipTimeWarpInterpolatorType	TimeWarpInterpolatorType;	//!< <b>Read Write Property:</b> Animation clip's TimeWarp interpolation type. See FBStoryClipTimeWarpInterpolatorType.
 	FBPropertyBool								TimeWarpReverse;			//!< <b>Read Write Property:</b> If true, reverse the Animation clip's TimeWarp FCurve.
 	FBPropertyAnimationNode						CustomTimeWarp;				//!< <b>Read Only Property:</b> Animation clip's custom TimeWarp FCurve.
+
+private:
+	void FBStoryClipInitProperties();
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// FBStoryGroupClip
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/** Story Group Clip class.
+*	Group Clip represents a group of clips that can be manipulated together.
+*/
+class FBSDK_DLL FBStoryGroupClip : public FBComponent
+{
+	//--- Open Reality declaration.
+	__FBClassDeclare(FBStoryGroupClip, FBComponent);
+public:
+
+	/**	Constructor.
+	*	\param	pAffectedClipObject	Clips that will be controlled by the group clip.
+	*	\param	pObject				For internal use only.
+	*/
+	FBStoryGroupClip(FBArrayTemplate<FBStoryClip*>* pAffectedClipObject, HIObject pObject=NULL);
+
+	/** Virtual FBDelete function.
+	*/
+	virtual void FBDelete();
+
+	/**	Move.
+	*	Move the clip of a delta offset.
+	*	\param	pDelta	Delta time to apply to the clip.
+	*	\param	pForce	Force clip to find the nearest position if the move fail.
+	*	\return Return the delta between the new and previous clip's position.
+	*/
+	FBTime Move(FBTime pDelta, bool pForce=true);
+
+	/**	MoveTo.
+	*	Move the clip to the specified time.
+	*	\param	pTime	Time where to put the clip.
+	*	\param	pForce	Force clip to find the nearest position if the move fail.
+	*	\return Returns the new clip's time position.
+	*/
+	FBTime MoveTo(FBTime pTime, bool pForce=true);
+
+	/**	Razor.
+	*	Cut (razor) the clip at the specified time.
+	*	\param	pTime	Time where to cut. This time is local to the track, not to the clip.
+	*/
+	void Razor(FBTime pTime);
+
+	FBPropertyTime		Start;			//!< <b>Read Write Property:</b> Start time of the clip.
+	FBPropertyTime		Stop;			//!< <b>Read Write Property:</b> Stop time of the clip.
+	FBPropertyListObject DependentClips;//!< <b>Read Write Property:</b> Clips that are included in the group clip.
 
 private:
 	void FBStoryClipInitProperties();

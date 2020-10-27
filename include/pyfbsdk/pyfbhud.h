@@ -37,6 +37,7 @@ public:
     object GetElements() { return FBPropertyListHUDElement_Wrapper_Factory( mFBHUD->Elements ); }
 
     object CreateElement( FBHUD::EStockElement pType, const char *pName );
+    object CreateCustomElement( const char* pHUDElementClassName, const char* pName );
 
     template< FBHUD::EStockElement pValue > static FBHUD::EStockElement EStockElement() { return pValue; }
 

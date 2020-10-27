@@ -70,12 +70,14 @@ FB_DEFINE_ENUM(FBSDK_DLL, ParallelScheduleType);
 */
 enum FBGlobalEvalCallbackTiming
 {
-    kFBGlobalEvalCallbackBeforeDAG,		//!< Invoked before any DAG (Transformation & Deformation) evaluation tasks started in evaluation pipeline / thread.
-    kFBGlobalEvalCallbackAfterDAG,		//!< Invoked after all DAG (Transformation & Deformation) evaluation tasks finished in evaluation pipeline / thread. 
-    kFBGlobalEvalCallbackAfterDeform,	//!< Invoked after all deformation tasks finsished in evaluation pipeline / thread. 
-    kFBGlobalEvalCallbackSyn,           //!< Invoked when both evluation & rendering pipelines / threads are stopped. Useful for some complicated scene change tasks to avoid race condition. 
-    kFBGlobalEvalCallbackBeforeRender,  //!< Invoked in rendering pipleline, before any rendering tasks start (immediately after clearing GL back buffer).
-    kFBGlobalEvalCallbackAfterRender    //!< Invoked in rendering pipleline, after any rendering tasks finsish (just before swapping GL back/front buffer).
+    kFBGlobalEvalCallbackBeforeDAG,				//!< Invoked before any DAG (Transformation & Deformation) evaluation tasks started in evaluation pipeline / thread.
+    kFBGlobalEvalCallbackAfterDAG,				//!< Invoked after all DAG (Transformation & Deformation) evaluation tasks finished in evaluation pipeline / thread. 
+    kFBGlobalEvalCallbackAfterDeform,			//!< Invoked after all deformation tasks finished in evaluation pipeline / thread. 
+    kFBGlobalEvalCallbackSyn,					//!< Invoked when both evaluation & rendering pipelines / threads are stopped. Useful for some complicated scene change tasks to avoid race condition. 
+    kFBGlobalEvalCallbackBeforeRender,			//!< Invoked in rendering pipeline, before any rendering tasks start (immediately after clearing GL back buffer).
+    kFBGlobalEvalCallbackAfterRender,			//!< Invoked in rendering pipeline, after any rendering tasks finish (just before swapping GL back/front buffer).
+	kFBGlobalEvalCallbackBeforePlottingFrame,	//!< Invoked before plotting a frame.
+	kFBGlobalEvalCallbackAfterPlottingFrame,	//!< Invoked after plotting a frame.
 };
 
 typedef void (*kFBEvaluationGlobalFunctionCallback)(FBEvaluateInfo* pEvaluteInfo);
@@ -91,9 +93,14 @@ public:
 
     /** Get Callback Timing. */
     FBGlobalEvalCallbackTiming GetTiming() const;
+
+    /**	Returns the Evaluation Info object associated with this callback event.
+    *	\return The Evaluation Info object associated with this callback event.
+    */
+	FBEvaluateInfo* GetEvaluateInfo() const;
 };
 
-//! \b PropertyEvent: Callback at evaluation pipeline (for kFBGlobalEvalCallbackBeforeDAG, kFBGlobalEvalCallbackAfterDAG and kFBGlobalEvalCallbackAfterDeform)
+//! \b PropertyEvent: Callback at evaluation pipeline (for kFBGlobalEvalCallbackBeforeDAG, kFBGlobalEvalCallbackAfterDAG, kFBGlobalEvalCallbackAfterDeform, kFBGlobalEvalCallbackBeforePlottingFrame and kFBGlobalEvalCallbackAfterPlottingFrame)
 class FBSDK_DLL FBPropertyEventCallbackEvalPipeline : public FBPropertyEvent
 {
 public:
@@ -101,7 +108,7 @@ public:
     virtual void Remove	( HICallback pOwner, kICallbackHandler pHandler );
 };
 
-//! \b PropertyEvent: Callback at evaluation pipeline (for kFBGlobalEvalCallbackBeforeRender, kFBGlobalEvalCallbackBeforeRender)
+//! \b PropertyEvent: Callback at evaluation pipeline (for kFBGlobalEvalCallbackBeforeRender, kFBGlobalEvalCallbackAfterRender)
 class FBSDK_DLL FBPropertyEventCallbackRenderPipeline : public FBPropertyEvent
 {
 public:

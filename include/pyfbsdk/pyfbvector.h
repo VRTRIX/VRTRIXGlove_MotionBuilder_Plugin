@@ -78,15 +78,15 @@ public:
         return new FBVector2d_Wrapper(*mFBVector2d); 
     } 
   
-    FBVector2d_Wrapper*    operator+ (const FBVector2d_Wrapper &pVector2d) {return new FBVector2d_Wrapper(this->Get(0)+pVector2d.Get(0),this->Get(1)+pVector2d.Get(1));} 
-    FBVector2d_Wrapper*    operator- (const FBVector2d_Wrapper &pVector2d) {return new FBVector2d_Wrapper(this->Get(0)-pVector2d.Get(0),this->Get(1)-pVector2d.Get(1));} 
-    FBVector2d_Wrapper*    operator* (const FBVector2d_Wrapper &pVector2d) {return new FBVector2d_Wrapper(this->Get(0)*pVector2d.Get(0),this->Get(1)*pVector2d.Get(1));} 
-    FBVector2d_Wrapper*    operator/ (const FBVector2d_Wrapper &pVector2d) {return new FBVector2d_Wrapper(this->Get(0)/pVector2d.Get(0),this->Get(1)/pVector2d.Get(1));} 
+    FBVector2d_Wrapper    operator+ (const FBVector2d_Wrapper &pVector2d) {return FBVector2d_Wrapper(this->Get(0)+pVector2d.Get(0),this->Get(1)+pVector2d.Get(1));} 
+    FBVector2d_Wrapper    operator- (const FBVector2d_Wrapper &pVector2d) {return FBVector2d_Wrapper(this->Get(0)-pVector2d.Get(0),this->Get(1)-pVector2d.Get(1));} 
+    FBVector2d_Wrapper    operator* (const FBVector2d_Wrapper &pVector2d) {return FBVector2d_Wrapper(this->Get(0)*pVector2d.Get(0),this->Get(1)*pVector2d.Get(1));} 
+    FBVector2d_Wrapper    operator/ (const FBVector2d_Wrapper &pVector2d) {return FBVector2d_Wrapper(this->Get(0)/pVector2d.Get(0),this->Get(1)/pVector2d.Get(1));} 
   
-    FBVector2d_Wrapper* operator+ (double pD) {return new FBVector2d_Wrapper(this->Get(0)+pD,this->Get(1)+pD);} 
-    FBVector2d_Wrapper* operator- (double pD) {return new FBVector2d_Wrapper(this->Get(0)-pD,this->Get(1)-pD);} 
-    FBVector2d_Wrapper* operator* (double pD) {return new FBVector2d_Wrapper(this->Get(0)*pD,this->Get(1)*pD);} 
-    FBVector2d_Wrapper* operator/ (double pD) {return new FBVector2d_Wrapper(this->Get(0)/pD,this->Get(1)/pD);} 
+    FBVector2d_Wrapper operator+ (double pD) {return FBVector2d_Wrapper(this->Get(0)+pD,this->Get(1)+pD);} 
+    FBVector2d_Wrapper operator- (double pD) {return FBVector2d_Wrapper(this->Get(0)-pD,this->Get(1)-pD);} 
+    FBVector2d_Wrapper operator* (double pD) {return FBVector2d_Wrapper(this->Get(0)*pD,this->Get(1)*pD);} 
+    FBVector2d_Wrapper operator/ (double pD) {return FBVector2d_Wrapper(this->Get(0)/pD,this->Get(1)/pD);} 
   
     FBVector2d_Wrapper& operator+= (const FBVector2d_Wrapper &pVector2d) { (*mFBVector2d)[0] += pVector2d.Get(0); (*mFBVector2d)[1] += pVector2d.Get(1); return *this; } 
     FBVector2d_Wrapper& operator-= (const FBVector2d_Wrapper &pVector2d) { (*mFBVector2d)[0] -= pVector2d.Get(0); (*mFBVector2d)[1] -= pVector2d.Get(1); return *this; } 
@@ -258,15 +258,15 @@ public:
         return new FBVector3d_Wrapper(*mFBVector3d); 
     } 
   
-    FBVector3d_Wrapper*    operator+ (const FBVector3d_Wrapper &pVector3d) {return new FBVector3d_Wrapper(this->Get(0)+pVector3d.Get(0),this->Get(1)+pVector3d.Get(1),this->Get(2)+pVector3d.Get(2));} 
-    FBVector3d_Wrapper*    operator- (const FBVector3d_Wrapper &pVector3d) {return new FBVector3d_Wrapper(this->Get(0)-pVector3d.Get(0),this->Get(1)-pVector3d.Get(1),this->Get(2)-pVector3d.Get(2));} 
-    FBVector3d_Wrapper*    operator* (const FBVector3d_Wrapper &pVector3d) {return new FBVector3d_Wrapper(this->Get(0)*pVector3d.Get(0),this->Get(1)*pVector3d.Get(1),this->Get(2)*pVector3d.Get(2));} 
-    FBVector3d_Wrapper*    operator/ (const FBVector3d_Wrapper &pVector3d) {return new FBVector3d_Wrapper(this->Get(0)/pVector3d.Get(0),this->Get(1)/pVector3d.Get(1),this->Get(2)/pVector3d.Get(2));} 
+    FBVector3d_Wrapper    operator+ (const FBVector3d_Wrapper &pVector3d) {return FBVector3d_Wrapper(this->Get(0)+pVector3d.Get(0),this->Get(1)+pVector3d.Get(1),this->Get(2)+pVector3d.Get(2));} 
+    FBVector3d_Wrapper    operator- (const FBVector3d_Wrapper &pVector3d) {return FBVector3d_Wrapper(this->Get(0)-pVector3d.Get(0),this->Get(1)-pVector3d.Get(1),this->Get(2)-pVector3d.Get(2));} 
+    FBVector3d_Wrapper    operator* (const FBVector3d_Wrapper &pVector3d) {return FBVector3d_Wrapper(this->Get(0)*pVector3d.Get(0),this->Get(1)*pVector3d.Get(1),this->Get(2)*pVector3d.Get(2));} 
+    FBVector3d_Wrapper    operator/ (const FBVector3d_Wrapper &pVector3d) {return FBVector3d_Wrapper(this->Get(0)/pVector3d.Get(0),this->Get(1)/pVector3d.Get(1),this->Get(2)/pVector3d.Get(2));} 
   
-    FBVector3d_Wrapper* operator+ (double pD) {return new FBVector3d_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD);} 
-    FBVector3d_Wrapper* operator- (double pD) {return new FBVector3d_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD);} 
-    FBVector3d_Wrapper* operator* (double pD) {return new FBVector3d_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD);} 
-    FBVector3d_Wrapper* operator/ (double pD) {return new FBVector3d_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD);} 
+    FBVector3d_Wrapper operator+ (double pD) {return FBVector3d_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD);} 
+    FBVector3d_Wrapper operator- (double pD) {return FBVector3d_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD);} 
+    FBVector3d_Wrapper operator* (double pD) {return FBVector3d_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD);} 
+    FBVector3d_Wrapper operator/ (double pD) {return FBVector3d_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD);} 
    
     FBVector3d_Wrapper& operator+= (const FBVector3d_Wrapper &pVector3d) { (*mFBVector3d) [0] += pVector3d.Get(0); (*mFBVector3d) [1] += pVector3d.Get(1); (*mFBVector3d) [2] += pVector3d.Get(2); return *this; } 
     FBVector3d_Wrapper& operator-= (const FBVector3d_Wrapper &pVector3d) { (*mFBVector3d) [0] -= pVector3d.Get(0); (*mFBVector3d) [1] -= pVector3d.Get(1); (*mFBVector3d) [2] -= pVector3d.Get(2); return *this; } 
@@ -507,15 +507,15 @@ public:
         return new FBSVector_Wrapper(*mFBSVector); 
     } 
   
-    FBSVector_Wrapper*    operator+ (const FBSVector_Wrapper &pFBSVector) {return new FBSVector_Wrapper(this->Get(0)+pFBSVector.Get(0),this->Get(1)+pFBSVector.Get(1),this->Get(2)+pFBSVector.Get(2));} 
-    FBSVector_Wrapper*    operator- (const FBSVector_Wrapper &pFBSVector) {return new FBSVector_Wrapper(this->Get(0)-pFBSVector.Get(0),this->Get(1)-pFBSVector.Get(1),this->Get(2)-pFBSVector.Get(2));} 
-    FBSVector_Wrapper*    operator* (const FBSVector_Wrapper &pFBSVector) {return new FBSVector_Wrapper(this->Get(0)*pFBSVector.Get(0),this->Get(1)*pFBSVector.Get(1),this->Get(2)*pFBSVector.Get(2));} 
-    FBSVector_Wrapper*    operator/ (const FBSVector_Wrapper &pFBSVector) {return new FBSVector_Wrapper(this->Get(0)/pFBSVector.Get(0),this->Get(1)/pFBSVector.Get(1),this->Get(2)/pFBSVector.Get(2));} 
+    FBSVector_Wrapper    operator+ (const FBSVector_Wrapper &pFBSVector) {return FBSVector_Wrapper(this->Get(0)+pFBSVector.Get(0),this->Get(1)+pFBSVector.Get(1),this->Get(2)+pFBSVector.Get(2));} 
+    FBSVector_Wrapper    operator- (const FBSVector_Wrapper &pFBSVector) {return FBSVector_Wrapper(this->Get(0)-pFBSVector.Get(0),this->Get(1)-pFBSVector.Get(1),this->Get(2)-pFBSVector.Get(2));} 
+    FBSVector_Wrapper    operator* (const FBSVector_Wrapper &pFBSVector) {return FBSVector_Wrapper(this->Get(0)*pFBSVector.Get(0),this->Get(1)*pFBSVector.Get(1),this->Get(2)*pFBSVector.Get(2));} 
+    FBSVector_Wrapper    operator/ (const FBSVector_Wrapper &pFBSVector) {return FBSVector_Wrapper(this->Get(0)/pFBSVector.Get(0),this->Get(1)/pFBSVector.Get(1),this->Get(2)/pFBSVector.Get(2));} 
   
-    FBSVector_Wrapper* operator+ (double pD) {return new FBSVector_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD);} 
-    FBSVector_Wrapper* operator- (double pD) {return new FBSVector_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD);} 
-    FBSVector_Wrapper* operator* (double pD) {return new FBSVector_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD);} 
-    FBSVector_Wrapper* operator/ (double pD) {return new FBSVector_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD);} 
+    FBSVector_Wrapper operator+ (double pD) {return FBSVector_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD);} 
+    FBSVector_Wrapper operator- (double pD) {return FBSVector_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD);} 
+    FBSVector_Wrapper operator* (double pD) {return FBSVector_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD);} 
+    FBSVector_Wrapper operator/ (double pD) {return FBSVector_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD);} 
   
     FBSVector_Wrapper& operator+= (const FBSVector_Wrapper &pFBSVector) { (*mFBSVector)[0] += pFBSVector.Get(0); (*mFBSVector)[1] += pFBSVector.Get(1); (*mFBSVector)[2] += pFBSVector.Get(2); return *this; } 
     FBSVector_Wrapper& operator-= (const FBSVector_Wrapper &pFBSVector) { (*mFBSVector)[0] -= pFBSVector.Get(0); (*mFBSVector)[1] -= pFBSVector.Get(1); (*mFBSVector)[2] -= pFBSVector.Get(2); return *this; } 
@@ -741,15 +741,15 @@ public:
         return new FBVector4d_Wrapper(*mFBVector4d); 
     } 
 
-    FBVector4d_Wrapper*    operator+ (const FBVector4d_Wrapper &pVector4d) {return new FBVector4d_Wrapper(this->Get(0)+pVector4d.Get(0),this->Get(1)+pVector4d.Get(1),this->Get(2)+pVector4d.Get(2),this->Get(3)+pVector4d.Get(3));} 
-    FBVector4d_Wrapper*    operator- (const FBVector4d_Wrapper &pVector4d) {return new FBVector4d_Wrapper(this->Get(0)-pVector4d.Get(0),this->Get(1)-pVector4d.Get(1),this->Get(2)-pVector4d.Get(2),this->Get(3)-pVector4d.Get(3));} 
-    FBVector4d_Wrapper*    operator* (const FBVector4d_Wrapper &pVector4d) {return new FBVector4d_Wrapper(this->Get(0)*pVector4d.Get(0),this->Get(1)*pVector4d.Get(1),this->Get(2)*pVector4d.Get(2),this->Get(3)*pVector4d.Get(3));} 
-    FBVector4d_Wrapper*    operator/ (const FBVector4d_Wrapper &pVector4d) {return new FBVector4d_Wrapper(this->Get(0)/pVector4d.Get(0),this->Get(1)/pVector4d.Get(1),this->Get(2)/pVector4d.Get(2),this->Get(3)/pVector4d.Get(3));} 
+    FBVector4d_Wrapper    operator+ (const FBVector4d_Wrapper &pVector4d) {return FBVector4d_Wrapper(this->Get(0)+pVector4d.Get(0),this->Get(1)+pVector4d.Get(1),this->Get(2)+pVector4d.Get(2),this->Get(3)+pVector4d.Get(3));} 
+    FBVector4d_Wrapper    operator- (const FBVector4d_Wrapper &pVector4d) {return FBVector4d_Wrapper(this->Get(0)-pVector4d.Get(0),this->Get(1)-pVector4d.Get(1),this->Get(2)-pVector4d.Get(2),this->Get(3)-pVector4d.Get(3));} 
+    FBVector4d_Wrapper    operator* (const FBVector4d_Wrapper &pVector4d) {return FBVector4d_Wrapper(this->Get(0)*pVector4d.Get(0),this->Get(1)*pVector4d.Get(1),this->Get(2)*pVector4d.Get(2),this->Get(3)*pVector4d.Get(3));} 
+    FBVector4d_Wrapper    operator/ (const FBVector4d_Wrapper &pVector4d) {return FBVector4d_Wrapper(this->Get(0)/pVector4d.Get(0),this->Get(1)/pVector4d.Get(1),this->Get(2)/pVector4d.Get(2),this->Get(3)/pVector4d.Get(3));} 
    
-    FBVector4d_Wrapper* operator+ (double pD) {return new FBVector4d_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD,this->Get(3)+pD);} 
-    FBVector4d_Wrapper* operator- (double pD) {return new FBVector4d_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD,this->Get(3)-pD);} 
-    FBVector4d_Wrapper* operator* (double pD) {return new FBVector4d_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD,this->Get(3)*pD);} 
-    FBVector4d_Wrapper* operator/ (double pD) {return new FBVector4d_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD,this->Get(3)-pD);} 
+    FBVector4d_Wrapper operator+ (double pD) {return FBVector4d_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD,this->Get(3)+pD);} 
+    FBVector4d_Wrapper operator- (double pD) {return FBVector4d_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD,this->Get(3)-pD);} 
+    FBVector4d_Wrapper operator* (double pD) {return FBVector4d_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD,this->Get(3)*pD);} 
+    FBVector4d_Wrapper operator/ (double pD) {return FBVector4d_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD,this->Get(3)-pD);} 
   
     FBVector4d_Wrapper& operator+= (const FBVector4d_Wrapper &pVector4d) { (*mFBVector4d)[0] += pVector4d.Get(0); (*mFBVector4d)[1] += pVector4d.Get(1); (*mFBVector4d)[2] += pVector4d.Get(2); (*mFBVector4d)[3] += pVector4d.Get(3); return *this; } 
     FBVector4d_Wrapper& operator-= (const FBVector4d_Wrapper &pVector4d) { (*mFBVector4d)[0] -= pVector4d.Get(0); (*mFBVector4d)[1] -= pVector4d.Get(1); (*mFBVector4d)[2] -= pVector4d.Get(2); (*mFBVector4d)[3] -= pVector4d.Get(3); return *this; } 
@@ -986,15 +986,15 @@ public:
         return new FBNormal_Wrapper(*mFBNormal); 
     } 
   
-    FBNormal_Wrapper*    operator+ (const FBNormal_Wrapper &pFBNormal) {return new FBNormal_Wrapper(this->Get(0)+pFBNormal.Get(0),this->Get(1)+pFBNormal.Get(1),this->Get(2)+pFBNormal.Get(2));} 
-    FBNormal_Wrapper*    operator- (const FBNormal_Wrapper &pFBNormal) {return new FBNormal_Wrapper(this->Get(0)-pFBNormal.Get(0),this->Get(1)-pFBNormal.Get(1),this->Get(2)-pFBNormal.Get(2));} 
-    FBNormal_Wrapper*    operator* (const FBNormal_Wrapper &pFBNormal) {return new FBNormal_Wrapper(this->Get(0)*pFBNormal.Get(0),this->Get(1)*pFBNormal.Get(1),this->Get(2)*pFBNormal.Get(2));} 
-    FBNormal_Wrapper*    operator/ (const FBNormal_Wrapper &pFBNormal) {return new FBNormal_Wrapper(this->Get(0)/pFBNormal.Get(0),this->Get(1)/pFBNormal.Get(1),this->Get(2)/pFBNormal.Get(2));} 
+    FBNormal_Wrapper    operator+ (const FBNormal_Wrapper &pFBNormal) {return FBNormal_Wrapper(this->Get(0)+pFBNormal.Get(0),this->Get(1)+pFBNormal.Get(1),this->Get(2)+pFBNormal.Get(2));} 
+    FBNormal_Wrapper    operator- (const FBNormal_Wrapper &pFBNormal) {return FBNormal_Wrapper(this->Get(0)-pFBNormal.Get(0),this->Get(1)-pFBNormal.Get(1),this->Get(2)-pFBNormal.Get(2));} 
+    FBNormal_Wrapper    operator* (const FBNormal_Wrapper &pFBNormal) {return FBNormal_Wrapper(this->Get(0)*pFBNormal.Get(0),this->Get(1)*pFBNormal.Get(1),this->Get(2)*pFBNormal.Get(2));} 
+    FBNormal_Wrapper    operator/ (const FBNormal_Wrapper &pFBNormal) {return FBNormal_Wrapper(this->Get(0)/pFBNormal.Get(0),this->Get(1)/pFBNormal.Get(1),this->Get(2)/pFBNormal.Get(2));} 
   
-    FBNormal_Wrapper* operator+ (double pD) {return new FBNormal_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD);} 
-    FBNormal_Wrapper* operator- (double pD) {return new FBNormal_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD);} 
-    FBNormal_Wrapper* operator* (double pD) {return new FBNormal_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD);} 
-    FBNormal_Wrapper* operator/ (double pD) {return new FBNormal_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD);} 
+    FBNormal_Wrapper operator+ (double pD) {return FBNormal_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD);} 
+    FBNormal_Wrapper operator- (double pD) {return FBNormal_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD);} 
+    FBNormal_Wrapper operator* (double pD) {return FBNormal_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD);} 
+    FBNormal_Wrapper operator/ (double pD) {return FBNormal_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD);} 
   
     FBNormal_Wrapper& operator+= (const FBNormal_Wrapper &pFBNormal) { (*mFBNormal)[0] += pFBNormal.Get(0); (*mFBNormal)[1] += pFBNormal.Get(1); (*mFBNormal)[2] += pFBNormal.Get(2); return *this; } 
     FBNormal_Wrapper& operator-= (const FBNormal_Wrapper &pFBNormal) { (*mFBNormal)[0] -= pFBNormal.Get(0); (*mFBNormal)[1] -= pFBNormal.Get(1); (*mFBNormal)[2] -= pFBNormal.Get(2); return *this; } 
@@ -1220,15 +1220,15 @@ public:
         return new FBVertex_Wrapper(*mFBVertex); 
     } 
   
-    FBVertex_Wrapper*    operator+ (const FBVertex_Wrapper &pFBVertex) {return new FBVertex_Wrapper(this->Get(0)+pFBVertex.Get(0),this->Get(1)+pFBVertex.Get(1),this->Get(2)+pFBVertex.Get(2),this->Get(2)+pFBVertex.Get(3));} 
-    FBVertex_Wrapper*    operator- (const FBVertex_Wrapper &pFBVertex) {return new FBVertex_Wrapper(this->Get(0)-pFBVertex.Get(0),this->Get(1)-pFBVertex.Get(1),this->Get(2)-pFBVertex.Get(2),this->Get(2)+pFBVertex.Get(3));} 
-    FBVertex_Wrapper*    operator* (const FBVertex_Wrapper &pFBVertex) {return new FBVertex_Wrapper(this->Get(0)*pFBVertex.Get(0),this->Get(1)*pFBVertex.Get(1),this->Get(2)*pFBVertex.Get(2),this->Get(2)+pFBVertex.Get(3));} 
-    FBVertex_Wrapper*    operator/ (const FBVertex_Wrapper &pFBVertex) {return new FBVertex_Wrapper(this->Get(0)/pFBVertex.Get(0),this->Get(1)/pFBVertex.Get(1),this->Get(2)/pFBVertex.Get(2),this->Get(2)+pFBVertex.Get(3));} 
+    FBVertex_Wrapper    operator+ (const FBVertex_Wrapper &pFBVertex) {return FBVertex_Wrapper(this->Get(0)+pFBVertex.Get(0),this->Get(1)+pFBVertex.Get(1),this->Get(2)+pFBVertex.Get(2),this->Get(2)+pFBVertex.Get(3));} 
+    FBVertex_Wrapper    operator- (const FBVertex_Wrapper &pFBVertex) {return FBVertex_Wrapper(this->Get(0)-pFBVertex.Get(0),this->Get(1)-pFBVertex.Get(1),this->Get(2)-pFBVertex.Get(2),this->Get(2)+pFBVertex.Get(3));} 
+    FBVertex_Wrapper    operator* (const FBVertex_Wrapper &pFBVertex) {return FBVertex_Wrapper(this->Get(0)*pFBVertex.Get(0),this->Get(1)*pFBVertex.Get(1),this->Get(2)*pFBVertex.Get(2),this->Get(2)+pFBVertex.Get(3));} 
+    FBVertex_Wrapper    operator/ (const FBVertex_Wrapper &pFBVertex) {return FBVertex_Wrapper(this->Get(0)/pFBVertex.Get(0),this->Get(1)/pFBVertex.Get(1),this->Get(2)/pFBVertex.Get(2),this->Get(2)+pFBVertex.Get(3));} 
   
-    FBVertex_Wrapper* operator+ (double pD) {return new FBVertex_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD,this->Get(3)+pD);} 
-    FBVertex_Wrapper* operator- (double pD) {return new FBVertex_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD,this->Get(3)+pD);} 
-    FBVertex_Wrapper* operator* (double pD) {return new FBVertex_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD,this->Get(3)+pD);} 
-    FBVertex_Wrapper* operator/ (double pD) {return new FBVertex_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD,this->Get(3)+pD);} 
+    FBVertex_Wrapper operator+ (double pD) {return FBVertex_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD,this->Get(3)+pD);} 
+    FBVertex_Wrapper operator- (double pD) {return FBVertex_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD,this->Get(3)+pD);} 
+    FBVertex_Wrapper operator* (double pD) {return FBVertex_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD,this->Get(3)+pD);} 
+    FBVertex_Wrapper operator/ (double pD) {return FBVertex_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD,this->Get(3)+pD);} 
    
     FBVertex_Wrapper& operator+= (const FBVertex_Wrapper &pFBVertex) { (*mFBVertex)[0] += pFBVertex.Get(0); (*mFBVertex)[1] += pFBVertex.Get(1); (*mFBVertex)[2] += pFBVertex.Get(2); (*mFBVertex)[3] += pFBVertex.Get(3); return *this; } 
     FBVertex_Wrapper& operator-= (const FBVertex_Wrapper &pFBVertex) { (*mFBVertex)[0] -= pFBVertex.Get(0); (*mFBVertex)[1] -= pFBVertex.Get(1); (*mFBVertex)[2] -= pFBVertex.Get(2); (*mFBVertex)[3] += pFBVertex.Get(3); return *this; } 
@@ -1463,15 +1463,15 @@ public:
         return new FBUV_Wrapper(*mFBUV); 
     } 
  
-    FBUV_Wrapper*    operator+ (const FBUV_Wrapper &pFBUV) {return new FBUV_Wrapper(this->Get(0)+pFBUV.Get(0),this->Get(1)+pFBUV.Get(1));} 
-    FBUV_Wrapper*    operator- (const FBUV_Wrapper &pFBUV) {return new FBUV_Wrapper(this->Get(0)-pFBUV.Get(0),this->Get(1)-pFBUV.Get(1));} 
-    FBUV_Wrapper*    operator* (const FBUV_Wrapper &pFBUV) {return new FBUV_Wrapper(this->Get(0)*pFBUV.Get(0),this->Get(1)*pFBUV.Get(1));} 
-    FBUV_Wrapper*    operator/ (const FBUV_Wrapper &pFBUV) {return new FBUV_Wrapper(this->Get(0)/pFBUV.Get(0),this->Get(1)/pFBUV.Get(1));} 
+    FBUV_Wrapper    operator+ (const FBUV_Wrapper &pFBUV) {return FBUV_Wrapper(this->Get(0)+pFBUV.Get(0),this->Get(1)+pFBUV.Get(1));} 
+    FBUV_Wrapper    operator- (const FBUV_Wrapper &pFBUV) {return FBUV_Wrapper(this->Get(0)-pFBUV.Get(0),this->Get(1)-pFBUV.Get(1));} 
+    FBUV_Wrapper    operator* (const FBUV_Wrapper &pFBUV) {return FBUV_Wrapper(this->Get(0)*pFBUV.Get(0),this->Get(1)*pFBUV.Get(1));} 
+    FBUV_Wrapper    operator/ (const FBUV_Wrapper &pFBUV) {return FBUV_Wrapper(this->Get(0)/pFBUV.Get(0),this->Get(1)/pFBUV.Get(1));} 
   
-    FBUV_Wrapper* operator+ (double pD) {return new FBUV_Wrapper(this->Get(0)+pD,this->Get(1)+pD);} 
-    FBUV_Wrapper* operator- (double pD) {return new FBUV_Wrapper(this->Get(0)-pD,this->Get(1)-pD);} 
-    FBUV_Wrapper* operator* (double pD) {return new FBUV_Wrapper(this->Get(0)*pD,this->Get(1)*pD);} 
-    FBUV_Wrapper* operator/ (double pD) {return new FBUV_Wrapper(this->Get(0)/pD,this->Get(1)/pD);} 
+    FBUV_Wrapper operator+ (double pD) {return FBUV_Wrapper(this->Get(0)+pD,this->Get(1)+pD);} 
+    FBUV_Wrapper operator- (double pD) {return FBUV_Wrapper(this->Get(0)-pD,this->Get(1)-pD);} 
+    FBUV_Wrapper operator* (double pD) {return FBUV_Wrapper(this->Get(0)*pD,this->Get(1)*pD);} 
+    FBUV_Wrapper operator/ (double pD) {return FBUV_Wrapper(this->Get(0)/pD,this->Get(1)/pD);} 
   
     FBUV_Wrapper& operator+= (const FBUV_Wrapper &pFBUV) { (*mFBUV) [0] += pFBUV.Get(0); (*mFBUV) [1] += pFBUV.Get(1); return *this; } 
     FBUV_Wrapper& operator-= (const FBUV_Wrapper &pFBUV) { (*mFBUV) [0] -= pFBUV.Get(0); (*mFBUV) [1] -= pFBUV.Get(1); return *this; } 
@@ -1641,15 +1641,15 @@ public:
         return new FBColor_Wrapper(*mFBColor); 
     } 
    
-    FBColor_Wrapper*    operator+ (const FBColor_Wrapper &pFBColor) {return new FBColor_Wrapper(this->Get(0)+pFBColor.Get(0),this->Get(1)+pFBColor.Get(1),this->Get(2)+pFBColor.Get(2));} 
-    FBColor_Wrapper*    operator- (const FBColor_Wrapper &pFBColor) {return new FBColor_Wrapper(this->Get(0)-pFBColor.Get(0),this->Get(1)-pFBColor.Get(1),this->Get(2)-pFBColor.Get(2));} 
-    FBColor_Wrapper*    operator* (const FBColor_Wrapper &pFBColor) {return new FBColor_Wrapper(this->Get(0)*pFBColor.Get(0),this->Get(1)*pFBColor.Get(1),this->Get(2)*pFBColor.Get(2));} 
-    FBColor_Wrapper*    operator/ (const FBColor_Wrapper &pFBColor) {return new FBColor_Wrapper(this->Get(0)/pFBColor.Get(0),this->Get(1)/pFBColor.Get(1),this->Get(2)/pFBColor.Get(2));} 
+    FBColor_Wrapper    operator+ (const FBColor_Wrapper &pFBColor) {return FBColor_Wrapper(this->Get(0)+pFBColor.Get(0),this->Get(1)+pFBColor.Get(1),this->Get(2)+pFBColor.Get(2));} 
+    FBColor_Wrapper    operator- (const FBColor_Wrapper &pFBColor) {return FBColor_Wrapper(this->Get(0)-pFBColor.Get(0),this->Get(1)-pFBColor.Get(1),this->Get(2)-pFBColor.Get(2));} 
+    FBColor_Wrapper    operator* (const FBColor_Wrapper &pFBColor) {return FBColor_Wrapper(this->Get(0)*pFBColor.Get(0),this->Get(1)*pFBColor.Get(1),this->Get(2)*pFBColor.Get(2));} 
+    FBColor_Wrapper    operator/ (const FBColor_Wrapper &pFBColor) {return FBColor_Wrapper(this->Get(0)/pFBColor.Get(0),this->Get(1)/pFBColor.Get(1),this->Get(2)/pFBColor.Get(2));} 
   
-    FBColor_Wrapper* operator+ (double pD) {return new FBColor_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD);} 
-    FBColor_Wrapper* operator- (double pD) {return new FBColor_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD);} 
-    FBColor_Wrapper* operator* (double pD) {return new FBColor_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD);} 
-    FBColor_Wrapper* operator/ (double pD) {return new FBColor_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD);} 
+    FBColor_Wrapper operator+ (double pD) {return FBColor_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD);} 
+    FBColor_Wrapper operator- (double pD) {return FBColor_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD);} 
+    FBColor_Wrapper operator* (double pD) {return FBColor_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD);} 
+    FBColor_Wrapper operator/ (double pD) {return FBColor_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD);} 
   
     FBColor_Wrapper& operator+= (const FBColor_Wrapper &pFBColor) { (*mFBColor)[0] += pFBColor.Get(0); (*mFBColor)[1] += pFBColor.Get(1); (*mFBColor)[2] += pFBColor.Get(2); return *this; } 
     FBColor_Wrapper& operator-= (const FBColor_Wrapper &pFBColor) { (*mFBColor)[0] -= pFBColor.Get(0); (*mFBColor)[1] -= pFBColor.Get(1); (*mFBColor)[2] -= pFBColor.Get(2); return *this; } 
@@ -1828,15 +1828,15 @@ public:
         return new FBColorAndAlpha_Wrapper(*mFBColorAndAlpha); 
     } 
   
-    FBColorAndAlpha_Wrapper*    operator+ (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) {return new FBColorAndAlpha_Wrapper(this->Get(0)+pFBColorAndAlpha.Get(0),this->Get(1)+pFBColorAndAlpha.Get(1),this->Get(2)+pFBColorAndAlpha.Get(2),this->Get(3)+pFBColorAndAlpha.Get(3));} 
-    FBColorAndAlpha_Wrapper*    operator- (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) {return new FBColorAndAlpha_Wrapper(this->Get(0)-pFBColorAndAlpha.Get(0),this->Get(1)-pFBColorAndAlpha.Get(1),this->Get(2)-pFBColorAndAlpha.Get(2),this->Get(3)-pFBColorAndAlpha.Get(3));} 
-    FBColorAndAlpha_Wrapper*    operator* (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) {return new FBColorAndAlpha_Wrapper(this->Get(0)*pFBColorAndAlpha.Get(0),this->Get(1)*pFBColorAndAlpha.Get(1),this->Get(2)*pFBColorAndAlpha.Get(2),this->Get(3)*pFBColorAndAlpha.Get(3));} 
-    FBColorAndAlpha_Wrapper*    operator/ (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) {return new FBColorAndAlpha_Wrapper(this->Get(0)/pFBColorAndAlpha.Get(0),this->Get(1)/pFBColorAndAlpha.Get(1),this->Get(2)/pFBColorAndAlpha.Get(2),this->Get(3)/pFBColorAndAlpha.Get(3));} 
+    FBColorAndAlpha_Wrapper    operator+ (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) {return FBColorAndAlpha_Wrapper(this->Get(0)+pFBColorAndAlpha.Get(0),this->Get(1)+pFBColorAndAlpha.Get(1),this->Get(2)+pFBColorAndAlpha.Get(2),this->Get(3)+pFBColorAndAlpha.Get(3));} 
+    FBColorAndAlpha_Wrapper    operator- (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) {return FBColorAndAlpha_Wrapper(this->Get(0)-pFBColorAndAlpha.Get(0),this->Get(1)-pFBColorAndAlpha.Get(1),this->Get(2)-pFBColorAndAlpha.Get(2),this->Get(3)-pFBColorAndAlpha.Get(3));} 
+    FBColorAndAlpha_Wrapper    operator* (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) {return FBColorAndAlpha_Wrapper(this->Get(0)*pFBColorAndAlpha.Get(0),this->Get(1)*pFBColorAndAlpha.Get(1),this->Get(2)*pFBColorAndAlpha.Get(2),this->Get(3)*pFBColorAndAlpha.Get(3));} 
+    FBColorAndAlpha_Wrapper    operator/ (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) {return FBColorAndAlpha_Wrapper(this->Get(0)/pFBColorAndAlpha.Get(0),this->Get(1)/pFBColorAndAlpha.Get(1),this->Get(2)/pFBColorAndAlpha.Get(2),this->Get(3)/pFBColorAndAlpha.Get(3));} 
   
-    FBColorAndAlpha_Wrapper* operator+ (double pD) {return new FBColorAndAlpha_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD,this->Get(3)+pD);} 
-    FBColorAndAlpha_Wrapper* operator- (double pD) {return new FBColorAndAlpha_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD,this->Get(3)-pD);} 
-    FBColorAndAlpha_Wrapper* operator* (double pD) {return new FBColorAndAlpha_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD,this->Get(3)*pD);} 
-    FBColorAndAlpha_Wrapper* operator/ (double pD) {return new FBColorAndAlpha_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD,this->Get(3)-pD);} 
+    FBColorAndAlpha_Wrapper operator+ (double pD) {return FBColorAndAlpha_Wrapper(this->Get(0)+pD,this->Get(1)+pD,this->Get(2)+pD,this->Get(3)+pD);} 
+    FBColorAndAlpha_Wrapper operator- (double pD) {return FBColorAndAlpha_Wrapper(this->Get(0)-pD,this->Get(1)-pD,this->Get(2)-pD,this->Get(3)-pD);} 
+    FBColorAndAlpha_Wrapper operator* (double pD) {return FBColorAndAlpha_Wrapper(this->Get(0)*pD,this->Get(1)*pD,this->Get(2)*pD,this->Get(3)*pD);} 
+    FBColorAndAlpha_Wrapper operator/ (double pD) {return FBColorAndAlpha_Wrapper(this->Get(0)/pD,this->Get(1)/pD,this->Get(2)/pD,this->Get(3)-pD);} 
   
     FBColorAndAlpha_Wrapper& operator+= (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) { (*mFBColorAndAlpha)[0] += pFBColorAndAlpha.Get(0); (*mFBColorAndAlpha)[1] += pFBColorAndAlpha.Get(1); (*mFBColorAndAlpha)[2] += pFBColorAndAlpha.Get(2); (*mFBColorAndAlpha)[3] += pFBColorAndAlpha.Get(3); return *this; } 
     FBColorAndAlpha_Wrapper& operator-= (const FBColorAndAlpha_Wrapper &pFBColorAndAlpha) { (*mFBColorAndAlpha)[0] -= pFBColorAndAlpha.Get(0); (*mFBColorAndAlpha)[1] -= pFBColorAndAlpha.Get(1); (*mFBColorAndAlpha)[2] -= pFBColorAndAlpha.Get(2); (*mFBColorAndAlpha)[3] -= pFBColorAndAlpha.Get(3); return *this; } 

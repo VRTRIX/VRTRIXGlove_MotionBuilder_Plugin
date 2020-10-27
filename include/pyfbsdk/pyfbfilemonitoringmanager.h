@@ -36,11 +36,12 @@ public:
     void RemoveFileFromMonitor(const char* pFilePath){ mFBFileMonitoringManager->RemoveFileFromMonitor(FBString(pFilePath)); }
 
     void PauseFileMonitoring(bool pPause = true){ mFBFileMonitoringManager->PauseFileMonitoring(pPause); }
-    void CleanFileMonitoring(){ mFBFileMonitoringManager->CleanFileMonitoring(); }
+    void CleanFileMonitoring(bool pIncludePythonEditorScripts = true){ mFBFileMonitoringManager->CleanFileMonitoring(pIncludePythonEditorScripts); }
 
     object OnFileChangeMainScene();
     object OnFileChangeAnimationClip();
     object OnFileChangeFileReference();
+    object OnFileChangePythonEditorScript();
 protected:
     virtual FBPropertyEvent* GetPropertyEvent(FBEventName pEventName);
 };

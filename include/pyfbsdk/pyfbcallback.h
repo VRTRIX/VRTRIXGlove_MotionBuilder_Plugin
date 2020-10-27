@@ -51,6 +51,7 @@ enum PYSDK_DLL FBEventName
     kFBEventFileChangeMainScene,
     kFBEventFileChangeAnimationClip,
     kFBEventFileChangeFileReference,
+    kFBEventFileChangePythonEditorScript,
     kFBEventConnectionNotify,
     kFBEventConnectionDataNotify,
     kFBEventConnectionStateNotify,

@@ -452,6 +452,7 @@ namespace FBSDKNamespace {;
         kFBFileMonitoring_MAINSCENE,    //!< Main Scene change monitoring.
         kFBFileMonitoring_ANIMATIONCLIP,//!< Animation clip change monitoring.
         kFBFileMonitoring_FILEREFERENCE,//!< File Reference change monitoring.
+        kFBFileMonitoring_PYTHONEDITORSCRIPT, //!< Python Editor Script change monitoring.
     };
 
     FB_DEFINE_ENUM( FBSDK_DLL, FileMonitoringType );
@@ -499,19 +500,21 @@ namespace FBSDKNamespace {;
         */
         void RemoveFileFromMonitor(FBString pFilePath);
 
-        /**	Pause file from monitoring.
-        *	\param	pPause	Pause the file monitoring, or resume.
+        /**	Pause file from monitoring, except for Python Editor script files loaded.
+        *	\param	pPause	True to pause the file monitoring, false to resume.
         */
         void PauseFileMonitoring(bool pPause = true);
 
         /**	Clean files and directories currently been monitored.
+        *	\param	pIncludePythonEditorScripts	True to also clean the monitoring of Python Editor script files loaded, false otherwise.
         */
-        void CleanFileMonitoring();
+        void CleanFileMonitoring(bool pIncludePythonEditorScripts = true);
 
     public:
         FBPropertyEvent    OnFileChangeMainScene;			//!< <b>Event:</b> Main scene file change event.
         FBPropertyEvent    OnFileChangeAnimationClip;		//!< <b>Event:</b> Animation clip file change event.
         FBPropertyEvent    OnFileChangeFileReference;		//!< <b>Event:</b> File Reference file change event.
+        FBPropertyEvent    OnFileChangePythonEditorScript;	//!< <b>Event:</b> Python Editor Script file change event.
         /**	Get the global object for this class
         *	\return	the global object.
         */

@@ -96,6 +96,7 @@ public:
 	const char* ExpressionGetName( int pExpressionId ) { return mFBCharacterFace->ExpressionGetName( pExpressionId ); }
 	bool ExpressionSetName( int pExpressionId, const char* pName ) { return mFBCharacterFace->ExpressionSetName( pExpressionId, pName ); }
 	bool ExpressionSetShapeWeight( int pExpressionId, int pGrpId, int pShapeId, float pValue = 0.0f ) { return mFBCharacterFace->ExpressionSetShapeWeight( pExpressionId, pGrpId, pShapeId, pValue ); }
+	double ExpressionGetShapeWeight( int pExpressionId, int pGrpId, int pShapeId ) { return mFBCharacterFace->ExpressionGetShapeWeight( pExpressionId, pGrpId, pShapeId ); }
 
 	void SetActiveInput( bool pActiveInput ) { mFBCharacterFace->ActiveInput = pActiveInput; }
 	bool GetActiveInput(  ) { return mFBCharacterFace->ActiveInput; }

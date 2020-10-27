@@ -101,6 +101,8 @@ public:
     void GetSOffset( FBBodyNodeId pBodyNodeId, FBVector3d_Wrapper& pSVector ) { mFBCharacter->GetSOffset( pBodyNodeId, (FBSVector*)pSVector.mFBVector3d ); }
     void GetTransformOffset( FBBodyNodeId pBodyNodeId, FBMatrix_Wrapper&  pOffsetMatrix ) { return mFBCharacter->GetTransformOffset(pBodyNodeId, pOffsetMatrix.mFBMatrix); }
     bool IsParentNodeOffset( FBBodyNodeId pNodeId ) { return mFBCharacter->IsParentNodeOffset(pNodeId); }
+    void CycleAnalysisCurrentCharacter(){ mFBCharacter->CycleAnalysisCurrentCharacter(); };
+    object GetCycleAnalysisNode( ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBCharacter->GetCycleAnalysisNode() ); }
 
     list GetActiveBodyPart()
     {

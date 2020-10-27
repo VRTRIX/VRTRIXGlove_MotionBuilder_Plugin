@@ -91,6 +91,8 @@ public:
 	bool GetGhostPivot(  ) { return mFBStoryTrack->GhostPivot; }
 	void SetGhostTravelling( bool pGhostTravelling ) { mFBStoryTrack->GhostTravelling = pGhostTravelling; }
 	bool GetGhostTravelling(  ) { return mFBStoryTrack->GhostTravelling; }
+    void SetGhostShowTrackMode( FBStoryTrackGhostShowMode pGhostShowTrackMode ) { mFBStoryTrack->GhostShowTrackMode = pGhostShowTrackMode; }
+    FBStoryTrackGhostShowMode GetGhostShowTrackMode(  ) { return mFBStoryTrack->GhostShowTrackMode; }
 	void SetLabel( const char* pLabel ) { mFBStoryTrack->Label = pLabel; }
 	const char* GetLabel(  ) { return mFBStoryTrack->Label; }
 	void SetMute( bool pMute ) { mFBStoryTrack->Mute = pMute; }

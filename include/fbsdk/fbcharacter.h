@@ -52,7 +52,7 @@
 #endif
 
 #include <fbsdk/fbconstraint.h>
-
+#include <fbsdk/fbcycleanalysisnode.h>
 #include <fbsdk/fbcharacterextension.h>
 
 #ifdef FBSDKUseNamespace
@@ -300,6 +300,59 @@ enum FBBodyNodeId
 	kFBNeck9NodeId,                //!<
 
     kFBHipsTranslationNodeId,       //!<
+    
+    // -- HIK 2016.5 new leaf roll nodes --
+    // this should be consistent with HipsNodeId defined in kernel\humanik.h
+    // so HIKNodeTypeFromNodeId & HIKNodeIndexFromNodeId could map to correct
+    // data.
+    // kFBLastNodeId_Old represent last id before introduction of new roll bone for
+    // previous solvers. First new roll bone id equals to ensure continuity
+    kFBLastNodeId_Old, 
+    kFBLeftHipRollNode1Id = kFBLastNodeId_Old,              //!< New leaf roll bone
+    kFBLeftKneeRollNode1Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode1Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode1Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode1Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode1Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode1Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode1Id,                               //!< New leaf roll bone
+
+    kFBLeftHipRollNode2Id,                                  //!< New leaf roll bone
+    kFBLeftKneeRollNode2Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode2Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode2Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode2Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode2Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode2Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode2Id,                               //!< New leaf roll bone
+
+    kFBLeftHipRollNode3Id,                                  //!< New leaf roll bone
+    kFBLeftKneeRollNode3Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode3Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode3Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode3Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode3Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode3Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode3Id,                               //!< New leaf roll bone
+
+    kFBLeftHipRollNode4Id,                                  //!< New leaf roll bone
+    kFBLeftKneeRollNode4Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode4Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode4Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode4Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode4Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode4Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode4Id,                               //!< New leaf roll bone
+
+    kFBLeftHipRollNode5Id,                                  //!< New leaf roll bone
+    kFBLeftKneeRollNode5Id,                                 //!< New leaf roll bone
+    kFBRightHipRollNode5Id,                                 //!< New leaf roll bone
+    kFBRightKneeRollNode5Id,                                //!< New leaf roll bone
+    kFBLeftShoulderRollNode5Id,                             //!< New leaf roll bone
+    kFBLeftElbowRollNode5Id,                                //!< New leaf roll bone
+    kFBRightShoulderRollNode5Id,                            //!< New leaf roll bone
+    kFBRightElbowRollNode5Id,                               //!< New leaf roll bone
+
     kFBLastNodeId				    //!<
 };
 
@@ -427,6 +480,7 @@ enum FBCharacterKeyingMode
 	kFBCharacterKeyingFullBody, 
 	kFBCharacterKeyingBodyPart,
 	kFBCharacterKeyingSelection, 
+	kFBCharacterKeyingFullBodyNoPull, 
 };
 FB_DEFINE_ENUM( FBSDK_DLL, CharacterKeyingMode );
 
@@ -1083,6 +1137,10 @@ public:
     *   \param  pReferenceModel Model to be the right glove reference.
     */
 	void SetRightGloveReferenceModel( FBModel* pReferenceModel );
+
+private:
+	FBSkeletonState*		mDefaultSkeletonState;
+	FBSkeletonState*		mCurrentSkeletonState;
 };
 
 /** Device motion capture skeleton joints state class.
@@ -1184,6 +1242,16 @@ public:
 	FBPropertyBool				    ActiveInput;	//!< <b>Read Write Property:</b> Is the character input active?
 
     FBPropertyListCharacterExtension CharacterExtensions;	//!< <b>List:</b> Character Extensions in the character.
+
+    /** Run Cycle Analysis on current character.
+	*	\param HICharacter current character.
+	*/
+    void CycleAnalysisCurrentCharacter();
+
+    /** Get the Cycle Analysis Node from the current character
+	*	\return	Cycle Analysis Node linked to the current character, or create a new node
+	*/
+    FBCycleAnalysisNode* GetCycleAnalysisNode();
 
     /** AddCharacterExtension.
 	*	\param pExt extension to be added to the character.
@@ -1455,6 +1523,11 @@ public:
     *	\return valid pointer to evaluation cache.
     */
 	FBEffectorSetState*	GetEffectorEvaluationCache(FBEvaluateInfo* pEvaluateInfo);
+
+    /** Mirror character extensions.
+	*	\param pEvaluateInfo the evaluation info
+	*/
+    void MirrorCharacterExtensions(FBEvaluateInfo* pEvaluateInfo);
 
 	/** Used to store SetCharacterizeOn errors and warnings */
 	FBString mCharacterizeError;

@@ -105,7 +105,7 @@ FBSDK_DLL void FBVertexMatrixMult( FBVertex &pOutVertex, const FBMatrix &pMatrix
 FBSDK_DLL void FBVectorMatrixMult( FBVector4d &pOutVector, const FBMatrix &pMatrix, const FBVector4d &pVector );
 
 ////////////////////////////////////////////////////////////////////////////////////
-// T,R,S to Matrix
+// T,R/Q,S to Matrix
 ////////////////////////////////////////////////////////////////////////////////////
 // N.B. Rotation is in EulerXYZ
 /**	Convert a translation vector to a matrix.
@@ -136,8 +136,16 @@ FBSDK_DLL void FBScalingToMatrix		(FBMatrix  &pMatrix,		const FBSVector& pVector
 */
 FBSDK_DLL void FBTRSToMatrix			(FBMatrix  &pMatrix,		const FBTVector& pTVector, const FBRVector& pRVector, const FBSVector& pSVector);
 
+/**	Convert translation vector, rotation quaternion, and scaling vector to a matrix.
+*	\retval	pMatrix	Calculated resulting matrix.
+*	\param	pTVector	Translation vector.
+*	\param	pQuaternion	Rotation quaternion.
+*	\param	pSVector	Scaling vector.
+*/
+FBSDK_DLL void FBTQSToMatrix			(FBMatrix  &pMatrix, const FBTVector& pTVector, const FBQuaternion& pQuaternion, const FBSVector& pSVector);
+
 ////////////////////////////////////////////////////////////////////////////////////
-// Matrix to T,R,S
+// Matrix to T,R/Q,S
 ////////////////////////////////////////////////////////////////////////////////////
 // Rotation is in EulerXYZ
 /**	Obtain translation vector from a matrix.
@@ -167,6 +175,14 @@ FBSDK_DLL void FBMatrixToScaling		(FBSVector &pVector,		const FBMatrix& pMatrix)
 *	\warning Rotation is in EulerXYZ
 */
 FBSDK_DLL void FBMatrixToTRS			(FBTVector &pTVector, FBRVector &pRVector, FBSVector &pSVector, const FBMatrix& pMatrix);
+
+/**	Obtain translation vector, rotation quaternion, and scaling vector from a matrix.
+*	\retval	pTVector	Extracted translation vector.
+*	\retval	pQuaternion	Extracted rotation quaternion.
+*	\retval	pSVector	Extracted scaling vector.
+*	\param	pMatrix		Input matrix.
+*/
+FBSDK_DLL void FBMatrixToTQS			(FBTVector &pTVector, FBQuaternion &pQuaternion, FBSVector &pSVector, const FBMatrix& pMatrix);
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Quaternion

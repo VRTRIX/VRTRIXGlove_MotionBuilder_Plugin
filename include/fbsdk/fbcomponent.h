@@ -437,16 +437,16 @@ FB_DEFINE_COMPONENT( FBSDK_DLL, Folder );
 //! Available flags for any component
 enum FBObjectFlag
 {
-	kFBFlagSelectable           = (1 << 0),		//!< Can be selected
+	kFBFlagSelectable           = (1 << 0),		//!< Can be selected. If disabled, representation of the object, like in the navigator, can still be selected and can still affect the original object.
 	kFBFlagDeletable            = (1 << 1),		//!< Can be deleted
 	kFBFlagSavable              = (1 << 2),		//!< Can be saved
-	kFBFlagVisible              = (1 << 3),		//!< Can be visible
-	kFBFlagClonable             = (1 << 4),		//!< Can be cloned
+	kFBFlagVisible              = (1 << 3),		//!< Can be visible. If disabled, the object will still be available in the navigator, it is only hidden in the viewer.
+	kFBFlagClonable             = (1 << 4),		//!< Can be cloned. If disabled, the "Duplicate" option will be removed in the contextual menu.
 	kFBFlagSystem               = (1 << 5),		//!< Created from System (not from user)
 	kFBFlagNewable              = (1 << 6),		//!< Deleted on File->New
 	kFBFlagRenamable            = (1 << 7),		//!< Can be renamed
 	kFBFlagMergeable            = (1 << 8),		//!< Can be merged
-	kFBFlagBrowsable            = (1 << 9),		//!< Visible in the Scene Navigator/Schematic View/Property View/Model View.
+	kFBFlagBrowsable            = (1 << 9),		//!< Visible in the Scene Navigator/Schematic View/Property View/Model View. If disabled, the object representation in the navigator will not be visible. In the Schematic View, system object are not shown and other objects will still be visible, but a red X will be drawn on them. It is not possible to select the object in the Schematic View. After disabling that flag of a selected object, it will still be selected to allow a script based on selection to work. It will then be possible for a user to deselect the object, but it will not be possible to select it.
 	kFBFlagParentable           = (1 << 10),    //!< Object (model) can be "parented". Used by the apply manager contextual menu.
     kFBFlagDetachable           = (1 << 11),	//!< Object can be "detached". Used by the apply manager contextual menu.
 	kFBFlagUndoable             = (1 << 12),	//!< Object can undo its actions and states, in a global Undo Stack.
@@ -460,7 +460,7 @@ enum FBObjectFlag
     kFBFlagStorableBlindDataForceBinary = (1 << 20), //! < Used in FBX SDK native IO, force bindary format for the bindary data. 
     kFBFlagUniqueName           = (1 << 21),	//!< Object unique name can be added to the unique name list (at first, only RootNode have this flag)
     kFBFlagNotSelectableNameSpace = (1 << 22),	//!< The entity will not add the namespace of the object to his list of all the namespaces of the scene.   
-    kFBFlagNamespaceEditable      = (1 << 23),  //!< Allow editting on the namespace objects. 
+    kFBFlagNamespaceEditable      = (1 << 23),  //!< Allow editing on the namespace objects. If disabled, the "Add/Remove Namespace..." option is removed from the contextual menu.
 };
 
 K_DEPRECATED_2014 const int  kFBFlagCustomObject  = (1 << 24); //!< User custom class instances (Internal usage only, to be removed in the future).

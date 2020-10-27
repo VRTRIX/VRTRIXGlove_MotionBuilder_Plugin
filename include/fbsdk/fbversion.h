@@ -1,7 +1,7 @@
 #ifndef __FBVERSION_H__
 #define __FBVERSION_H__
 /**************************************************************************
- Copyright (c) 1994 - 2009 Autodesk, Inc. and/or its licensors.
+ Copyright (c) 1994 - 2016 Autodesk, Inc. and/or its licensors.
  All Rights Reserved.
  
  The coded instructions, statements, computer programs, and/or related 
@@ -61,12 +61,12 @@
 //! FBSDKUseNamespace define
 #define FBSDKUseNamespace 
 //! FBSDKNamespace define
-#define FBSDKNamespace		ORSDK2016
+#define FBSDKNamespace             ORSDK2017
 //! FBSDKNamespaceFunc define
-#define FBSDKNamespaceFunc( Name ) 	FBSDKNamespace::Name
+#define FBSDKNamespaceFunc( Name ) FBSDKNamespace::Name
 
 /**
-*	\mainpage	Open Reality SDK for MotionBuilder 2016 - Reference Guide
+*	\mainpage	Open Reality SDK for MotionBuilder 2017 - Reference Guide
 *	\section	intro	Introduction
 *		\subsection	welcome		Welcome To Open Reality
 *	The Open Reality SDK is a C++ software development kit (SDK) that lets you 

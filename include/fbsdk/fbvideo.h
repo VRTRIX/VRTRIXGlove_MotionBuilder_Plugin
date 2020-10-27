@@ -225,6 +225,8 @@ private:
         FBPropertyTime					LastFrameTime;		//!< <b>Read Only Property:</b> Time of last frame
         FBPropertyTime					CurrentFrameTime;	//!< <b>Read Write Property:</b> Current time in clip.
 
+        FBPropertyTime					CurrentFrameTimeCode;	//!< <b>Read Only Property:</b> Embedded timecode from current frame in clip.
+
         /**	Draw a frame of the image to the current view.
         *	\param	pX		X position of image (default=0).
         *	\param	pY		Y position of image (default=0).

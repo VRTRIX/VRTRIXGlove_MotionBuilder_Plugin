@@ -74,5 +74,17 @@ public:
 	FBPlotAllowed GetPlotAllowed(  ) { return mFBCharacterExtension->PlotAllowed; }
     void SetReferenceModel( FBModel_Wrapper& pModel) { mFBCharacterExtension->ReferenceModel = pModel.mFBModel; }
     object GetReferenceModel() { return FBModel_Wrapper_Factory(mFBCharacterExtension->ReferenceModel); }
+    void SetRetargetMode( FBCharacterExtensionRetargetMode pRetargetMode ) { mFBCharacterExtension->RetargetMode = pRetargetMode; }
+    FBCharacterExtensionRetargetMode GetRetargetMode(  ) { return mFBCharacterExtension->RetargetMode; }
+    object GetSourceExtension() { return FBWrapperFactory::TheOne().WrapFBObject( mFBCharacterExtension->GetSourceExtension( )); }
+    void SetSourceExtension( FBCharacterExtension_Wrapper& pSrcExt ) { mFBCharacterExtension->SetSourceExtension( pSrcExt.mFBCharacterExtension ); }
+    int GetSourceExtensionIndex() { return mFBCharacterExtension->GetSourceExtensionIndex( ); }
+    void SetSourceExtensionIndex( int pSrcExtIndex ) { mFBCharacterExtension->SetSourceExtensionIndex( pSrcExtIndex ); }
+    int GetRetargetPropertyCount() { return mFBCharacterExtension->GetRetargetPropertyCount( ); }
+    object GetRetargetReferenceProperty( int pPropIndex )  { return FBProperty_Wrapper_Factory( mFBCharacterExtension->GetRetargetReferenceProperty( pPropIndex ) ); }
+    object GetRetargetSourceProperty( int pPropIndex )  { return FBProperty_Wrapper_Factory( mFBCharacterExtension->GetRetargetSourceProperty( pPropIndex ) ); }
+    void SetRetargetSourceProperty( int pPropIndex, FBProperty_Wrapper& pSourceProp ) { mFBCharacterExtension->SetRetargetSourceProperty( pPropIndex, pSourceProp.mFBProperty ); }
+    void RemoveRetargetSourceProperty( int pPropIndex ) { mFBCharacterExtension->RemoveRetargetSourceProperty( pPropIndex ); }
+    object GetStancePose() { return FBWrapperFactory::TheOne().WrapFBObject( mFBCharacterExtension->GetStancePose() ); }
 };
 #endif // pyfbcharacterextension_gen_h__
