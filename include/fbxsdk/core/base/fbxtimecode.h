@@ -88,6 +88,8 @@ FBXSDK_DLL FbxLongLong FbxTCSetMNTSCnd(int pHour, int pMinute, int pSecond, FbxL
 FBXSDK_DLL FbxLongLong FbxTCGetMNTSCnd(FbxLongLong pTime, int& pHour, int& pMinute, int& pSecond, int& pFrame, int& pField);
 FBXSDK_DLL FbxLongLong FbxTCSetMNTSC_2Xnd(int pHour, int pMinute, int pSecond, FbxLongLong pFrame, int pField);
 FBXSDK_DLL FbxLongLong FbxTCGetMNTSC_2Xnd(FbxLongLong pTime, int& pHour, int& pMinute, int& pSecond, int& pFrame, int& pField);
+FBXSDK_DLL FbxLongLong FbxTCSetMNTSC_4Xnd(int pHour, int pMinute, int pSecond, FbxLongLong pFrame, int pField);
+FBXSDK_DLL FbxLongLong FbxTCGetMNTSC_4Xnd(FbxLongLong pTime, int& pHour, int& pMinute, int& pSecond, int& pFrame, int& pField);
 FBXSDK_DLL FbxLongLong FbxTCSetMNTSC(int pHour, int pMinute, int pSecond, FbxLongLong pFrame, int pField);
 FBXSDK_DLL FbxLongLong FbxTCGetMNTSC(FbxLongLong pTime, int& pHour, int& pMinute, int& pSecond, int& pFrame, int& pField);
 FBXSDK_DLL FbxLongLong FbxTCSetPAL(int pHour, int pMinute, int pSecond, FbxLongLong pFrame, int pField);

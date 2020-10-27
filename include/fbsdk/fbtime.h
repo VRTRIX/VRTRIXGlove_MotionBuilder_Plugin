@@ -64,6 +64,7 @@ enum FBTimeMode {
 	kFBTimeModeDefault, 		//!< Default Time Mode
 	kFBTimeMode1000Frames,		//!< 1000 : 1 millisecond
 	kFBTimeMode120Frames, 		//!< 120
+	kFBTimeMode11988Frames,		//!< ~119.88
 	kFBTimeMode100Frames,		//!< 100
 	kFBTimeMode96Frames,		//!< 96
 	kFBTimeMode72Frames,		//!< 72
@@ -77,7 +78,7 @@ enum FBTimeMode {
 	kFBTimeMode25Frames,		//!< 25 
 	kFBTimeMode24Frames,		//!< 24 
 	kFBTimeMode23976Frames,		//!< ~23.976
-    kFBTimeModeCustom           //!< Custom framerate
+    kFBTimeModeCustom,          //!< Custom framerate
 };
 
 FB_FORWARD( FBTime );
@@ -369,6 +370,7 @@ class FBSDK_DLL FBTimeCode
 	static const float FILM_23976;	//!< -23.976f
 	static const float FRAMES_30;	//!< -30.0f
 	static const float FRAMES_5994;	//!< -59.94f
+	static const float FRAMES_11988;	//!< -119.88f
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

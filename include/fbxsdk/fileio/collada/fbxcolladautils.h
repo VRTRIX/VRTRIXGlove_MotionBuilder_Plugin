@@ -31,11 +31,11 @@ public:
 	FbxRenamingStrategyCollada();
 	virtual ~FbxRenamingStrategyCollada();
 
-	virtual void CleanUp();
-	virtual bool DecodeScene(FbxScene* pScene);
-	virtual bool EncodeScene(FbxScene* pScene);
-	virtual bool DecodeString(FbxNameHandler& pName);
-	virtual bool EncodeString(FbxNameHandler& pName, bool pIsPropertyName = false);
+	void CleanUp() override;
+	bool DecodeScene(FbxScene* pScene) override;
+	bool EncodeScene(FbxScene* pScene) override;
+	bool DecodeString(FbxNameHandler& pName) override;
+	bool EncodeString(FbxNameHandler& pName, bool pIsPropertyName = false) override;
 };
 
 

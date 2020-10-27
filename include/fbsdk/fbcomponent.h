@@ -841,9 +841,7 @@ public:
 	void operator delete( void *pvMem );
 
 	void *operator new( size_t stAllocateBlock,	int blockType, const char *filename, int linenumber  );
-#if	_MSC_VER >= 1200
 	void operator delete( void *pvMem, int blockType, const char *filename, int linenumber  );
-#endif
 	//@}
 
 	//@{

@@ -981,15 +981,17 @@ public:
 	FBPropertyTimeSpan	PostBlend;		//!< <b>Read Write Property:</b> Start/Stop time of the post-blend phase.
 	FBPropertyTime		Offset;			//!< <b>Read Write Property:</b> First loop time offset.
 	FBPropertyDouble	Speed;			//!< <b>Read Write Property:</b> Speed of the clip.
+	FBPropertyBool		StartStopLocked;//!< <b>Read Write Property:</b> Clip's 'In/Out Locked' property value. True if the clip's In/Out properties (start/stop times of the clip local to its track) are locked, false otherwise.
 
 	//--- Shot clip properties ----------------------------------------------------------------------------------------------------------
-	FBPropertyCamera	ShotCamera;		//!< <b>Read Write Property:</b> The camera used for that specific shot.
-	FBPropertyVideo		ShotBackplate;	//!< <b>Read Write Property:</b> The backplate used for that specific shot.
-	FBPropertyVideo		ShotFrontplate;	//!< <b>Read Write Property:</b> The frontplate used for that specific shot.
-	FBPropertyBool		ShowBackplate;	//!< <b>Read Write Property:</b> Enable/Disable the shot backplate.
-	FBPropertyBool		ShowFrontplate;	//!< <b>Read Write Property:</b> Enable/Disable the shot frontplate.
-	FBPropertyTime		ShotActionStart;//!< <b>Read Write Property:</b> If not in locked shot mode (time discontinuity enabled), this time can be different from the Clip->Start property.
-	FBPropertyTime		ShotActionStop;	//!< <b>Read Write Property:</b> If not in locked shot mode (time discontinuity enabled), this time can be different from the Clip->Start property.
+	FBPropertyCamera	ShotCamera;			//!< <b>Read Write Property:</b> The camera used for that specific shot.
+	FBPropertyVideo		ShotBackplate;		//!< <b>Read Write Property:</b> The backplate used for that specific shot.
+	FBPropertyVideo		ShotFrontplate;		//!< <b>Read Write Property:</b> The frontplate used for that specific shot.
+	FBPropertyBool		ShowBackplate;		//!< <b>Read Write Property:</b> Enable/Disable the shot backplate.
+	FBPropertyBool		ShowFrontplate;		//!< <b>Read Write Property:</b> Enable/Disable the shot frontplate.
+	FBPropertyTime		ShotActionStart;	//!< <b>Read Write Property:</b> If not in locked shot mode (time discontinuity enabled), this time can be different from the Clip->Start property.
+	FBPropertyTime		ShotActionStop;		//!< <b>Read Write Property:</b> If not in locked shot mode (time discontinuity enabled), this time can be different from the Clip->Start property.
+	FBPropertyBool		ShotStartStopLocked;//!< <b>Read Write Property:</b> Shot clip's 'In/Out Locked' property value. True if the shot clip's In/Out properties (start/stop times of the clip local to its track) are locked, false otherwise.
 
 	//--- Audio clip properties ---------------------------------------------------------------------------------------------------------
 	FBPropertyAudioClip	AudioClip;		//!< <b>Read Only Property:</b> The audio clip used by this StoryClip.
@@ -1092,6 +1094,7 @@ public:
 
 	FBPropertyTime		Start;			//!< <b>Read Write Property:</b> Start time of the clip.
 	FBPropertyTime		Stop;			//!< <b>Read Write Property:</b> Stop time of the clip.
+	FBPropertyBool		StartStopLocked;//!< <b>Read Write Property:</b> Clip's 'In/Out Locked' property value. True if the clip's In/Out properties (start/end times of the clip local to its track) are locked, false otherwise.
 	FBPropertyListObject DependentClips;//!< <b>Read Write Property:</b> Clips that are included in the group clip.
 
 private:

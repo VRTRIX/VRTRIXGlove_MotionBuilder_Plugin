@@ -38,8 +38,6 @@
   * files compatible with MotionBuilder version 6.0 and up. 
   */
 
-#pragma pack(push, 8)	//FBXSDK is compiled with default value (8)
-
 #include <fbxsdk/fbxsdk_def.h>
 
 #ifndef FBXSDK_NAMESPACE_USING
@@ -131,6 +129,7 @@
 #include <fbxsdk/fileio/fbxiosettings.h>
 #include <fbxsdk/fileio/fbxstatisticsfbx.h>
 #include <fbxsdk/fileio/fbxstatistics.h>
+#include <fbxsdk/fileio/fbxcallbacks.h>
 
 //---------------------------------------------------------------------------------------
 //Scene Includes
@@ -271,7 +270,5 @@
 #if defined(FBXSDK_NAMESPACE) && (FBXSDK_NAMESPACE_USING == 1)
 	using namespace FBXSDK_NAMESPACE;
 #endif
-
-#pragma pack(pop)
 
 #endif /* _FBXSDK_H_ */

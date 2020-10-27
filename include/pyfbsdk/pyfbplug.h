@@ -96,6 +96,9 @@ public:
 	int  GetPlugConnectionModifiedList(FBPlugList_Wrapper& pPlugList, FBPlugModificationFlag pConnectionModificatonFlag, bool pAddRemove) { return mFBPlug->GetPlugConnectionModifiedList(*(pPlugList.mFBPlugList), pConnectionModificatonFlag, pAddRemove); }
     bool RevertModification(FBPlugModificationFlag pFlag = kFBAllModifiedMask) { return mFBPlug->RevertModification(pFlag); }
 
+	void SetStatusFlag( FBPlugStatusFlag pFlag, bool pBool ) { mFBPlug->SetStatusFlag( pFlag, pBool ); }
+	bool GetStatusFlag( FBPlugStatusFlag pFlag ) { return mFBPlug->GetStatusFlag( pFlag ); }
+
 	object GetDst(int pIndex) 
     { 
         ValidateIndexAccess( pIndex, this, &FBPlug_Wrapper::GetDstCount );

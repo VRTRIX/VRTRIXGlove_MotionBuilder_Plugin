@@ -18,6 +18,18 @@
 	#define PYSDK_DLL K_DLLIMPORT
 #endif
 
+/**
+	FBPythonGuard: Auto-class that calls PyGILState_Ensure/PyGILState_Release to prevent crashes when doing Python calls
+*/
+class FBPythonGuard
+{
+public:
+	FBPythonGuard()		{ mGILState = PyGILState_Ensure(); }
+	~FBPythonGuard()	{ PyGILState_Release( mGILState ); }
+private:
+	PyGILState_STATE mGILState;
+};
+
 void FBPythonWrapper_Init();
 
 /**
@@ -222,6 +234,8 @@ public:
 template <typename R>
 R FBCallPythonCatch(PyObject *pObject, const char *pName, R pErrorValue)
 {
+	FBPythonGuard lPythonGuard;
+
     try
     {
         return call_method<R>(pObject, pName);
@@ -238,6 +252,8 @@ R FBCallPythonCatch(PyObject *pObject, const char *pName, R pErrorValue)
 
 inline void FBCallPythonCatch(PyObject *pObject, const char *pName)
 {
+	FBPythonGuard lPythonGuard;
+
     try
     {
         call_method<void>(pObject, pName);
@@ -254,6 +270,8 @@ inline void FBCallPythonCatch(PyObject *pObject, const char *pName)
 template <typename R, typename P1>
 R FBCallPythonCatch1(PyObject *pObject, const char *pName, P1 const &pParam1, R pErrorValue)
 {
+	FBPythonGuard lPythonGuard;
+
     try
     {
         return call_method<R>(pObject, pName, pParam1);
@@ -270,6 +288,8 @@ R FBCallPythonCatch1(PyObject *pObject, const char *pName, P1 const &pParam1, R 
 template <typename P1>
 void FBCallPythonCatch1(PyObject *pObject, const char *pName, P1 const &pParam1)
 {
+	FBPythonGuard lPythonGuard;
+
     try
     {
         call_method<void>(pObject, pName, pParam1);
@@ -285,6 +305,8 @@ void FBCallPythonCatch1(PyObject *pObject, const char *pName, P1 const &pParam1)
 template <typename R, typename P1, typename P2>
 R FBCallPythonCatch2(PyObject *pObject, const char *pName, P1 const &pParam1, P2 const &pParam2, R pErrorValue)
 {
+	FBPythonGuard lPythonGuard;
+
     try
     {
         return call_method<R>(pObject, pName, pParam1, pParam2);
@@ -301,6 +323,8 @@ R FBCallPythonCatch2(PyObject *pObject, const char *pName, P1 const &pParam1, P2
 template <typename P1, typename P2>
 void FBCallPythonCatch2(PyObject *pObject, const char *pName, P1 const &pParam1, P2 const &pParam2)
 {
+	FBPythonGuard lPythonGuard;
+
     try
     {
         call_method<void>(pObject, pName, pParam1, pParam2);

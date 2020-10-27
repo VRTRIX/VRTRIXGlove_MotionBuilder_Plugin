@@ -565,6 +565,51 @@ private:
 		*/
 		bool GetSchematicNodesBoundingBoxFromModel( FBModel* pModel, bool pConsiderCollapsedNodes, int& pTop, int& pLeft, int& pBottom, int& pRight );
 
+		/** Return the bookmark names available in the Schematic View.
+		*	\return A string list containing the bookmark names available in the Schematic View. An empty list is returned if no bookmark is available.
+		*/
+		FBStringList GetSchematicBookmarkNames() const;
+
+		/** Return the current bookmark name used by the Schematic View.
+		*	\return The current bookmark name used by the Schematic View. An empty string is returned if there is no current bookmark.
+		*/
+		const char* GetCurrentSchematicBookmarkName() const;
+
+		/** Return if the current bookmark used by the Schematic View is dirty or not.
+		*	\return True if the current bookmark is dirty, false otherwise. False is returned if there is no current bookmark.
+		*/
+		bool IsCurrentSchematicBookmarkDirty() const;
+
+		/** Create a new bookmark in the Schematic View.
+		*	\param	pBookmarkName		The new bookmark name.
+		*	\return True if the operation is successful, false otherwise. False is returned if the bookmark name is empty or if a bookmark with the given name already exists.
+		*/
+		bool CreateSchematicBookmark(const char* pBookmarkName);
+
+		/** Delete a bookmark from the Schematic View.
+		*	\param	pBookmarkName		The bookmark name to delete.
+		*	\return True if the operation is successful, false otherwise. False is returned if the bookmark name is empty or if no bookmark exists with the given name.
+		*/
+		bool DeleteSchematicBookmark(const char* pBookmarkName);
+
+		/** Rename a bookmark in the Schematic View.
+		*	\param	pOldBookmarkName		The bookmark name to rename.
+		*	\param	pNewBookmarkName		The new bookmark name.
+		*	\return True if the operation is successful, false otherwise. False is returned if the old/new bookmark name is empty, if the old bookmark doesn't exist or if a bookmark with the new given name already exists.
+		*/
+		bool RenameSchematicBookmark(const char* pOldBookmarkName, const char* pNewBookmarkName);
+
+		/** Select an existing bookmark in the Schematic View and use it as the current bookmark.
+		*	\param	pBookmarkName		The bookmark name to select.
+		*	\return True if the operation is successful, false otherwise. False is returned if the bookmark name is empty or if no bookmark exists with the given name.
+		*/
+		bool SelectSchematicBookmark(const char* pBookmarkName);
+
+		/** Update the current bookmark in the Schematic View.
+		*	\return True if the operation is successful, false otherwise. False is returned if there is no current bookmark.
+		*/
+		bool UpdateCurrentSchematicBookmark();
+
         //--- \internal Camera manipulation, Manipulators
         /** Mouse input.
         *	\param	pX				X position.
@@ -710,6 +755,7 @@ private:
         FBPropertyInt                   CurrentPaneCallbackIndex;       //!< <b>Read Write Property:</b> Current Pane's Renderer Callback Index.
         FBPropertyInt                   CurrentPaneCallbackPrefIndex;   //!< <b>Read Write Property:</b> Current Pane's Renderer Callback Preference Index.
 		FBPropertyBool					HideManipulatorsOnManip;		//!< <b>Read Write Property:</b> Hide manipulators UI elements while manipulating.
+		FBPropertyBool					HideManipulatorsOnPlayback;		//!< <b>Read Write Property:</b> Hide manipulators UI elements during playback.
 
         /** <b>Read write Property:</b> Turn on/off advanced material setting UI widgets. 
         *   \note MoBu default render won't utilize those advanced material properties, they're provided for pipeline interop and custom plugin development purpose. 

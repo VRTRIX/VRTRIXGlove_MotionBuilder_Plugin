@@ -321,6 +321,8 @@ public:
 ** WARNING! Anything beyond these lines is for internal use, may not be documented and is subject to change without notice! **
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+    bool SetMatrix(int pIndex, const FbxMatrix& pMatrix);
+
 protected:
 	void Construct(const FbxObject* pFrom) override;
     void Destruct(bool pRecursive) override;

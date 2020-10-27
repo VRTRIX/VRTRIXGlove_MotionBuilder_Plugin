@@ -202,6 +202,8 @@ public:
 	FBTime_Wrapper* GetShotActionStart(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->ShotActionStart ); }
 	void SetShotActionStop( FBTime_Wrapper& pShotActionStop ) { mFBStoryClip->ShotActionStop = *pShotActionStop.mFBTime; }
 	FBTime_Wrapper* GetShotActionStop(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->ShotActionStop ); }
+	void SetShotStartStopLocked(bool pStartStopLocked) { mFBStoryClip->ShotStartStopLocked = pStartStopLocked; }
+	bool GetShotStartStopLocked() { return mFBStoryClip->ShotStartStopLocked; }
 	void SetShotBackplate( FBVideo_Wrapper& pShotBackplate ) { mFBStoryClip->ShotBackplate = pShotBackplate.mFBVideo; }
 	object GetShotBackplate(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBStoryClip->ShotBackplate ); }
 	void SetShotFrontplate( FBVideo_Wrapper& pShotFrontplate ) { mFBStoryClip->ShotFrontplate = pShotFrontplate.mFBVideo; }
@@ -224,6 +226,8 @@ public:
 	FBTime_Wrapper* GetStart(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->Start ); }
 	void SetStop( FBTime_Wrapper& pStop ) { mFBStoryClip->Stop = *pStop.mFBTime; }
 	FBTime_Wrapper* GetStop(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->Stop ); }
+	bool GetStartStopLocked() { return mFBStoryClip->StartStopLocked; }
+	void SetStartStopLocked(bool pStartStopLocked) { return mFBStoryClip->StartStopLocked = pStartStopLocked; }
 	void SetTranslation( FBVector3d_Wrapper& pTranslation ) { mFBStoryClip->Translation = *pTranslation.mFBVector3d; }
 	FBVector3d_Wrapper* GetTranslation(  ) { return FBVector3d_Wrapper_Factory( mFBStoryClip->Translation ); }
     bool GetReadOnly() { return mFBStoryClip->GetReadOnly( ); }

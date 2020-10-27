@@ -101,7 +101,8 @@ enum FBFileFormatAndVersion
     kFBFBX2016,                             //!< FBX Version 2016. 
 	kFBFBX2018,                             //!< FBX Version 2018. 
 	kFBFBX2019,                             //!< FBX Version 2019. 
-	kFBDefaultFormatAndVersion = kFBFBX2019 //!< Default Format and Version
+	kFBFBX2020,                             //!< FBX Version 2020.     
+	kFBDefaultFormatAndVersion = kFBFBX2020 //!< Default Format and Version
 };
 FB_DEFINE_ENUM(FBSDK_DLL, FileFormatAndVersion);
 

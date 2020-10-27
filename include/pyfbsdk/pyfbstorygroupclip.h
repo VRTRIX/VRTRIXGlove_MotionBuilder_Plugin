@@ -95,6 +95,8 @@ public:
 	FBTime_Wrapper* GetStart(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->Start ); }
 	void SetStop( FBTime_Wrapper& pStop ) { mFBStoryClip->Stop = *pStop.mFBTime; }
 	FBTime_Wrapper* GetStop(  ) { return FBTime_Wrapper_Factory( mFBStoryClip->Stop ); }
+	void SetStartStopLocked(bool pStartStopLocked) { mFBStoryClip->StartStopLocked = pStartStopLocked; }
+	bool GetStartStopLocked() { return mFBStoryClip->StartStopLocked; }
 	object GetDependentClips(  ) { return WrapFBObject<FBPropertyListObject_Wrapper,FBPropertyListObject>( &mFBStoryClip->DependentClips ); }
 };
 #endif // pyfbstoryclip_h__

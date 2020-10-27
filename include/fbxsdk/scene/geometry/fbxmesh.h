@@ -443,7 +443,20 @@ public:
 		/** Sets element in edge array to specific value.
 		* \param pEdgeIndex The edge index
 		* \param pValue The edge data */
-		inline void SetMeshEdge(int pEdgeIndex, int pValue){ if( pEdgeIndex >= 0 && pEdgeIndex < mEdgeArray.GetCount() ) mEdgeArray[pEdgeIndex] = pValue; }
+		inline void SetMeshEdge(int pEdgeIndex, int pValue)
+		{ 
+			if (pEdgeIndex >= 0 && pEdgeIndex < mEdgeArray.GetCount())
+			{
+				FBX_ASSERT(pValue >= 0 && pValue < mPolygonVertices.GetCount());
+
+				if (pValue < 0 || pValue >= mPolygonVertices.GetCount())
+				{
+					pValue = 0;
+				}
+
+				mEdgeArray[pEdgeIndex] = pValue;
+			}
+		}
 
 		/** Add an edge with the given start/end points. Note that the inserted edge
 		* may start at the given end point, and end at the given start point.
@@ -824,6 +837,8 @@ private:
     void ComputeNormalsPerCtrlPoint(FbxArray<VertexNormalInfo>& lNormalInfo, bool pCW=false);
     void ComputeNormalsPerPolygonVertex(FbxArray<VertexNormalInfo>& lNormalInfo, bool pCW=false);
     void GenerateNormalsByCtrlPoint(bool pCW);
+
+    int GetIndex(int index, int capacity) const;
 
 #endif /* !DOXYGEN_SHOULD_SKIP_THIS *****************************************************************************************/
 };

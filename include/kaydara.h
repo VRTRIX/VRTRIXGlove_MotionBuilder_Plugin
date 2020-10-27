@@ -37,7 +37,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 **************************************************************************/
 
 // *** if you update this version, make sure to update the other version value in src/motionbuilder/motionbuilder/resource.h
-#define K_KERNEL_VERSION	19000 
+#define K_KERNEL_VERSION	20000 
 // ***
 
 #define K_NO_PROJECTSETTINGS
@@ -88,7 +88,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#endif
 #endif
 
-#if (_MSC_VER >= 1400) // The Visual C++ 2005 compiler version is 1400
+#ifdef _MSC_VER
 	#ifndef _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES
 		#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
 	#endif
@@ -214,31 +214,26 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 #endif
 
 #if defined(KARCH_DEV_MSC)
-	#if (_MSC_VER >= 1400) // The Visual C++ 2005 compiler version is 1400
-		//RR: macros defined for the conformant ISO C++ since now the following functions
-		// are deprecated
-
-		#ifndef stricmp
-			#define stricmp		_stricmp
-		#endif
-		#ifndef strnicmp
-			#define strnicmp	_strnicmp
-		#endif
-		#ifndef itoa
-			#define itoa		_itoa
-		#endif
-		#ifndef getcwd
-			#define getcwd		_getcwd
-		#endif
-		#ifndef getpid
-			#define getpid		_getpid
-		#endif
-		#ifndef fileno
-			#define fileno		_fileno
-		#endif
-		#ifndef fdopen
-			#define fdopen		_fdopen
-		#endif
+	#ifndef stricmp
+		#define stricmp		_stricmp
+	#endif
+	#ifndef strnicmp
+		#define strnicmp	_strnicmp
+	#endif
+	#ifndef itoa
+		#define itoa		_itoa
+	#endif
+	#ifndef getcwd
+		#define getcwd		_getcwd
+	#endif
+	#ifndef getpid
+		#define getpid		_getpid
+	#endif
+	#ifndef fileno
+		#define fileno		_fileno
+	#endif
+	#ifndef fdopen
+		#define fdopen		_fdopen
 	#endif
 #else
 	#define _MSC_EMULATOR
@@ -408,16 +403,19 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#define K_DEPRECATED_2017 __attribute__((deprecated))
 	#define K_DEPRECATED_2018 __attribute__((deprecated))
 	#define K_DEPRECATED_2019 __attribute__((deprecated))
+    #define K_DEPRECATED_2020 __attribute__((deprecated))
 #elif defined(KARCH_DEV_MSC) || defined(KARCH_DEV_INTEL) // Microsoft or Intel compiler
 	#define K_DEPRECATED_2016 __declspec(deprecated)
 	#define K_DEPRECATED_2017 __declspec(deprecated)
 	#define K_DEPRECATED_2018 __declspec(deprecated)
 	#define K_DEPRECATED_2019 __declspec(deprecated)
+    #define K_DEPRECATED_2020 __declspec(deprecated)
 #else // Unknown compiler
 	#define K_DEPRECATED_2016
 	#define K_DEPRECATED_2017
 	#define K_DEPRECATED_2018
 	#define K_DEPRECATED_2019
+    #define K_DEPRECATED_2020
 #endif
 
 #endif // _KAYDARA_H_

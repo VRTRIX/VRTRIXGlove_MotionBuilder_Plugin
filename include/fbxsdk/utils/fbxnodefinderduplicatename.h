@@ -65,7 +65,7 @@ public:
 	virtual ~FbxNodeFinderDuplicateName();
 
 	//! Reset the finder object
-	virtual void Reset();
+	void Reset() override;
 
 	/** GetState.
 	*	\param pStateIndex     State index.
@@ -130,14 +130,14 @@ protected:
 	/** Find all the node corresponding to the search criterion.
 	*	\param iNode
 	*/
-	virtual void ApplyRecursive(FbxNode& iNode);
+	void ApplyRecursive(FbxNode& iNode) override;
 	
 	/** Check if a node answers to search criterion.
 	*	Criteria must be defined by child class.
 	*	\param iNode
 	*	\return
 	*/
-	virtual bool CheckNode(FbxNode& iNode);
+	bool CheckNode(FbxNode& iNode) override;
 
 	/** Check for duplicate node name.
 	*	\param pNode

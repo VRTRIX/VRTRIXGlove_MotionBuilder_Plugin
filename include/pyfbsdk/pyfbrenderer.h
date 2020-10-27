@@ -50,6 +50,14 @@ public:
 	void ArrangeAllInSchematic(FBArrangeMode pMode) { return mFBRenderer->ArrangeAllInSchematic( pMode ); }
 	tuple GetSchematicNodesBoundingBox(bool pConsiderCollapsedNodes);
 	tuple GetSchematicNodesBoundingBoxFromModel(FBModel_Wrapper& pModel, bool pConsiderCollapsedNodes);
+	FBStringList_Wrapper* GetSchematicBookmarkNames() const { return FBStringList_Wrapper_Factory( mFBRenderer->GetSchematicBookmarkNames() ); }
+	const char* GetCurrentSchematicBookmarkName() const { return mFBRenderer->GetCurrentSchematicBookmarkName(); }
+	bool IsCurrentSchematicBookmarkDirty() const { return mFBRenderer->IsCurrentSchematicBookmarkDirty(); }
+	bool CreateSchematicBookmark(const char* pBookmarkName) { return mFBRenderer->CreateSchematicBookmark( pBookmarkName ); }
+	bool DeleteSchematicBookmark(const char* pBookmarkName) { return mFBRenderer->DeleteSchematicBookmark( pBookmarkName ); }
+	bool RenameSchematicBookmark(const char* pOldBookmarkName, const char* pNewBookmarkName) { return mFBRenderer->RenameSchematicBookmark( pOldBookmarkName, pNewBookmarkName ); }
+	bool SelectSchematicBookmark(const char* pBookmarkName) { return mFBRenderer->SelectSchematicBookmark( pBookmarkName ); }
+	bool UpdateCurrentSchematicBookmark() { return mFBRenderer->UpdateCurrentSchematicBookmark(); }
     FBViewingOptions_Wrapper* GetViewingOptions() { return FBViewingOptions_Wrapper_Factory( mFBRenderer->GetViewingOptions(  )); }
     void KeyboardInput(FBDeviceKeyboardKey pKeyIndex, bool pKeyState, bool pIsTrigger = false) { mFBRenderer->KeyboardInput( pKeyIndex, pKeyState, pIsTrigger ); }
     bool MouseInput(int pX, int pY, FBInputType pInputType, int pButtonKey, FBInputModifier pModifier, int pWheelDeltaValue = 0, int pLayer = -1) { return mFBRenderer->MouseInput( pX, pY, pInputType, pButtonKey, pModifier, pWheelDeltaValue, pLayer ); }
@@ -112,5 +120,6 @@ public:
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(AdvancedMaterialMode,   bool);
     DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(AdvancedLightingMode,   bool);
 	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(HideManipulatorsOnManip,    bool);
+	DECLARE_ORSDK_PROPERTY_PYTHON_ACCESS(HideManipulatorsOnPlayback, bool);
 };
 #endif // pyfbrenderer_h__

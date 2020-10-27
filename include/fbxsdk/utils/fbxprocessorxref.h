@@ -70,7 +70,7 @@ public:
           * be copied because the source is not found.
           * Memory is owned by the client code, and will not be freed by us.
           */
-        MissingUrlHandler*          MissingUrlHandler;
+        MissingUrlHandler*          MissingUrlHandlerCB;
 
     /** Since FbxProperty is an opaque type, we can't do an efficient operator <
       * on it, and must keep the data on the object, which can be compared through

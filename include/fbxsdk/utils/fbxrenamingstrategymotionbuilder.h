@@ -30,11 +30,11 @@ public:
     FbxRenamingStrategyMotionBuilder();
     virtual ~FbxRenamingStrategyMotionBuilder();
 
-    virtual bool DecodeScene(FbxScene* pScene);
-    virtual bool EncodeScene(FbxScene* pScene);
-    virtual bool DecodeString(FbxNameHandler& pName);
-    virtual bool EncodeString(FbxNameHandler& pName, bool pIsPropertyName=false);
-    virtual void CleanUp();
+    bool DecodeScene(FbxScene* pScene) override;
+    bool EncodeScene(FbxScene* pScene) override;
+    bool DecodeString(FbxNameHandler& pName) override;
+    bool EncodeString(FbxNameHandler& pName, bool pIsPropertyName=false) override;
+    void CleanUp() override;
 };
 
 #include <fbxsdk/fbxsdk_nsend.h>

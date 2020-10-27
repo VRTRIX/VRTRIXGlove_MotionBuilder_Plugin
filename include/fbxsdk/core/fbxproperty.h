@@ -1072,6 +1072,9 @@ private:
 template <class T> class FbxPropertyT : public FbxProperty
 {
 public:
+    /** Provides access to the property's underlying type */
+    typedef T ValueType;
+
 	/**
 	  * \name Static initialization.
 	  */

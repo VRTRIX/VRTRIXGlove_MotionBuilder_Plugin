@@ -266,12 +266,12 @@ private:
 	bool						DisconnectOwnedConnect(FbxConnectionPoint* pConnect);
 
 	void*							mData;
-	int								mFlags;
 	FbxConnectionPoint*				mOwner;
+	FbxConnectionPointFilter*		mFilter;
 	ConnectionList					mConnectionList;
 	FbxArray<FbxConnectionPoint*>	mSubConnectList;
 	FbxArray<FbxConnectionPoint*>	mSubConnectCreatedList;		
-	FbxConnectionPointFilter*		mFilter;
+	int								mFlags;
 #endif /* !DOXYGEN_SHOULD_SKIP_THIS *****************************************************************************************/
 };
 

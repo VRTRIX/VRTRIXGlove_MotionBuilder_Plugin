@@ -454,12 +454,12 @@ public:
         void KeyShrink();
 
         //! Remove all the keys of the animation curve and free buffer memory.
-        virtual void KeyClear() override;
+        void KeyClear() override;
        
         /** Get the number of keys.
           * \return Key count.
           */
-        virtual int KeyGetCount() const override;
+        int KeyGetCount() const override;
   
 		/** Add a given key at given time. The new key is appended after all the other animation curve's keys.
 		*	Function FbxAnimCurveKFCurve::KeyInsert() should be used instead if the key 
@@ -712,14 +712,14 @@ public:
 		*   \param pKeyIndex   Index of the queried key.
 		*	\return Key time (time at which this key is occurring).
 		*/
-        virtual FbxTime KeyGetTime(int pKeyIndex) const override;
+        FbxTime KeyGetTime(int pKeyIndex) const override;
 
 		/** Set key time.
 		* \param pKeyIndex   Index of the key.
 		* \param pTime Key time (time at which this key is occurring).
 		* \remark The new key time might modify the key index.
 		*/
-        virtual void KeySetTime(int pKeyIndex, FbxTime pTime) override;
+        void KeySetTime(int pKeyIndex, FbxTime pTime) override;
 
         /** Set or unset the tangent break. When this flag is set (FbxAnimCurveDef::eTangentBreak), the key's left and right slopes are independent.
 		* When this flag is off, the key's left and right slope are equal.
@@ -930,7 +930,7 @@ public:
 		* has no key.
 		* \remark This function takes extrapolation into account.
 		*/
-        virtual float Evaluate (FbxTime pTime, int* pLast = NULL) override;
+        float Evaluate (FbxTime pTime, int* pLast = NULL) override;
 
 		/**	Evaluate animation curve value at a given key index.
 		*	\param pIndex Any value between 0 and FbxAnimCurve::KeyGetCount() - 1.
@@ -941,7 +941,7 @@ public:
 		* \return Animation curve value, or default value if animation curve has no key.
 		* \remark Result is undetermined if index is out of bounds.
 		*/
-        virtual float EvaluateIndex( double pIndex) override;
+        float EvaluateIndex( double pIndex) override;
         
 		/**	Evaluate function left derivative at given time.
 		*	\param pTime Time of evaluation.
@@ -972,7 +972,7 @@ public:
 		  * \param pTimeInterval Reference to receive start time and end time.
 		  * \return \c true on success, \c false otherwise.
 		  */
-        virtual bool GetTimeInterval(FbxTimeSpan& pTimeInterval) override;
+        bool GetTimeInterval(FbxTimeSpan& pTimeInterval) override;
 
         /** Set the display color of the animation curve.
           * \param pColor The desired color (3 values 0 to 1).
@@ -1009,6 +1009,7 @@ public:
     void ExtrapolationSyncCallback() override;
     bool Store(FbxIO* pFileObject, bool pLegacyVersion=false) override;
     bool Retrieve(FbxIO* pFileObject) override;
+
     virtual int KeyAdd(FbxTime pTime, FbxAnimCurveKFCurveKey& pKey, int* pLast=0);
     virtual bool KeySet(int pIndex, FbxAnimCurveKFCurveKey& pKey);
 

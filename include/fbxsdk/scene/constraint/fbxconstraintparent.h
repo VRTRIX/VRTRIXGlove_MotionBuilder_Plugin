@@ -110,6 +110,12 @@ public:
       */
     FbxVector4 GetTranslationOffset(const FbxObject* pObject) const;
 
+    /** Retrieve the translation offset FbxProperty of the specified constraint source.
+    * \param pObject The specified constraint source
+    * \return The current translation offset property.
+    */
+    FbxProperty GetTranslationOffsetProperty(const FbxObject* pObject) const;
+
     /** Set the rotation offset of the specified constraint source.
       * \param pObject The specified constraint source.
       * \param pRotation The new offset vector.
@@ -118,9 +124,15 @@ public:
 
     /** Retrieve the rotation offset of the specified constraint source.
       * \param pObject The specified constraint source.
-      * \return The current translation offset.
+      * \return The current rotation offset.
       */
     FbxVector4 GetRotationOffset(const FbxObject* pObject) const;
+
+    /** Retrieve the rotation offset FbxProperty of the specified constraint source.
+      * \param pObject The specified constraint source
+      * \return The current rotation offset property.
+      */
+    FbxProperty GetRotationOffsetProperty(const FbxObject* pObject) const;
 
     /** Add a constraint source to the constraint.
       * \param pObject New constraint source.

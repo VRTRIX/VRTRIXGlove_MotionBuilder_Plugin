@@ -22,7 +22,17 @@
 	#pragma warning(disable:4459) // declaration of 'xxxx' hides global declaration
 #endif
 
-#include <boost/python.hpp>
+#include <boost/python/call_method.hpp>
+#include <boost/python/class.hpp>
+#include <boost/python/def.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/enum.hpp>
+#include <boost/python/manage_new_object.hpp>
+#include <boost/python/operators.hpp>
+#include <boost/python/overloads.hpp>
+#include <boost/python/register_ptr_to_python.hpp>
+#include <boost/python/str.hpp>
+
 using namespace boost::python;
 
 #include <fbsdk/fbsdk.h>
