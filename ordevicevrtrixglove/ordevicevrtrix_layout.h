@@ -48,10 +48,10 @@ public:
 	void	EventBendUpThresholdChange				( HISender pSender, HKEvent pEvent );
 	void	EventBendDownThresholdChange				( HISender pSender, HKEvent pEvent );
 	
-	void	EventIndexOffsetChange						( HISender pSender, HKEvent pEvent );
-	void	EventMiddleOffsetChange						( HISender pSender, HKEvent pEvent );
-	void	EventRingOffsetChange						( HISender pSender, HKEvent pEvent );
-	void	EventPinkyOffsetChange						( HISender pSender, HKEvent pEvent );
+	void	EventFingerProximalOffsetChange				( HISender pSender, HKEvent pEvent );
+	//void	EventMiddleOffsetChange						( HISender pSender, HKEvent pEvent );
+	//void	EventRingOffsetChange						( HISender pSender, HKEvent pEvent );
+	//void	EventPinkyOffsetChange						( HISender pSender, HKEvent pEvent );
 
 	void	EventThumbProximalOffsetChange				( HISender pSender, HKEvent pEvent );
 	void	EventThumbMiddleOffsetChange				( HISender pSender, HKEvent pEvent );

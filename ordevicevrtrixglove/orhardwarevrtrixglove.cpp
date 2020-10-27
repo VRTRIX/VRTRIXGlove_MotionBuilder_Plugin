@@ -602,22 +602,22 @@ void ORHardwareVRTRIXGlove::OnSetFingerOffset(VRTRIX::VRTRIXVector_t offset, VRT
 	}
 	else if (mHandJointCount == 20) {
 		switch (joint) {
-		case(VRTRIX::Wrist_Joint) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[0] = offset : m_RHFingerOffset[0] = offset;
-		case(VRTRIX::Thumb_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[1] = offset : m_RHFingerOffset[1] = offset;
-		case(VRTRIX::Thumb_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[2] = offset : m_RHFingerOffset[2] = offset;
-		case(VRTRIX::Thumb_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[3] = offset : m_RHFingerOffset[3] = offset;
-		case(VRTRIX::Index_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[5] = offset : m_RHFingerOffset[5] = offset;
-		case(VRTRIX::Index_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[6] = offset : m_RHFingerOffset[6] = offset;
-		case(VRTRIX::Index_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[7] = offset : m_RHFingerOffset[7] = offset;
-		case(VRTRIX::Middle_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[9] = offset : m_RHFingerOffset[9] = offset;
-		case(VRTRIX::Middle_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[10] = offset : m_RHFingerOffset[10] = offset;
-		case(VRTRIX::Middle_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[11] = offset : m_RHFingerOffset[11] = offset;
-		case(VRTRIX::Ring_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[13] = offset : m_RHFingerOffset[13] = offset;
-		case(VRTRIX::Ring_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[14] = offset : m_RHFingerOffset[14] = offset;
-		case(VRTRIX::Ring_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[15] = offset : m_RHFingerOffset[15] = offset;
-		case(VRTRIX::Pinky_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[17] = offset : m_RHFingerOffset[17] = offset;
-		case(VRTRIX::Pinky_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[18] = offset : m_RHFingerOffset[18] = offset;
-		case(VRTRIX::Pinky_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[19] = offset : m_RHFingerOffset[19] = offset;
+		case(VRTRIX::Wrist_Joint): (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[0] = offset : m_RHFingerOffset[0] = offset; break;
+		case(VRTRIX::Thumb_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[1] = offset : m_RHFingerOffset[1] = offset; break;
+		case(VRTRIX::Thumb_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[2] = offset : m_RHFingerOffset[2] = offset; break;
+		case(VRTRIX::Thumb_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[3] = offset : m_RHFingerOffset[3] = offset; break;
+		case(VRTRIX::Index_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[5] = offset : m_RHFingerOffset[5] = offset; break;
+		case(VRTRIX::Index_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[6] = offset : m_RHFingerOffset[6] = offset; break;
+		case(VRTRIX::Index_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[7] = offset : m_RHFingerOffset[7] = offset; break;
+		case(VRTRIX::Middle_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[9] = offset : m_RHFingerOffset[9] = offset; break;
+		case(VRTRIX::Middle_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[10] = offset : m_RHFingerOffset[10] = offset; break;
+		case(VRTRIX::Middle_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[11] = offset : m_RHFingerOffset[11] = offset; break;
+		case(VRTRIX::Ring_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[13] = offset : m_RHFingerOffset[13] = offset; break;
+		case(VRTRIX::Ring_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[14] = offset : m_RHFingerOffset[14] = offset; break;
+		case(VRTRIX::Ring_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[15] = offset : m_RHFingerOffset[15] = offset; break;
+		case(VRTRIX::Pinky_Proximal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[17] = offset : m_RHFingerOffset[17] = offset; break;
+		case(VRTRIX::Pinky_Intermediate) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[18] = offset : m_RHFingerOffset[18] = offset; break;
+		case(VRTRIX::Pinky_Distal) : (type == VRTRIX::Hand_Left) ? m_LHFingerOffset[19] = offset : m_RHFingerOffset[19] = offset; break;
 		}
 	}
 }
@@ -646,6 +646,12 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
 					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
 					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				rot = EigenQuaternionToEuler(finger);
+				//Eigen::Vector3d fingerAxisZ = finger * Eigen::Vector3d::UnitZ();
+				//Eigen::Vector3d parentFingerAxisZ = MBEuler2Quat(mChannel[mChannel[RHandIndex + i].mParentChannel].mR) * Eigen::Vector3d::UnitZ();
+				//if (i == 5 || i == 9 || i == 13 || i == 17) parentFingerAxisZ = -parentFingerAxisZ;
+				//Eigen::Quaterniond deltaQuat = Eigen::Quaterniond::FromTwoVectors(fingerAxisZ, parentFingerAxisZ);
+				//finger = deltaQuat * finger;
 				rot = EigenQuaternionToEuler(finger);
 			}
 			mChannel[RHandIndex + i].mR[0] = rot[0];
@@ -688,6 +694,11 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
 					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
 					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				rot = EigenQuaternionToEuler(finger);
+				//Eigen::Vector3d fingerAxisZ = finger * Eigen::Vector3d::UnitZ();
+				//Eigen::Vector3d parentFingerAxisZ = MBEuler2Quat(mChannel[mChannel[LHandIndex + i].mParentChannel].mR) * Eigen::Vector3d::UnitZ();
+				//Eigen::Quaterniond deltaQuat = Eigen::Quaterniond::FromTwoVectors(fingerAxisZ, parentFingerAxisZ);
+				//finger = deltaQuat * finger;
 				rot = EigenQuaternionToEuler(finger);
 			}
 			mChannel[LHandIndex + i].mR[0] = rot[0];
