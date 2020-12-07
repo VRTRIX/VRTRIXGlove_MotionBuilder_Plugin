@@ -25,6 +25,7 @@ public:
 	void		UIRefreshSpreadSheet();
 	void	UIReset					();		// Reset from device values
 	void		UIResetSpreadSheet	();
+	void	LoadConfigFile          (int index);
 
 	// Main Layout: Events
 	void	EventDeviceStatusChange					( HISender pSender, HKEvent pEvent );
@@ -145,6 +146,7 @@ private:
 	int						mFingerIndex;				//!< Finger Index
 	int						mHardwareVersion;			//!< Hardware version of data glove
 	int						mDeviceID;					//!< Data Glove device ID
+	std::string				mDeviceIP;					//!< Data Glove device IP	
 	bool					mIsParamSyncEnabled;		//!< Whether apply parameters for all fingers.
 	bool					mIsAdvancedModeEnabled;		//!< Whether the advanced mode is enabled.
 	double					mFingerSpacing;				//!< Finger spacing when advanced mode is NOT enabled.

@@ -15,49 +15,17 @@ FBRegisterDeviceLayout        (    ORDEVICEVRTRIX_LAYOUT,
  ************************************************/
 bool ORDeviceVRTRIXLayout::FBCreate()
 {
+	// Get a handle on the device.
+	mDevice = ((ORDeviceVRTRIXGlove *)(FBDevice *)Device);
+
 	mIsParamSyncEnabled = false;
 	mHandType = VRTRIX::Hand_Left;
-	mDeviceID = 0;
+	mDeviceID = mDevice->mDeviceID;
+	mDeviceIP = mDevice->mDeviceIP;
 	mFingerIndex = 0;
 
 	//Loading config file
-	m_jHandler = new JsonHandler();
-
-	mIsAdvancedModeEnabled = m_jHandler->m_cfg.mAdvancedMode;
-	mHardwareVersion = m_jHandler->m_cfg.mHardwareVersion;
-	mFingerSpacing = m_jHandler->m_cfg.mFingerSpacing;
-	mFinalFingerSpacing = m_jHandler->m_cfg.mFinalFingerSpacing;
-	mBendUpThreshold = m_jHandler->m_cfg.mBendUpThreshold;
-	mBendDownThreshold = m_jHandler->m_cfg.mBendDownThreshold;
-	for (int i = 0; i < 5; ++i) {
-		mProximalSlerpDownValue[i] = m_jHandler->m_cfg.mProximalSlerpDownValue[i];
-		mDistalSlerpDownValue[i] = m_jHandler->m_cfg.mDistalSlerpDownValue[i];
-		mProximalSlerpUpValue[i] = m_jHandler->m_cfg.mProximalSlerpUpValue[i];
-		mDistalSlerpUpValue[i] = m_jHandler->m_cfg.mDistalSlerpUpValue[i];
-	}
-	
-	for (int i = 0; i < 3; ++i) {
-		mLHIndexOffset[i] = m_jHandler->m_cfg.mLHIndexOffset[i];
-		mRHIndexOffset[i] = m_jHandler->m_cfg.mRHIndexOffset[i];
-
-		mLHMiddleOffset[i] = m_jHandler->m_cfg.mLHMiddleOffset[i];
-		mRHMiddleOffset[i] = m_jHandler->m_cfg.mRHMiddleOffset[i];
-
-		mLHRingOffset[i] = m_jHandler->m_cfg.mLHRingOffset[i];
-		mRHRingOffset[i] = m_jHandler->m_cfg.mRHRingOffset[i];
-
-		mLHPinkyOffset[i] = m_jHandler->m_cfg.mLHPinkyOffset[i];
-		mRHPinkyOffset[i] = m_jHandler->m_cfg.mRHPinkyOffset[i];
-
-		mLHThumbOffset[i] = m_jHandler->m_cfg.mLHThumbOffset[i];
-		mRHThumbOffset[i] = m_jHandler->m_cfg.mRHThumbOffset[i];
-
-		mLHModelOffset[i] = m_jHandler->m_cfg.mLHModelOffset[i];
-		mRHModelOffset[i] = m_jHandler->m_cfg.mRHModelOffset[i];
-	}
-
-	// Get a handle on the device.
-	mDevice = ((ORDeviceVRTRIXGlove *)(FBDevice *)Device);
+	LoadConfigFile(mDeviceID);
 	mDevice->SetConfig(m_jHandler->m_cfg);
 
 	// Create/configure UI
@@ -739,13 +707,12 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 {
 	mLabelServerIP.Caption = "Server IP";
-	mEditServerIP.Text = "127.0.0.1";
+	mEditServerIP.Text = mDeviceIP.c_str();
 
 	mLabelDeviceID.Caption = "Device ID";
 	mListDeviceID.Items.SetString("Device 0~Device 1~Device 2~Device 3~Device 4~Device 5");
 	mListDeviceID.Style = kFBDropDownList;
 	mListDeviceID.ItemIndex = mDeviceID;
-	mDevice->SetDeviceID(mDeviceID);
 
 	mLabelHardwareVersion.Caption = "Hardware Version";
 	mListHardwareVersion.Items.SetString("DK1~DK2~PRO~PRO7~PRO11~PRO12");	
@@ -896,6 +863,45 @@ void ORDeviceVRTRIXLayout::UIResetSpreadSheet()
 	}
 }
 
+void ORDeviceVRTRIXLayout::LoadConfigFile(int index)
+{
+	//Loading config file
+	m_jHandler = new JsonHandler(index);
+
+	mIsAdvancedModeEnabled = m_jHandler->m_cfg.mAdvancedMode;
+	mHardwareVersion = m_jHandler->m_cfg.mHardwareVersion;
+	mFingerSpacing = m_jHandler->m_cfg.mFingerSpacing;
+	mFinalFingerSpacing = m_jHandler->m_cfg.mFinalFingerSpacing;
+	mBendUpThreshold = m_jHandler->m_cfg.mBendUpThreshold;
+	mBendDownThreshold = m_jHandler->m_cfg.mBendDownThreshold;
+	for (int i = 0; i < 5; ++i) {
+		mProximalSlerpDownValue[i] = m_jHandler->m_cfg.mProximalSlerpDownValue[i];
+		mDistalSlerpDownValue[i] = m_jHandler->m_cfg.mDistalSlerpDownValue[i];
+		mProximalSlerpUpValue[i] = m_jHandler->m_cfg.mProximalSlerpUpValue[i];
+		mDistalSlerpUpValue[i] = m_jHandler->m_cfg.mDistalSlerpUpValue[i];
+	}
+
+	for (int i = 0; i < 3; ++i) {
+		mLHIndexOffset[i] = m_jHandler->m_cfg.mLHIndexOffset[i];
+		mRHIndexOffset[i] = m_jHandler->m_cfg.mRHIndexOffset[i];
+
+		mLHMiddleOffset[i] = m_jHandler->m_cfg.mLHMiddleOffset[i];
+		mRHMiddleOffset[i] = m_jHandler->m_cfg.mRHMiddleOffset[i];
+
+		mLHRingOffset[i] = m_jHandler->m_cfg.mLHRingOffset[i];
+		mRHRingOffset[i] = m_jHandler->m_cfg.mRHRingOffset[i];
+
+		mLHPinkyOffset[i] = m_jHandler->m_cfg.mLHPinkyOffset[i];
+		mRHPinkyOffset[i] = m_jHandler->m_cfg.mRHPinkyOffset[i];
+
+		mLHThumbOffset[i] = m_jHandler->m_cfg.mLHThumbOffset[i];
+		mRHThumbOffset[i] = m_jHandler->m_cfg.mRHThumbOffset[i];
+
+		mLHModelOffset[i] = m_jHandler->m_cfg.mLHModelOffset[i];
+		mRHModelOffset[i] = m_jHandler->m_cfg.mRHModelOffset[i];
+	}
+}
+
 
 /************************************************
  *	Tab panel change callback.
@@ -919,6 +925,9 @@ void ORDeviceVRTRIXLayout::EventDeviceIDChange(HISender pSender, HKEvent pEvent)
 {
 	mDeviceID = mListDeviceID.ItemIndex;
 	mDevice->SetDeviceID(mListDeviceID.ItemIndex);
+	//Reload config file
+	delete m_jHandler;
+	LoadConfigFile(mDeviceID);
 }
 
 void ORDeviceVRTRIXLayout::EventHardwareTypeChange(HISender pSender, HKEvent pEvent)

@@ -23,6 +23,9 @@ FBRegisterDevice		(	ORDEVICEVRTRIXGLOVE_NAME,
 ************************************************/
 bool ORDeviceVRTRIXGlove::FBCreate()
 {
+	mDeviceID = 0;
+	mDeviceIP = "127.0.0.1";
+
     // Add model templates
     mRootTemplate =  new FBModelTemplate(ORDEVICEVRTRIXGLOVE_PREFIX, "Reference", kFBModelTemplateRoot);
     ModelTemplate.Children.Add(mRootTemplate);
@@ -119,6 +122,30 @@ bool ORDeviceVRTRIXGlove::Done()
     */
 
     return true;
+}
+
+void ORDeviceVRTRIXGlove::SetServerIP(std::string IP)
+{
+	mDeviceIP = IP;
+	mHardware.SetServerIP(IP);
+}
+
+void ORDeviceVRTRIXGlove::SetDeviceID(int deviceID)
+{
+	mDeviceID = deviceID;
+	mHardware.SetDeviceID(deviceID);
+
+	UnBind();
+	mChannels.clear();
+
+	mHardware.GetSetupInfo();
+	for (int i = 0; i < GetChannelCount(); ++i) {
+		DataChannel channel;
+		mChannels.push_back(channel);
+	}
+
+	mHierarchyIsDefined = false;
+	Bind();
 }
 
 /************************************************

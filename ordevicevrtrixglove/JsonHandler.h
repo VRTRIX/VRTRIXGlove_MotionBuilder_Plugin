@@ -43,13 +43,13 @@ struct IDataGloveConfig {
 class JsonHandler
 {
 public:
-	JsonHandler()
+	JsonHandler(int gloveID)
 	{
 		Json::Value cfg_root;
 		char result[ MAX_PATH ];
 		current_dir =  std::string( result, GetModuleFileNameA( NULL, result, MAX_PATH ) );
 	    std::string::size_type pos = current_dir.find_last_of( "\\/" );
-		current_dir = current_dir.substr( 0, pos)+ "\\plugins\\DataGloveConfig.json";
+		current_dir = current_dir.substr(0, pos) + "\\plugins\\config\\DataGloveConfig" + std::to_string(gloveID) + ".json";
 		std::ifstream cfgfile(current_dir);
 		if (cfgfile) // Verify that the file was open successfully
 		{

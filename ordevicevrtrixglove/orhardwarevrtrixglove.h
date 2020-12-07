@@ -64,15 +64,19 @@ public:
 	void OnSetFingerOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
 	//void OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type);
 
+	void OnRegisterCallback(void* device);
+
 private:
 	std::string m_serverIP;
 	int m_deviceID;
 	IDataGloveConfig    m_cfg;
+	BoneSetup			m_boneSetup;
 	std::vector<SkeletonNodeInfo>	mChannel;//!< Channel data & info.
 	std::vector<FBTVector>	mLocalTranslationL;
 	std::vector<FBTVector>	mLocalTranslationR;
 	int			mChannelCount;								//!< Channel count.
 	int			mHandJointCount;
+	void*		mFBDevice;
 
 	VRTRIX::GLOVEVERSION	mHardwareVersion;
 	VRTRIX::IVRTRIXDataGloveClient*     m_pLeftHandDataGlove;
