@@ -729,7 +729,7 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 {
 	mLabelServerIP.Caption = "Server IP";
-	mEditServerIP.Text = "127.0.0.1";
+	mEditServerIP.Text = mDevice->GetServerIP().c_str();
 
 	mLabelDeviceID.Caption = "Device ID";
 	mListDeviceID.Items.SetString("Device 0~Device 1~Device 2~Device 3~Device 4~Device 5");

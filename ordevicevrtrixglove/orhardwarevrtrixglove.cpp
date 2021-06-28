@@ -37,7 +37,8 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	m_bIsLHCalibrated(true),
 	m_bIsRHCalibrated(true),
 	m_bIsLHConnected(false),
-	m_bIsRHConnected(false)
+	m_bIsRHConnected(false),
+	m_serverIP("127.0.0.1")
 {
 
 }
@@ -359,9 +360,19 @@ void ORHardwareVRTRIXGlove::SetServerIP(std::string IP)
 	m_serverIP = IP;
 }
 
+std::string ORHardwareVRTRIXGlove::GetServerIP()
+{
+	return m_serverIP;
+}
+
 void ORHardwareVRTRIXGlove::SetDeviceID(int deviceID)
 {
 	m_deviceID = deviceID;
+}
+
+int ORHardwareVRTRIXGlove::GetDeviceID()
+{
+	return m_deviceID;
 }
 
 void ORHardwareVRTRIXGlove::SetHardwareVersion(VRTRIX::GLOVEVERSION version)
