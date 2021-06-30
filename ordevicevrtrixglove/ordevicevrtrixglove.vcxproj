@@ -153,7 +153,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BoneHierarchySetup.h" />
     <ClInclude Include="JsonHandler.h" />
     <ClInclude Include="ordevicevrtrixglove_device.h" />
     <ClInclude Include="ordevicevrtrix_layout.h" />

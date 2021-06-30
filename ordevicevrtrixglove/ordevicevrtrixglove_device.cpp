@@ -18,16 +18,91 @@ FBRegisterDevice		(	ORDEVICEVRTRIXGLOVE_NAME,
                          ORDEVICEVRTRIXGLOVE_DESC,
                          ORDEVICEVRTRIXGLOVE_ICON	);
 
+bool is_file_exist(const char *fileName)
+{
+	std::ifstream infile(fileName);
+	return infile.good();
+}
+
+std::string UTF8ToGB(const char* str)
+{
+	std::string result;
+	WCHAR *strSrc;
+	LPSTR szRes;
+
+	int i = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
+	strSrc = new WCHAR[i + 1];
+	MultiByteToWideChar(CP_UTF8, 0, str, -1, strSrc, i);
+
+	i = WideCharToMultiByte(CP_ACP, 0, strSrc, -1, NULL, 0, NULL, NULL);
+	szRes = new CHAR[i + 1];
+	WideCharToMultiByte(CP_ACP, 0, strSrc, -1, szRes, i, NULL, NULL);
+
+	result = szRes;
+	delete[]strSrc;
+	delete[]szRes;
+	return result;
+}
+
 /************************************************
 *	FiLMBOX Constructor.
 ************************************************/
 bool ORDeviceVRTRIXGlove::FBCreate()
 {
-	mDeviceID = 0;
-	mDeviceIP = "127.0.0.1";
+	//Set up bone hierarchy
+	FBFolderPopup* lFp = new FBFolderPopup();
+	lFp->Caption = "Please select correct bone hierarchy: ";
+
+	char result[MAX_PATH];
+	std::string current_dir = std::string(result, GetModuleFileNameA(NULL, result, MAX_PATH));
+	std::string::size_type pos = current_dir.find_last_of("\\/");
+	current_dir = current_dir.substr(0, pos) + "\\plugins";
+	lFp->Path = current_dir.c_str();
+
+
+	bool lRes = lFp->Execute();
+	if (lRes) {
+		std::string base = lFp->Path.AsString();
+		if (is_file_exist((base + "\\HandHierarchy.json").c_str()) && is_file_exist((base + "\\SkeletonHierarchy.json").c_str()) && is_file_exist((base + "\\DataGloveConfig.json").c_str())) {
+			mConfigPath = base;
+			std::string info = UTF8ToGB(lFp->Path.AsString());
+			info = "Bone Hierarchy Selected: " + info;
+			FBMessageBox("Bone Hierarchy", info.c_str(), "OK");
+			if (!mHardware.GetSetupInfo(base))
+			{
+				UpdateInfo("Error:", "Cannot Setup Device");
+				return false;
+			}
+			// Set Config
+			JsonHandler* m_jHandler = new JsonHandler(base);
+			SetConfig(m_jHandler->m_cfg);
+			delete m_jHandler;
+		}
+		else {
+			mConfigPath = "";
+			std::string info = UTF8ToGB(lFp->Path.AsString());
+			info = "ERROR! Invalid Path Selected!: " + info;
+			FBMessageBox("Bone Hierarchy", info.c_str(), "OK");
+			if (!mHardware.GetSetupInfo())
+			{
+				UpdateInfo("Error:", "Cannot Setup Device");
+				return false;
+			}
+			// Set Config
+			JsonHandler* m_jHandler = new JsonHandler();
+			SetConfig(m_jHandler->m_cfg);
+			delete m_jHandler;
+		}
+		mHardware.SetConfigPath(mConfigPath);
+	}
+	for (int i = 0; i < GetChannelCount(); ++i) {
+		DataChannel channel;
+		mChannels.push_back(channel);
+	}
+
 
     // Add model templates
-    mRootTemplate =  new FBModelTemplate(ORDEVICEVRTRIXGLOVE_PREFIX, "Reference", kFBModelTemplateRoot);
+    mRootTemplate =  new FBModelTemplate(ORDEVICEVRTRIXGLOVE_PREFIX, mHardware.SkeletonRootName.c_str(), kFBModelTemplateRoot);
     ModelTemplate.Children.Add(mRootTemplate);
     mHierarchyIsDefined = false;
     mHasAnimationToTranspose = false;
@@ -93,16 +168,6 @@ bool ORDeviceVRTRIXGlove::DeviceOperation( kDeviceOperations pOperation )
 ************************************************/
 bool ORDeviceVRTRIXGlove::Init()
 {
-    if(!mHardware.GetSetupInfo())
-    {
-        UpdateInfo("Error:", "Cannot Setup Device");
-        return false;
-    }
-
-	for (int i = 0; i < GetChannelCount(); ++i) {
-		DataChannel channel;
-		mChannels.push_back(channel);
-	}
 	SetOperationState(eAskForCreateModelBinding);
     mHierarchyIsDefined = false;
     Bind();
@@ -122,30 +187,6 @@ bool ORDeviceVRTRIXGlove::Done()
     */
 
     return true;
-}
-
-void ORDeviceVRTRIXGlove::SetServerIP(std::string IP)
-{
-	mDeviceIP = IP;
-	mHardware.SetServerIP(IP);
-}
-
-void ORDeviceVRTRIXGlove::SetDeviceID(int deviceID)
-{
-	mDeviceID = deviceID;
-	mHardware.SetDeviceID(deviceID);
-
-	UnBind();
-	mChannels.clear();
-
-	mHardware.GetSetupInfo();
-	for (int i = 0; i < GetChannelCount(); ++i) {
-		DataChannel channel;
-		mChannels.push_back(channel);
-	}
-
-	mHierarchyIsDefined = false;
-	Bind();
 }
 
 /************************************************

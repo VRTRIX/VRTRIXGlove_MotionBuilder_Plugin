@@ -9,24 +9,55 @@ FBRegisterDeviceLayout        (    ORDEVICEVRTRIX_LAYOUT,
                              ORDEVICEVRTRIXGLOVE_CLASSSTR,
                              FB_DEFAULT_SDK_ICON            );    // Icon filename (default=Open Reality icon)
 
-
 /************************************************
  *	FiLMBOX constructor.
  ************************************************/
 bool ORDeviceVRTRIXLayout::FBCreate()
 {
+	mIsParamSyncEnabled = false;
+	mHandType = VRTRIX::Hand_Left;
+	mDeviceID = 0;
+	mFingerIndex = 0;
+
 	// Get a handle on the device.
 	mDevice = ((ORDeviceVRTRIXGlove *)(FBDevice *)Device);
 
-	mIsParamSyncEnabled = false;
-	mHandType = VRTRIX::Hand_Left;
-	mDeviceID = mDevice->mDeviceID;
-	mDeviceIP = mDevice->mDeviceIP;
-	mFingerIndex = 0;
-
 	//Loading config file
-	LoadConfigFile(mDeviceID);
-	mDevice->SetConfig(m_jHandler->m_cfg);
+	m_jHandler = new JsonHandler(mDevice->mConfigPath);
+
+	mIsAdvancedModeEnabled = m_jHandler->m_cfg.mAdvancedMode;
+	mHardwareVersion = m_jHandler->m_cfg.mHardwareVersion;
+	mFingerSpacing = m_jHandler->m_cfg.mFingerSpacing;
+	mFinalFingerSpacing = m_jHandler->m_cfg.mFinalFingerSpacing;
+	mBendUpThreshold = m_jHandler->m_cfg.mBendUpThreshold;
+	mBendDownThreshold = m_jHandler->m_cfg.mBendDownThreshold;
+	for (int i = 0; i < 5; ++i) {
+		mProximalSlerpDownValue[i] = m_jHandler->m_cfg.mProximalSlerpDownValue[i];
+		mDistalSlerpDownValue[i] = m_jHandler->m_cfg.mDistalSlerpDownValue[i];
+		mProximalSlerpUpValue[i] = m_jHandler->m_cfg.mProximalSlerpUpValue[i];
+		mDistalSlerpUpValue[i] = m_jHandler->m_cfg.mDistalSlerpUpValue[i];
+	}
+	
+	for (int i = 0; i < 3; ++i) {
+		mLHIndexOffset[i] = m_jHandler->m_cfg.mLHIndexOffset[i];
+		mRHIndexOffset[i] = m_jHandler->m_cfg.mRHIndexOffset[i];
+
+		mLHMiddleOffset[i] = m_jHandler->m_cfg.mLHMiddleOffset[i];
+		mRHMiddleOffset[i] = m_jHandler->m_cfg.mRHMiddleOffset[i];
+
+		mLHRingOffset[i] = m_jHandler->m_cfg.mLHRingOffset[i];
+		mRHRingOffset[i] = m_jHandler->m_cfg.mRHRingOffset[i];
+
+		mLHPinkyOffset[i] = m_jHandler->m_cfg.mLHPinkyOffset[i];
+		mRHPinkyOffset[i] = m_jHandler->m_cfg.mRHPinkyOffset[i];
+
+		mLHThumbOffset[i] = m_jHandler->m_cfg.mLHThumbOffset[i];
+		mRHThumbOffset[i] = m_jHandler->m_cfg.mRHThumbOffset[i];
+
+		mLHModelOffset[i] = m_jHandler->m_cfg.mLHModelOffset[i];
+		mRHModelOffset[i] = m_jHandler->m_cfg.mRHModelOffset[i];
+	}
+
 
 	// Create/configure UI
 	UICreate	();
@@ -370,19 +401,9 @@ void ORDeviceVRTRIXLayout::UICreateLayoutSetup()
 void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 {
 	int lS, lW, lH;		// space, width, height.
-	lS = 4;
-	lW = 250;
-	lH = 18;
-
-	int lS_y	= -15;
+	lS			= 4;
 	lW			= 100 *2;
 	lH			= 25;
-	int lHlr	= 150 *2;
-	int lWlr	= 260 *2;
-	int lWrb	= 140*1.5;
-	int lSlbx	= 30;
-	int lSlby	= 12;
-	int lWlb	= (80 + 50)*2;
 
 	mLayoutOrientationAlign.AddRegion("LabelServerIP", "LabelServerIP",
 													lS, kFBAttachLeft, "", 1.00,
@@ -498,7 +519,7 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 	//												0, kFBAttachWidth, "ButtonTPoseCalibration", 1.00,
 	//												0, kFBAttachHeight, "ButtonTPoseCalibration", 1.00);
 
-	mLayoutOrientationAlign.AddRegion("ButtonSaveHardwareCalibration", "ButtonSaveHardwareCalibration",
+	mLayoutOrientationAlign.AddRegion("ButtonLoadBoneHierarchy", "ButtonLoadBoneHierarchy",
 													0, kFBAttachLeft, "ButtonTPoseCalibration", 1.00,
 													lS, kFBAttachBottom, "ButtonTPoseCalibration", 1.00,
 													0, kFBAttachWidth, "ButtonTPoseCalibration", 1.00,
@@ -531,7 +552,7 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 
 	mLayoutOrientationAlign.SetControl( "ButtonTPoseCalibration",				mButtonTPoseCalibration);
 	//mLayoutOrientationAlign.SetControl( "ButtonOKPoseCalibration", mButtonOKPoseCalibration);
-	mLayoutOrientationAlign.SetControl( "ButtonSaveHardwareCalibration", mButtonSaveHardwareCalibration);
+	//mLayoutOrientationAlign.SetControl( "ButtonLoadBoneHierarchy", mButtonLoadBoneHierarchy);
 
 }
 
@@ -707,12 +728,13 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout1()
 void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 {
 	mLabelServerIP.Caption = "Server IP";
-	mEditServerIP.Text = mDeviceIP.c_str();
+	mEditServerIP.Text = mDevice->GetServerIP().c_str();
 
 	mLabelDeviceID.Caption = "Device ID";
 	mListDeviceID.Items.SetString("Device 0~Device 1~Device 2~Device 3~Device 4~Device 5");
 	mListDeviceID.Style = kFBDropDownList;
 	mListDeviceID.ItemIndex = mDeviceID;
+	mDevice->SetDeviceID(mDeviceID);
 
 	mLabelHardwareVersion.Caption = "Hardware Version";
 	mListHardwareVersion.Items.SetString("DK1~DK2~PRO~PRO7~PRO11~PRO12");	
@@ -767,10 +789,10 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 	//mButtonOKPoseCalibration.Caption = "OK Pose Calibration";
 	//mButtonOKPoseCalibration.Style = kFBPushButton;
 	//mButtonOKPoseCalibration.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick);
-
-	mButtonSaveHardwareCalibration.Caption = "Save Hardware Calibration";
-	mButtonSaveHardwareCalibration.Style = kFBPushButton;
-	mButtonSaveHardwareCalibration.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonSaveHardwareCalibrationClick);
+	
+	/*mButtonLoadBoneHierarchy.Caption = "Load Bone Hierarchy";
+	mButtonLoadBoneHierarchy.Style = kFBPushButton;
+	mButtonLoadBoneHierarchy.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonLoadBoneHierarchyClick);*/
 }
 /************************************************
  *	Refresh the UI.
@@ -863,45 +885,6 @@ void ORDeviceVRTRIXLayout::UIResetSpreadSheet()
 	}
 }
 
-void ORDeviceVRTRIXLayout::LoadConfigFile(int index)
-{
-	//Loading config file
-	m_jHandler = new JsonHandler(index);
-
-	mIsAdvancedModeEnabled = m_jHandler->m_cfg.mAdvancedMode;
-	mHardwareVersion = m_jHandler->m_cfg.mHardwareVersion;
-	mFingerSpacing = m_jHandler->m_cfg.mFingerSpacing;
-	mFinalFingerSpacing = m_jHandler->m_cfg.mFinalFingerSpacing;
-	mBendUpThreshold = m_jHandler->m_cfg.mBendUpThreshold;
-	mBendDownThreshold = m_jHandler->m_cfg.mBendDownThreshold;
-	for (int i = 0; i < 5; ++i) {
-		mProximalSlerpDownValue[i] = m_jHandler->m_cfg.mProximalSlerpDownValue[i];
-		mDistalSlerpDownValue[i] = m_jHandler->m_cfg.mDistalSlerpDownValue[i];
-		mProximalSlerpUpValue[i] = m_jHandler->m_cfg.mProximalSlerpUpValue[i];
-		mDistalSlerpUpValue[i] = m_jHandler->m_cfg.mDistalSlerpUpValue[i];
-	}
-
-	for (int i = 0; i < 3; ++i) {
-		mLHIndexOffset[i] = m_jHandler->m_cfg.mLHIndexOffset[i];
-		mRHIndexOffset[i] = m_jHandler->m_cfg.mRHIndexOffset[i];
-
-		mLHMiddleOffset[i] = m_jHandler->m_cfg.mLHMiddleOffset[i];
-		mRHMiddleOffset[i] = m_jHandler->m_cfg.mRHMiddleOffset[i];
-
-		mLHRingOffset[i] = m_jHandler->m_cfg.mLHRingOffset[i];
-		mRHRingOffset[i] = m_jHandler->m_cfg.mRHRingOffset[i];
-
-		mLHPinkyOffset[i] = m_jHandler->m_cfg.mLHPinkyOffset[i];
-		mRHPinkyOffset[i] = m_jHandler->m_cfg.mRHPinkyOffset[i];
-
-		mLHThumbOffset[i] = m_jHandler->m_cfg.mLHThumbOffset[i];
-		mRHThumbOffset[i] = m_jHandler->m_cfg.mRHThumbOffset[i];
-
-		mLHModelOffset[i] = m_jHandler->m_cfg.mLHModelOffset[i];
-		mRHModelOffset[i] = m_jHandler->m_cfg.mRHModelOffset[i];
-	}
-}
-
 
 /************************************************
  *	Tab panel change callback.
@@ -925,9 +908,6 @@ void ORDeviceVRTRIXLayout::EventDeviceIDChange(HISender pSender, HKEvent pEvent)
 {
 	mDeviceID = mListDeviceID.ItemIndex;
 	mDevice->SetDeviceID(mListDeviceID.ItemIndex);
-	//Reload config file
-	delete m_jHandler;
-	LoadConfigFile(mDeviceID);
 }
 
 void ORDeviceVRTRIXLayout::EventHardwareTypeChange(HISender pSender, HKEvent pEvent)
@@ -1253,12 +1233,12 @@ void ORDeviceVRTRIXLayout::EventThumbProximalOffsetChange(HISender pSender, HKEv
 	if (mHandType == VRTRIX::Hand_Left) {
 		mLHThumbOffset[0] = mEditThumbProximalOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[0].mValue[0], (float)mLHThumbOffset[0].mValue[1], (float)mLHThumbOffset[0].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Left);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Left);
 	}
 	else {
 		mRHThumbOffset[0] = mEditThumbProximalOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[0].mValue[0], (float)mRHThumbOffset[0].mValue[1],(float)mRHThumbOffset[0].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Right);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Right);
 	}
 }
 
@@ -1267,12 +1247,12 @@ void ORDeviceVRTRIXLayout::EventThumbMiddleOffsetChange(HISender pSender, HKEven
 	if (mHandType == VRTRIX::Hand_Left) {
 		mLHThumbOffset[1] = mEditThumbMiddleOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[1].mValue[0], (float)mLHThumbOffset[1].mValue[1],(float)mLHThumbOffset[1].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Left);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Left);
 	}
 	else {
 		mRHThumbOffset[1] = mEditThumbMiddleOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[1].mValue[0], (float)mRHThumbOffset[1].mValue[1],(float)mRHThumbOffset[1].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Right);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Right);
 	}
 }
 
@@ -1281,12 +1261,12 @@ void ORDeviceVRTRIXLayout::EventThumbDistalOffsetChange(HISender pSender, HKEven
 	if (mHandType == VRTRIX::Hand_Left) {
 		mLHThumbOffset[2] = mEditThumbDistalOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[2].mValue[0], (float)mLHThumbOffset[2].mValue[1],(float)mLHThumbOffset[2].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Left);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Left);
 	}
 	else {
 		mRHThumbOffset[2] = mEditThumbDistalOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[2].mValue[0], (float)mRHThumbOffset[2].mValue[1],(float)mRHThumbOffset[2].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Right);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Right);
 	}
 }
 
@@ -1316,9 +1296,9 @@ void ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick(HISender pSender, H
 	mDevice->OnOKPoseCalibration();
 }
 
-void ORDeviceVRTRIXLayout::EventButtonSaveHardwareCalibrationClick(HISender pSender, HKEvent pEvent)
+void ORDeviceVRTRIXLayout::EventButtonLoadBoneHierarchyClick(HISender pSender, HKEvent pEvent)
 {
-	mDevice->OnSaveHardwareCalibration();
+
 }
 
 

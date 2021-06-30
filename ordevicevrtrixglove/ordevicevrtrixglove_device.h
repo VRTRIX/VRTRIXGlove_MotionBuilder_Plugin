@@ -83,9 +83,13 @@ public:
 	//--- Get Configuration from json file
 	void GetConfig(IDataGloveConfig& config) { return mHardware.GetConfig(config); }
 	//--- Set Server IP
-	void SetServerIP(std::string IP);
+	void SetServerIP(std::string IP) { return mHardware.SetServerIP(IP); }
+	//--- Get Server IP
+	std::string GetServerIP() { return mHardware.GetServerIP(); }
 	//--- Set Glove Device ID
-	void SetDeviceID(int deviceID);
+	void SetDeviceID(int deviceID) { return mHardware.SetDeviceID(deviceID); }
+	//--- Get Glove Device ID
+	int GetDeviceID() { return mHardware.GetDeviceID(); }
 	//--- Set Hardware version on start
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version) { return mHardware.SetHardwareVersion(version); }
 	//--- Set model offset on start
@@ -147,8 +151,7 @@ private:
 public:
     ORHardwareVRTRIXGlove       mHardware;					//!< Hardware abstraction object.
     FBModelTemplate*			mRootTemplate;				//!< Root model binding.
-	std::string					mDeviceIP;					//!< Glove device IP Address.
-	int							mDeviceID;					//!< Glove device ID.
+	std::string					mConfigPath;
 
 private:
 	FBSystem					mSystem;
