@@ -3,7 +3,19 @@
 #include "VRTRIXDataGloveClient.h"
 #include <Eigen/Dense>
 #include "statushandle.h"
-#include "BoneHierarchySetup.h"
+#include "JsonHandler.h"
+//#include "BoneHierarchySetup.h"
+
+#define Scale	1
+struct SkeletonNodeInfo
+{
+	std::string	mName;
+	int			mParentChannel;
+	double		mDefaultT[3];
+	double		mDefaultR[3];
+	double		mT[3];
+	double		mR[3];
+};
 
 class ORHardwareVRTRIXGlove
 {
@@ -16,7 +28,7 @@ public:
 	//--- Opens and closes Kinect. returns true if successful
 	bool	Open();								//!< Open Kinect.
 	bool	Close();							//!< Close Kinect.
-	bool	GetSetupInfo	();						//!< Get the setup information.
+	bool	GetSetupInfo	(std::string filePath = ""); //!< Get the setup information.
 
 	//--- Hardware communication
 	bool	StartDataStream	();						//!< Put the device in streaming mode.
@@ -36,17 +48,20 @@ public:
 	int		GetChannelParent(int pChannel)		{	return mChannel[pChannel].mParentChannel;	}
 	FBVector3d GetDefaultT	(int pChannel)		{	SkeletonNodeInfo& lSI = mChannel[pChannel]; return FBVector3d(lSI.mDefaultT[0],lSI.mDefaultT[1],lSI.mDefaultT[2]);		}
 	FBVector3d GetDefaultR	(int pChannel)		{	SkeletonNodeInfo& lSI = mChannel[pChannel]; return FBVector3d(lSI.mDefaultR[0],lSI.mDefaultR[1],lSI.mDefaultR[2]);		}
-	double	GetDataTX		(int pChannel)		{	return mChannel[pChannel].mT[0];		}
-	double	GetDataTY		(int pChannel)		{	return mChannel[pChannel].mT[1];		}
-	double	GetDataTZ		(int pChannel)		{	return mChannel[pChannel].mT[2];		}
-	double	GetDataRX       (int pChannel)      {	return mChannel[pChannel].mR[0];		}
-	double	GetDataRY		(int pChannel)		{	return mChannel[pChannel].mR[1];		}
-	double	GetDataRZ		(int pChannel)		{	return mChannel[pChannel].mR[2];		}
+	double	GetDataTX		(int pChannel)		{ return mChannel[pChannel].mT[0]; }
+	double	GetDataTY		(int pChannel)		{ return mChannel[pChannel].mT[1]; }
+	double	GetDataTZ		(int pChannel)		{ return mChannel[pChannel].mT[2]; }
+	double	GetDataRX       (int pChannel)      { return mChannel[pChannel].mR[0]; }
+	double	GetDataRY		(int pChannel)		{ return mChannel[pChannel].mR[1]; }
+	double	GetDataRZ		(int pChannel)		{ return mChannel[pChannel].mR[2]; }
 
+	void SetConfigPath(std::string configPath);
 	void SetConfig(IDataGloveConfig config);
 	void GetConfig(IDataGloveConfig& config);
 	void SetServerIP(std::string IP);
+	std::string GetServerIP();
 	void SetDeviceID(int deviceID);
+	int GetDeviceID();
 	void SetHardwareVersion(VRTRIX::GLOVEVERSION version);
 	void SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type);
 	void OnTPoseCalibration();
@@ -64,15 +79,25 @@ public:
 	void OnSetFingerOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
 	//void OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type);
 
+	void OnRegisterCallback(void* device);
+
+private:
+	void HandHierarchySetup(std::vector<FBTVector>& mLocalTranslationR, std::vector<FBTVector>& mLocalTranslationL, std::string filePath = "");
+	void SkeletonHierarchySetup(std::vector<SkeletonNodeInfo> &mChannel, std::string filePath = "");
+	void parseHandHierarchySetup(Json::Value &cfg_root, std::vector<FBTVector>& mLocalTranslationR, std::vector<FBTVector>& mLocalTranslationL);
+	void parseSkeletonHierarchySetup(Json::Value &cfg_root, std::vector<SkeletonNodeInfo> &mChannel);
+
 private:
 	std::string m_serverIP;
 	int m_deviceID;
+	std::string m_configPath;
 	IDataGloveConfig    m_cfg;
 	std::vector<SkeletonNodeInfo>	mChannel;//!< Channel data & info.
 	std::vector<FBTVector>	mLocalTranslationL;
 	std::vector<FBTVector>	mLocalTranslationR;
 	int			mChannelCount;								//!< Channel count.
 	int			mHandJointCount;
+	void*		mFBDevice;
 
 	VRTRIX::GLOVEVERSION	mHardwareVersion;
 	VRTRIX::IVRTRIXDataGloveClient*     m_pLeftHandDataGlove;
@@ -101,10 +126,16 @@ private:
     double                  mAverageSensorFloorOffset;
     bool                    mSensorFloorOffsetSet;
 
+	int						RHandIndex;
+	int						LHandIndex;
+	std::string				RHandBoneName;
+	std::string				LHandBoneName;
+
 public:
     FBMocapJointsState* mKinectMocapJointsState;
 	bool					m_bIsLHConnected;
 	bool					m_bIsRHConnected;
+	std::string				SkeletonRootName;
 };
 
 class CVRTRIXIMUEventHandler :public VRTRIX::IVRTRIXIMUEventHandler
