@@ -30,6 +30,7 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	m_LHOffset(Eigen::Quaterniond::Identity()), 
 	m_RHOffset(Eigen::Quaterniond::Identity()),
 
+	m_configPath(""),
     mSensorFloorOffsetSet(false),
     mInitSuccessful(false),
 	m_bIsLHDataReady(false),
@@ -37,7 +38,8 @@ ORHardwareVRTRIXGlove::ORHardwareVRTRIXGlove() :
 	m_bIsLHCalibrated(true),
 	m_bIsRHCalibrated(true),
 	m_bIsLHConnected(false),
-	m_bIsRHConnected(false)
+	m_bIsRHConnected(false),
+	m_serverIP("127.0.0.1")
 {
 
 }
@@ -227,10 +229,10 @@ bool ORHardwareVRTRIXGlove::StopDataStream()
 /************************************************
  *    Get device setup information.
  ************************************************/
-bool ORHardwareVRTRIXGlove::GetSetupInfo()
+bool ORHardwareVRTRIXGlove::GetSetupInfo(std::string filePath)
 {
 	//The initial hand hierarchy  
-	HandHierarchySetup(mLocalTranslationR, mLocalTranslationL);
+	HandHierarchySetup(mLocalTranslationR, mLocalTranslationL, filePath);
 	if (mLocalTranslationR.size() != mLocalTranslationL.size()) return false;
 	mHandJointCount = (int)mLocalTranslationR.size();
 	for (int i = 0; i < mHandJointCount; ++i) {
@@ -243,7 +245,7 @@ bool ORHardwareVRTRIXGlove::GetSetupInfo()
 	}
 
     //The initial skeleton hierarchy    
-	SkeletonHierarchySetup(mChannel);
+	SkeletonHierarchySetup(mChannel, filePath);
 	mChannelCount = (int)mChannel.size();
     for(int i = 0; i < mChannelCount; i++)
     {
@@ -341,6 +343,11 @@ void ORHardwareVRTRIXGlove::SetSensorFloorOffsetSet()
     mSensorFloorOffsetSet = true;
 }
 
+void ORHardwareVRTRIXGlove::SetConfigPath(std::string configPath)
+{
+	m_configPath = configPath;
+}
+
 void ORHardwareVRTRIXGlove::SetConfig(IDataGloveConfig config)
 {
 	mHardwareVersion = VRTRIX::GLOVEVERSION(config.mHardwareVersion);
@@ -359,9 +366,19 @@ void ORHardwareVRTRIXGlove::SetServerIP(std::string IP)
 	m_serverIP = IP;
 }
 
+std::string ORHardwareVRTRIXGlove::GetServerIP()
+{
+	return m_serverIP;
+}
+
 void ORHardwareVRTRIXGlove::SetDeviceID(int deviceID)
 {
 	m_deviceID = deviceID;
+}
+
+int ORHardwareVRTRIXGlove::GetDeviceID()
+{
+	return m_deviceID;
 }
 
 void ORHardwareVRTRIXGlove::SetHardwareVersion(VRTRIX::GLOVEVERSION version)
@@ -451,7 +468,9 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 				m_LHOffset = CalculateStaticOffset(target, rot);
 				
 				m_cfg.mLHWristOffset = { (float)m_LHOffset.x(),  (float)m_LHOffset.y() ,(float)m_LHOffset.z() ,(float)m_LHOffset.w() };
-				JsonHandler * m_jHandler = new JsonHandler();
+				
+				//Loading config file
+				JsonHandler * m_jHandler = new JsonHandler(m_configPath);
 				m_jHandler->writeBack(m_cfg);
 				delete m_jHandler;
 				
@@ -499,7 +518,9 @@ void ORHardwareVRTRIXGlove::OnReceivedNewPose(VRTRIX::Pose pose)
 				m_RHOffset = CalculateStaticOffset(target, rot);
 
 				m_cfg.mRHWristOffset = { (float)m_RHOffset.x(), (float)m_RHOffset.y() ,(float)m_RHOffset.z() ,(float)m_RHOffset.w() };
-				JsonHandler * m_jHandler = new JsonHandler();
+				
+				//Loading config file
+				JsonHandler * m_jHandler = new JsonHandler(m_configPath);
 				m_jHandler->writeBack(m_cfg);
 				delete m_jHandler;
 
@@ -622,13 +643,97 @@ void ORHardwareVRTRIXGlove::OnSetFingerOffset(VRTRIX::VRTRIXVector_t offset, VRT
 	}
 }
 
+void ORHardwareVRTRIXGlove::HandHierarchySetup(std::vector<FBTVector>& mLocalTranslationR, std::vector<FBTVector>& mLocalTranslationL, std::string filePath)
+{
+	Json::Value cfg_root;
+	std::string current_dir;
+	if (filePath == "") {
+		char result[MAX_PATH];
+		std::string current_dir = std::string(result, GetModuleFileNameA(NULL, result, MAX_PATH));
+		std::string::size_type pos = current_dir.find_last_of("\\/");
+		current_dir = current_dir.substr(0, pos) + "\\plugins\\HandHierarchy.json";
+	}
+	else {
+		current_dir = filePath + "\\HandHierarchy.json";
+	}
+
+	std::ifstream cfgfile(current_dir);
+	if (cfgfile) // Verify that the file was open successfully
+	{
+		cfgfile >> cfg_root;
+		parseHandHierarchySetup(cfg_root, mLocalTranslationR, mLocalTranslationL);
+	}
+}
+
+void ORHardwareVRTRIXGlove::SkeletonHierarchySetup(std::vector<SkeletonNodeInfo>& mChannel, std::string filePath)
+{
+	Json::Value cfg_root;
+	std::string current_dir;
+	if (filePath == "") {
+		char result[MAX_PATH];
+		current_dir = std::string(result, GetModuleFileNameA(NULL, result, MAX_PATH));
+		std::string::size_type pos = current_dir.find_last_of("\\/");
+		current_dir = current_dir.substr(0, pos) + "\\plugins\\SkeletonHierarchy.json";
+	}
+	else {
+		current_dir = filePath + "\\SkeletonHierarchy.json";
+	}
+
+	std::ifstream cfgfile(current_dir);
+	if (cfgfile) // Verify that the file was open successfully
+	{
+		cfgfile >> cfg_root;
+		parseSkeletonHierarchySetup(cfg_root, mChannel);
+	}
+}
+
+void ORHardwareVRTRIXGlove::parseHandHierarchySetup(Json::Value & cfg_root, std::vector<FBTVector>& mLocalTranslationR, std::vector<FBTVector>& mLocalTranslationL)
+{
+	Json::Value hierarchy = cfg_root["HandHierarchy"];
+	for (int i = 0; i < (int)hierarchy.size() / 2; ++i) {
+		FBTVector mValue;
+		mValue[0] = hierarchy[i]["mLocalTranslationR"][0].asDouble();
+		mValue[1] = hierarchy[i]["mLocalTranslationR"][1].asDouble();
+		mValue[2] = hierarchy[i]["mLocalTranslationR"][2].asDouble();
+		mLocalTranslationR.push_back(mValue);
+	}
+	for (int i = (int)hierarchy.size() / 2; i < (int)hierarchy.size(); ++i) {
+		FBTVector mValue;
+		mValue[0] = hierarchy[i]["mLocalTranslationL"][0].asDouble();
+		mValue[1] = hierarchy[i]["mLocalTranslationL"][1].asDouble();
+		mValue[2] = hierarchy[i]["mLocalTranslationL"][2].asDouble();
+		mLocalTranslationL.push_back(mValue);
+	}
+	RHandBoneName = hierarchy[0]["mName"].asString();
+	LHandBoneName = hierarchy[(int)hierarchy.size() / 2]["mName"].asString();
+}
+
+void ORHardwareVRTRIXGlove::parseSkeletonHierarchySetup(Json::Value & cfg_root, std::vector<SkeletonNodeInfo>& mChannel)
+{
+	Json::Value hierarchy = cfg_root["SkeletonHierarchy"];
+	SkeletonRootName = hierarchy[0]["mName"].asString();
+	for (int i = 0; i < (int)hierarchy.size(); ++i) {
+		SkeletonNodeInfo node;
+		node.mName = hierarchy[i]["mName"].asString();
+		if (node.mName == RHandBoneName) RHandIndex = i;
+		if (node.mName == LHandBoneName) LHandIndex = i;
+		node.mParentChannel = hierarchy[i]["mParentChannel"].asInt();
+		node.mT[0] = hierarchy[i]["mPose"][0].asDouble();
+		node.mT[1] = hierarchy[i]["mPose"][1].asDouble();
+		node.mT[2] = hierarchy[i]["mPose"][2].asDouble();
+		node.mR[0] = hierarchy[i]["mPose"][3].asDouble();
+		node.mR[1] = hierarchy[i]["mPose"][4].asDouble();
+		node.mR[2] = hierarchy[i]["mPose"][5].asDouble();
+		mChannel.push_back(node);
+	}
+}
+
 /************************************************
  *    Fetch one frame skeleton data from the Kinect.
  ************************************************/
 bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 {
 	if (mHandJointCount != 16 && mHandJointCount != 20) return false;
-
 	bool bIsRHFetched = false, bIsLHFetched = false;
 	if (m_bIsRHDataReady) {
 
@@ -641,17 +746,44 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 				Eigen::Quaterniond metaFinger = wrist * wrist_default.inverse() * metaFinger_default;
 				rot = EigenQuaternionToEuler(metaFinger);
 			}
-			else if (i > 3) {
+			else if (i == VRTRIX::Thumb_Proximal) {
 				Eigen::Quaterniond finger(m_RHIMUData[i].qw, m_RHIMUData[i].qx, m_RHIMUData[i].qy, m_RHIMUData[i].qz);
 				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
 					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
 					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
 				rot = EigenQuaternionToEuler(finger);
-				//Eigen::Vector3d fingerAxisZ = finger * Eigen::Vector3d::UnitZ();
-				//Eigen::Vector3d parentFingerAxisZ = MBEuler2Quat(mChannel[mChannel[RHandIndex + i].mParentChannel].mR) * Eigen::Vector3d::UnitZ();
-				//if (i == 5 || i == 9 || i == 13 || i == 17) parentFingerAxisZ = -parentFingerAxisZ;
-				//Eigen::Quaterniond deltaQuat = Eigen::Quaterniond::FromTwoVectors(fingerAxisZ, parentFingerAxisZ);
-				//finger = deltaQuat * finger;
+			}
+			else if (i == VRTRIX::Thumb_Intermediate) {
+				Eigen::Quaterniond finger(m_RHIMUData[i].qw, m_RHIMUData[i].qx, m_RHIMUData[i].qy, m_RHIMUData[i].qz);
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Proximal].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Proximal].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Proximal].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				rot = EigenQuaternionToEuler(finger);
+			}
+			else if (i == VRTRIX::Thumb_Distal) {
+				Eigen::Quaterniond finger(m_RHIMUData[i].qw, m_RHIMUData[i].qx, m_RHIMUData[i].qy, m_RHIMUData[i].qz);
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Proximal].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Proximal].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Proximal].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Intermediate].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Intermediate].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[VRTRIX::Thumb_Intermediate].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				rot = EigenQuaternionToEuler(finger);
+			}
+			else {
+				Eigen::Quaterniond finger(m_RHIMUData[i].qw, m_RHIMUData[i].qx, m_RHIMUData[i].qy, m_RHIMUData[i].qz);
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
 				rot = EigenQuaternionToEuler(finger);
 			}
 			mChannel[RHandIndex + i].mR[0] = rot[0];
@@ -689,16 +821,44 @@ bool ORHardwareVRTRIXGlove::FetchMocapData(FBTime &pTime)
 				Eigen::Quaterniond metaFinger = wrist * wrist_default.inverse() * metaFinger_default;
 				rot = EigenQuaternionToEuler(metaFinger);
 			}
-			else if (i > 3) {
+			else if (i == VRTRIX::Thumb_Proximal) {
 				Eigen::Quaterniond finger(m_LHIMUData[i].qw, m_LHIMUData[i].qx, m_LHIMUData[i].qy, m_LHIMUData[i].qz);
 				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
 					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
 					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
 				rot = EigenQuaternionToEuler(finger);
-				//Eigen::Vector3d fingerAxisZ = finger * Eigen::Vector3d::UnitZ();
-				//Eigen::Vector3d parentFingerAxisZ = MBEuler2Quat(mChannel[mChannel[LHandIndex + i].mParentChannel].mR) * Eigen::Vector3d::UnitZ();
-				//Eigen::Quaterniond deltaQuat = Eigen::Quaterniond::FromTwoVectors(fingerAxisZ, parentFingerAxisZ);
-				//finger = deltaQuat * finger;
+			}
+			else if (i == VRTRIX::Thumb_Intermediate) {
+				Eigen::Quaterniond finger(m_LHIMUData[i].qw, m_LHIMUData[i].qx, m_LHIMUData[i].qy, m_LHIMUData[i].qz);
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Proximal].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Proximal].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Proximal].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_RHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				rot = EigenQuaternionToEuler(finger);
+			}
+			else if (i == VRTRIX::Thumb_Distal) {
+				Eigen::Quaterniond finger(m_LHIMUData[i].qw, m_LHIMUData[i].qx, m_LHIMUData[i].qy, m_LHIMUData[i].qz);
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Proximal].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Proximal].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Proximal].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Intermediate].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Intermediate].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[VRTRIX::Thumb_Intermediate].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
+				rot = EigenQuaternionToEuler(finger);
+			}
+			else {
+				Eigen::Quaterniond finger(m_LHIMUData[i].qw, m_LHIMUData[i].qx, m_LHIMUData[i].qy, m_LHIMUData[i].qz);
+				finger = finger * Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].x * DEGREETORAD, Eigen::Vector3d::UnitX()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].y * DEGREETORAD, Eigen::Vector3d::UnitY()))
+					* Eigen::Quaterniond(Eigen::AngleAxisd(m_LHFingerOffset[i].z * DEGREETORAD, Eigen::Vector3d::UnitZ()));
 				rot = EigenQuaternionToEuler(finger);
 			}
 			mChannel[LHandIndex + i].mR[0] = rot[0];
