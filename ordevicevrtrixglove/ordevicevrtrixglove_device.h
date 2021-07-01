@@ -151,6 +151,7 @@ private:
 public:
     ORHardwareVRTRIXGlove       mHardware;					//!< Hardware abstraction object.
     FBModelTemplate*			mRootTemplate;				//!< Root model binding.
+	std::string					mConfigPath;
 
 private:
 	FBSystem					mSystem;

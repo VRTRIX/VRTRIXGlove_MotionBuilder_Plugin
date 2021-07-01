@@ -9,7 +9,6 @@ FBRegisterDeviceLayout        (    ORDEVICEVRTRIX_LAYOUT,
                              ORDEVICEVRTRIXGLOVE_CLASSSTR,
                              FB_DEFAULT_SDK_ICON            );    // Icon filename (default=Open Reality icon)
 
-
 /************************************************
  *	FiLMBOX constructor.
  ************************************************/
@@ -20,8 +19,11 @@ bool ORDeviceVRTRIXLayout::FBCreate()
 	mDeviceID = 0;
 	mFingerIndex = 0;
 
+	// Get a handle on the device.
+	mDevice = ((ORDeviceVRTRIXGlove *)(FBDevice *)Device);
+
 	//Loading config file
-	m_jHandler = new JsonHandler();
+	m_jHandler = new JsonHandler(mDevice->mConfigPath);
 
 	mIsAdvancedModeEnabled = m_jHandler->m_cfg.mAdvancedMode;
 	mHardwareVersion = m_jHandler->m_cfg.mHardwareVersion;
@@ -56,9 +58,6 @@ bool ORDeviceVRTRIXLayout::FBCreate()
 		mRHModelOffset[i] = m_jHandler->m_cfg.mRHModelOffset[i];
 	}
 
-	// Get a handle on the device.
-	mDevice = ((ORDeviceVRTRIXGlove *)(FBDevice *)Device);
-	mDevice->SetConfig(m_jHandler->m_cfg);
 
 	// Create/configure UI
 	UICreate	();
@@ -520,7 +519,7 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 	//												0, kFBAttachWidth, "ButtonTPoseCalibration", 1.00,
 	//												0, kFBAttachHeight, "ButtonTPoseCalibration", 1.00);
 
-	mLayoutOrientationAlign.AddRegion("ButtonSaveHardwareCalibration", "ButtonSaveHardwareCalibration",
+	mLayoutOrientationAlign.AddRegion("ButtonLoadBoneHierarchy", "ButtonLoadBoneHierarchy",
 													0, kFBAttachLeft, "ButtonTPoseCalibration", 1.00,
 													lS, kFBAttachBottom, "ButtonTPoseCalibration", 1.00,
 													0, kFBAttachWidth, "ButtonTPoseCalibration", 1.00,
@@ -553,7 +552,7 @@ void ORDeviceVRTRIXLayout::UICreateLayoutOrientationAlign()
 
 	mLayoutOrientationAlign.SetControl( "ButtonTPoseCalibration",				mButtonTPoseCalibration);
 	//mLayoutOrientationAlign.SetControl( "ButtonOKPoseCalibration", mButtonOKPoseCalibration);
-	mLayoutOrientationAlign.SetControl( "ButtonSaveHardwareCalibration", mButtonSaveHardwareCalibration);
+	//mLayoutOrientationAlign.SetControl( "ButtonLoadBoneHierarchy", mButtonLoadBoneHierarchy);
 
 }
 
@@ -790,10 +789,10 @@ void ORDeviceVRTRIXLayout::UIConfigureLayout2()
 	//mButtonOKPoseCalibration.Caption = "OK Pose Calibration";
 	//mButtonOKPoseCalibration.Style = kFBPushButton;
 	//mButtonOKPoseCalibration.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick);
-
-	mButtonSaveHardwareCalibration.Caption = "Save Hardware Calibration";
-	mButtonSaveHardwareCalibration.Style = kFBPushButton;
-	mButtonSaveHardwareCalibration.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonSaveHardwareCalibrationClick);
+	
+	/*mButtonLoadBoneHierarchy.Caption = "Load Bone Hierarchy";
+	mButtonLoadBoneHierarchy.Style = kFBPushButton;
+	mButtonLoadBoneHierarchy.OnClick.Add(this, (FBCallback)&ORDeviceVRTRIXLayout::EventButtonLoadBoneHierarchyClick);*/
 }
 /************************************************
  *	Refresh the UI.
@@ -1234,12 +1233,12 @@ void ORDeviceVRTRIXLayout::EventThumbProximalOffsetChange(HISender pSender, HKEv
 	if (mHandType == VRTRIX::Hand_Left) {
 		mLHThumbOffset[0] = mEditThumbProximalOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[0].mValue[0], (float)mLHThumbOffset[0].mValue[1], (float)mLHThumbOffset[0].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Left);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Left);
 	}
 	else {
 		mRHThumbOffset[0] = mEditThumbProximalOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[0].mValue[0], (float)mRHThumbOffset[0].mValue[1],(float)mRHThumbOffset[0].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Right);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Proximal, VRTRIX::Hand_Right);
 	}
 }
 
@@ -1248,12 +1247,12 @@ void ORDeviceVRTRIXLayout::EventThumbMiddleOffsetChange(HISender pSender, HKEven
 	if (mHandType == VRTRIX::Hand_Left) {
 		mLHThumbOffset[1] = mEditThumbMiddleOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[1].mValue[0], (float)mLHThumbOffset[1].mValue[1],(float)mLHThumbOffset[1].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Left);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Left);
 	}
 	else {
 		mRHThumbOffset[1] = mEditThumbMiddleOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[1].mValue[0], (float)mRHThumbOffset[1].mValue[1],(float)mRHThumbOffset[1].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Right);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Intermediate, VRTRIX::Hand_Right);
 	}
 }
 
@@ -1262,12 +1261,12 @@ void ORDeviceVRTRIXLayout::EventThumbDistalOffsetChange(HISender pSender, HKEven
 	if (mHandType == VRTRIX::Hand_Left) {
 		mLHThumbOffset[2] = mEditThumbDistalOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mLHThumbOffset[2].mValue[0], (float)mLHThumbOffset[2].mValue[1],(float)mLHThumbOffset[2].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Left);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Left);
 	}
 	else {
 		mRHThumbOffset[2] = mEditThumbDistalOffset.Value;
 		VRTRIX::VRTRIXVector_t offset = { (float)mRHThumbOffset[2].mValue[0], (float)mRHThumbOffset[2].mValue[1],(float)mRHThumbOffset[2].mValue[2] };
-		mDevice->OnSetThumbOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Right);
+		mDevice->OnSetFingerOffset(offset, VRTRIX::Thumb_Distal, VRTRIX::Hand_Right);
 	}
 }
 
@@ -1297,9 +1296,9 @@ void ORDeviceVRTRIXLayout::EventButtonOKPoseCalibrationClick(HISender pSender, H
 	mDevice->OnOKPoseCalibration();
 }
 
-void ORDeviceVRTRIXLayout::EventButtonSaveHardwareCalibrationClick(HISender pSender, HKEvent pEvent)
+void ORDeviceVRTRIXLayout::EventButtonLoadBoneHierarchyClick(HISender pSender, HKEvent pEvent)
 {
-	mDevice->OnSaveHardwareCalibration();
+
 }
 
 
