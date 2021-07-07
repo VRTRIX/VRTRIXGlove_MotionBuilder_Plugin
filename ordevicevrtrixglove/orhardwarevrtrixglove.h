@@ -75,7 +75,7 @@ public:
 	void OnSetFinalFingerSpacing(double value);
 	void OnSetBendUpThreshold(double value);
 	void OnSetBendDownThreshold(double value);
-	void OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
+	//void OnSetThumbOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
 	void OnSetFingerOffset(VRTRIX::VRTRIXVector_t offset, VRTRIX::Joint joint, VRTRIX::HandType type);
 	//void OnLoadAlignParam(IDataGloveConfig config, VRTRIX::HandType type);
 
