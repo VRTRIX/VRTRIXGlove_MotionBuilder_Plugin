@@ -928,6 +928,19 @@ void ORDeviceVRTRIXLayout::EventHandTypeChange(HISender pSender, HKEvent pEvent)
 	mEditThumbProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[0] : mRHThumbOffset[0];
 	mEditThumbMiddleOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[1] : mRHThumbOffset[1];
 	mEditThumbDistalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHThumbOffset[2] : mRHThumbOffset[2];
+
+	if (mFingerIndex == 0) {
+		mEditProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHIndexOffset[0] : mRHIndexOffset[0];
+	}
+	else if (mFingerIndex == 1) {
+		mEditProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHMiddleOffset[0] : mRHMiddleOffset[0];
+	}
+	else if (mFingerIndex == 2) {
+		mEditProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHRingOffset[0] : mRHRingOffset[0];
+	}
+	else if (mFingerIndex == 3) {
+		mEditProximalOffset.Value = (mHandType == VRTRIX::Hand_Left) ? mLHPinkyOffset[0] : mRHPinkyOffset[0];
+	}
 }
 
 void ORDeviceVRTRIXLayout::EventFingerIndexChange(HISender pSender, HKEvent pEvent)
@@ -1176,10 +1189,16 @@ void ORDeviceVRTRIXLayout::EventFingerProximalOffsetChange(HISender pSender, HKE
 	if (mIsParamSyncEnabled) {
 		if (mHandType == VRTRIX::Hand_Left) {
 			mLHIndexOffset[0] = mEditProximalOffset.Value;
+			mLHMiddleOffset[0] = mEditProximalOffset.Value;
+			mLHRingOffset[0] = mEditProximalOffset.Value;
+			mLHPinkyOffset[0] = mEditProximalOffset.Value;
 			offset = { (float)mLHIndexOffset[0].mValue[0], (float)mLHIndexOffset[0].mValue[1], (float)mLHIndexOffset[0].mValue[2] };
 		}
 		else {
 			mRHIndexOffset[0] = mEditProximalOffset.Value;
+			mRHMiddleOffset[0] = mEditProximalOffset.Value;
+			mRHRingOffset[0] = mEditProximalOffset.Value;
+			mRHPinkyOffset[0] = mEditProximalOffset.Value;
 			offset = { (float)mRHIndexOffset[0].mValue[0], (float)mRHIndexOffset[0].mValue[1],(float)mRHIndexOffset[0].mValue[2] };
 		}
 		mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Proximal, mHandType);
@@ -1196,31 +1215,54 @@ void ORDeviceVRTRIXLayout::EventFingerProximalOffsetChange(HISender pSender, HKE
 		mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Distal, mHandType);
 	}
 	else {
-		if (mHandType == VRTRIX::Hand_Left) {
-			mLHIndexOffset[0] = mEditProximalOffset.Value;
-			offset = { (float)mLHIndexOffset[0].mValue[0], (float)mLHIndexOffset[0].mValue[1], (float)mLHIndexOffset[0].mValue[2] };
-		}
-		else {
-			mRHIndexOffset[0] = mEditProximalOffset.Value;
-			offset = { (float)mRHIndexOffset[0].mValue[0], (float)mRHIndexOffset[0].mValue[1],(float)mRHIndexOffset[0].mValue[2] };
-		}
-
 		if (mFingerIndex == 0) {
+			if (mHandType == VRTRIX::Hand_Left) {
+				mLHIndexOffset[0] = mEditProximalOffset.Value;
+				offset = { (float)mLHIndexOffset[0].mValue[0], (float)mLHIndexOffset[0].mValue[1], (float)mLHIndexOffset[0].mValue[2] };
+			}
+			else {
+				mRHIndexOffset[0] = mEditProximalOffset.Value;
+				offset = { (float)mRHIndexOffset[0].mValue[0], (float)mRHIndexOffset[0].mValue[1],(float)mRHIndexOffset[0].mValue[2] };
+			}
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Proximal, mHandType);
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Intermediate, mHandType);
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Index_Distal, mHandType);
 		}
 		else if (mFingerIndex == 1) {
+			if (mHandType == VRTRIX::Hand_Left) {
+				mLHMiddleOffset[0] = mEditProximalOffset.Value;
+				offset = { (float)mLHMiddleOffset[0].mValue[0], (float)mLHMiddleOffset[0].mValue[1], (float)mLHMiddleOffset[0].mValue[2] };
+			}
+			else {
+				mRHMiddleOffset[0] = mEditProximalOffset.Value;
+				offset = { (float)mRHMiddleOffset[0].mValue[0], (float)mRHMiddleOffset[0].mValue[1],(float)mRHMiddleOffset[0].mValue[2] };
+			}
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Proximal, mHandType);
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Intermediate, mHandType);
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Middle_Distal, mHandType);
 		}
 		else if (mFingerIndex == 2) {
+			if (mHandType == VRTRIX::Hand_Left) {
+				mLHRingOffset[0] = mEditProximalOffset.Value;
+				offset = { (float)mLHRingOffset[0].mValue[0], (float)mLHRingOffset[0].mValue[1], (float)mLHRingOffset[0].mValue[2] };
+			}
+			else {
+				mRHRingOffset[0] = mEditProximalOffset.Value;
+				offset = { (float)mRHRingOffset[0].mValue[0], (float)mRHRingOffset[0].mValue[1],(float)mRHRingOffset[0].mValue[2] };
+			}
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Proximal, mHandType);
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Intermediate, mHandType);
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Ring_Distal, mHandType);
 		}
 		else if (mFingerIndex == 3) {
+			if (mHandType == VRTRIX::Hand_Left) {
+				mLHPinkyOffset[0] = mEditProximalOffset.Value;
+				offset = { (float)mLHPinkyOffset[0].mValue[0], (float)mLHPinkyOffset[0].mValue[1], (float)mLHPinkyOffset[0].mValue[2] };
+			}
+			else {
+				mRHPinkyOffset[0] = mEditProximalOffset.Value;
+				offset = { (float)mRHPinkyOffset[0].mValue[0], (float)mRHPinkyOffset[0].mValue[1],(float)mRHPinkyOffset[0].mValue[2] };
+			}
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Proximal, mHandType);
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Intermediate, mHandType);
 			mDevice->OnSetFingerOffset(offset, VRTRIX::Pinky_Distal, mHandType);
