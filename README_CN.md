@@ -1,7 +1,7 @@
 # 功能介绍 [English][english]
 
 <p align="center">
-  <img src="https://github.com/VRTRIX/VRTRIXGlove_Unity3D_SDK/blob/master/docs/img/digital_glove.png"/>
+  <img src="https://github.com/VRTRIX/VRTRIXGlove_Unity3D_SDK/blob/client/docs/img/digital_glove.png"/>
 </p>
 
 VRTRIX 数据手套支持通过插件在MotionBuilder中对手套数据进行实时观看，录制以及回放，支持通过插件在MotionBuilder界面下将手部骨骼数据与模型进行骨骼朝向和骨骼长度的匹配，对手部骨骼数据解算算法进行微调，实现MotionBuilder平台下与全身动捕系统的对接。 插件支持Motionbuilder 2016，Motionbuilder 2017，Motionbuilder 2018，Motionbuilder 2019。手套硬件支持VRTRIX Data Glove DK1, DK2, Pro。
