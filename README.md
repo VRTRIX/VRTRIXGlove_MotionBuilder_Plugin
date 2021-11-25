@@ -1,6 +1,6 @@
 # VRTRIXGlove_MotionBuilder_Plugin [中文][chinese]
 <p align="center">
-  <img src="https://github.com/VRTRIX/VRTRIXGlove_Unity3D_SDK/blob/master/docs/img/digital_glove.png"/>
+  <img src="https://github.com/VRTRIX/VRTRIXGlove_Unity3D_SDK/blob/client/docs/img/digital_glove.png"/>
 </p>
 
 This repository contains the VRTRIX Glove Motionbuilder Plugin, which allows user to perform real-time viewing, recording and replaying the VRTRIX gloves data in Motionbuilder. The plugin also provides the model mapping & setup procedures and algorithm tuning features, which allows user to integrate VRTRIX Data Gloves with motion capturing devices easily.
