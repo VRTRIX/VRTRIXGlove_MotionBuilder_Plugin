@@ -1,6 +1,9 @@
 from pyfbsdk import *
 import json
 import io
+import sys
+from shutil import copyfile
+
 try:
     to_unicode = unicode
 except NameError:
@@ -45,3 +48,7 @@ if len(lModels) == 1:
     with io.open('./SkeletonHierarchy.json', 'w', encoding='utf8') as f:
         str_ = json.dumps(data,indent=4, sort_keys=True,separators=(',', ': '), ensure_ascii=False)
         f.write(to_unicode(str_))
+    
+    src = sys.executable + '/../plugins/DataGloveConfig.json'
+    dst = './DataGloveConfig.json'
+    copyfile(src, dst)

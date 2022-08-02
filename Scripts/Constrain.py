@@ -11,7 +11,7 @@ FBGetSelectedModels(senderModelList)
 ###创建约束节点
 lMgr = FBConstraintManager()
 lScene = FBSystem().Scene
-lCnst = lMgr.TypeCreateConstraint( 7 )
+lCnst = lMgr.TypeCreateConstraint('Relation')
 
 ###添加对象约束
 for i in lModelList:
