@@ -418,9 +418,9 @@ void ORHardwareVRTRIXGlove::SetHardwareVersion(VRTRIX::GLOVEVERSION version)
 void ORHardwareVRTRIXGlove::SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, FBVector3d zAxis, VRTRIX::HandType type)
 {
 	if (type == VRTRIX::Hand_Left) {
-		Eigen::Vector3d XAxisL(xAxis[0], xAxis[1], xAxis[2]);
-		Eigen::Vector3d YAxisL(yAxis[0], yAxis[1], yAxis[2]);
-		Eigen::Vector3d ZAxisL(zAxis[0], zAxis[1], zAxis[2]);
+		Eigen::RowVector3d XAxisL(xAxis[0], xAxis[1], xAxis[2]);
+		Eigen::RowVector3d YAxisL(yAxis[0], yAxis[1], yAxis[2]);
+		Eigen::RowVector3d ZAxisL(zAxis[0], zAxis[1], zAxis[2]);
 		Eigen::Matrix3d offset;
 		offset << XAxisL, YAxisL, ZAxisL;
 		//if (abs(offset.determinant() - 1.0f) < 1e-6) {
@@ -428,9 +428,9 @@ void ORHardwareVRTRIXGlove::SetModelOffset(FBVector3d xAxis, FBVector3d yAxis, F
 		//}
 	}
 	else if (type == VRTRIX::Hand_Right) {
-		Eigen::Vector3d XAxisR(xAxis[0], xAxis[1], xAxis[2]);
-		Eigen::Vector3d YAxisR(yAxis[0], yAxis[1], yAxis[2]);
-		Eigen::Vector3d ZAxisR(zAxis[0], zAxis[1], zAxis[2]);
+		Eigen::RowVector3d XAxisR(xAxis[0], xAxis[1], xAxis[2]);
+		Eigen::RowVector3d YAxisR(yAxis[0], yAxis[1], yAxis[2]);
+		Eigen::RowVector3d ZAxisR(zAxis[0], zAxis[1], zAxis[2]);
 		Eigen::Matrix3d offset;
 		offset << XAxisR, YAxisR, ZAxisR;
 		//if (abs(offset.determinant() - 1.0f) < 1e-6) {
