@@ -374,10 +374,44 @@ namespace FBSDKNamespace {
         *   @param pInterpolation   Interpolation type of the inserted key, default value is Cubic interpolation.
         *   @param pTangentMode     Tangent calculation method of the inserted key, default value is Auto (Smooth).
         *   @return     The position of the new key in the list of FCurve keys.
-        *   @warning    Since there are no parameter to indicate the interpolation and tangent mode,
-        *               the neighbor keys may be affected by the newly inserted key.
         */
         int KeyAdd( FBTime &pTime, double pValue, FBInterpolation pInterpolation=kFBInterpolationCubic, FBTangentMode pTangentMode=kFBTangentModeAuto );
+
+		/** Add at once multiple keys at different specified times.
+		*   The array size of pTimes and pValues must match. If pInterpolations and pTangentModes parameters are specified, their array sizes must also match the array size of pTimes.
+		*   The value of each index of each input array will be used together to form a key data to add.
+		*   
+		*   \par Python
+		*   Each parameter of KeysAdd is a Python list. ex : KeysAdd( [time1, time2], [value1, value2] )
+		*   
+		*   @param pTimes           Times at which to insert the keys.
+		*   @param pValues          Values of the keys.
+		*   @param pInterpolations  Interpolation types of the inserted keys, default value is Cubic interpolation for all the keys if this parameter is omitted.
+		*   @param pTangentModes    Tangent calculation methods of the inserted keys, default value is Auto (Smooth) for all the keys if this parameter is omitted.
+		*   @return     True if the operation is successful, false otherwise.
+		*/
+		bool KeysAdd( const FBArrayTemplate<FBTime>&			pTimes,
+					  const FBArrayDouble&						pValues,
+					  const FBArrayTemplate<FBInterpolation>&	pInterpolations = FBArrayTemplate<FBInterpolation>(),
+					  const FBArrayTemplate<FBTangentMode>&		pTangentModes = FBArrayTemplate<FBTangentMode>() );
+
+		/** Set at once multiple existing keys values.
+		*   The array size of pIndices and pValues must match. If pInterpolations and pTangentModes parameters are specified, their array sizes must also match the array size of pIndices.
+		*   The value of each index of each input array (except for pIndices) will be used together to modify the key data of the key specified by the key index of pIndices.
+		*   
+		*   \par Python
+		*   Each parameter of KeysSetValues is a Python list. ex : KeysSetValues( [index1, index2], [value1, value2] )
+		*   
+		*   @param pIndices         Indices of existing keys to modify.
+		*   @param pValues          New values of the keys to modify.
+		*   @param pInterpolations  New interpolation types of the keys to modify if specified, otherwise the interpolation types are untouched.
+		*   @param pTangentModes    New tangent calculation methods of the keys to modify if specified, otherwise the tangent calculation methods are untouched.
+		*   @return     True if the operation is successful (at least one key is modified), false otherwise.
+		*/
+		bool KeysSetValues( const FBArrayUInt&						pIndices,
+							const FBArrayDouble&					pValues,
+							const FBArrayTemplate<FBInterpolation>&	pInterpolations = FBArrayTemplate<FBInterpolation>(),
+							const FBArrayTemplate<FBTangentMode>&	pTangentModes = FBArrayTemplate<FBTangentMode>() );
 
         /** Remove key at index.
         *   @param  pIndex  Index of the key to remove.
@@ -1519,6 +1553,7 @@ namespace FBSDKNamespace {
         */
         virtual void FBDelete() override;
 
+        FBPropertyColor				Color;				//!< <b>Read Write Property:</b> The animation layer color.
         FBPropertyBool				Solo;				//!< <b>Read Write Property:</b> If true, the layer is soloed. When you solo a layer, you mute other layers that are at the same level in the hierarchy, as well as the children of those layers. Cannot be applied to the BaseAnimation Layer.
         FBPropertyBool				Mute;				//!< <b>Read Write Property:</b> If true, the layer is muted. A muted layer is not included in the result animation. Cannot be applied to the BaseAnimation Layer.
         FBPropertyBool				Lock;				//!< <b>Read Write Property:</b> If true, the layer is locked. You cannot modify keyframes on a locked layer.
@@ -2155,17 +2190,25 @@ enum FBPropertyComponents {
         */
         void TimeWarpAddToTake(FBTake* pTake, FBAnimationNode* pTimeWarp, int pNickNumber=0);
 
-        /** Destroy the TimeWarp in a Take, and removed from the DataSet.
+        /** Destroy the TimeWarp in a Take, and removed from the DataSet. Deprecated, use the RemoveTimeWarpFromScene method (the one with two parameters) instead.
+	    *   This one should be called after calling the RemoveTimeWarpFromScene method (the one with one parameter).
         *   \param pTake The Take where the TimeWarp in.
         *   \param pTimeWarp The TimeWarp to be Destroyed.
         */
-        void DestroyTimeWarpFromTake(FBTake* pTake, FBAnimationNode* pTimeWarp);
+        K_DEPRECATED_2023 void DestroyTimeWarpFromTake(FBTake* pTake, FBAnimationNode* pTimeWarp);
 
-        /** Remove a TimeWarp from Scene.
+        /** Remove a TimeWarp from Scene. Deprecated, use the RemoveTimeWarpFromScene method (the one with two parameters) instead.
+        *   Any locked properties affected by this TimeWarp will be modified as well.
         *   \param pTimeWarp The TimeWarp to be Removed.
         */	
-        void RemoveTimeWarpFromScene(FBAnimationNode* pTimeWarp);
+        K_DEPRECATED_2023 void RemoveTimeWarpFromScene(FBAnimationNode* pTimeWarp);
 
+        /** Remove the given TimeWarp from scene and delete it from the given Take.
+        *   Any locked properties affected by this TimeWarp will be modified as well.
+        *   \param pTake The Take where the TimeWarp is in.
+        *   \param pTimeWarp The TimeWarp to be removed and deleted.
+        */	
+        void RemoveTimeWarpFromScene( FBTake* pTake, FBAnimationNode* pTimeWarp );
 
         /** Get the count of TimeWarp in a Take.
         *   \param pTake The Take queried.
@@ -2245,7 +2288,7 @@ enum FBPropertyComponents {
         void TimeWarpUnregisterChangeEvent(TimeWarpChangeCallback pCallback, void* pObject);
 
 
-        /**. Create a TimeWarp with a specific name
+        /**. Create a TimeWarp with a specific name on the current Take.
         *   \param pName The name for the TimeWarp.
         *   \return the TimeWarp created.
         */	

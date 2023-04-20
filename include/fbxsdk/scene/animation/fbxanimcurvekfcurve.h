@@ -972,7 +972,7 @@ public:
 		  * \param pTimeInterval Reference to receive start time and end time.
 		  * \return \c true on success, \c false otherwise.
 		  */
-        bool GetTimeInterval(FbxTimeSpan& pTimeInterval) override;
+        bool GetTimeInterval(FbxTimeSpan& pTimeInterval) const override;
 
         /** Set the display color of the animation curve.
           * \param pColor The desired color (3 values 0 to 1).

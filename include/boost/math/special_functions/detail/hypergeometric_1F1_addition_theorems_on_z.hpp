@@ -41,15 +41,15 @@
            : term(1), b_minus_a_plus_n(b - a), a_(a), b_(b), z_(z), n(0), k(k_)
         {
            BOOST_MATH_STD_USING
-           int scale1(0), scale2(0);
+           long long scale1(0), scale2(0);
            M = boost::math::detail::hypergeometric_1F1_imp(a, b, z, pol, scale1);
            M_next = boost::math::detail::hypergeometric_1F1_imp(T(a - 1), b, z, pol, scale2);
            if (scale1 != scale2)
-              M_next *= exp(scale2 - scale1);
+              M_next *= exp(T(scale2 - scale1));
            if (M > 1e10f)
            {
               // rescale:
-              int rescale = itrunc(log(fabs(M)));
+              long long rescale = lltrunc(log(fabs(M)));
               M *= exp(T(-rescale));
               M_next *= exp(T(-rescale));
               scale1 += rescale;
@@ -67,14 +67,15 @@
 
            return result;
         }
-        int scale()const { return scaling; }
+        long long scale()const { return scaling; }
      private:
         T term, b_minus_a_plus_n, M, M_next, a_, b_, z_;
-        int n, k, scaling;
+        int n, k;
+        long long scaling;
      };
 
      template <class T, class Policy>
-     T hypergeometric_1f1_recurrence_on_z_minus_zero(const T& a, const T& b, const T& z, int k, const Policy& pol, int& log_scaling)
+     T hypergeometric_1f1_recurrence_on_z_minus_zero(const T& a, const T& b, const T& z, int k, const Policy& pol, long long& log_scaling)
      {
         BOOST_MATH_STD_USING
            BOOST_ASSERT((z + k) / z > 0.5f);
@@ -110,7 +111,7 @@
            a_plus_n += 1;
            b_plus_n += 1;
            // The a_plus_n == 0 case below isn't actually correct, but doesn't matter as that term will be zero
-           // anyway, we just need to not divde by zero and end up with a NaN in the result.
+           // anyway, we just need to not divide by zero and end up with a NaN in the result.
            T M2 = (a_plus_n == -1) ? 1 : (a_plus_n == 0) ? 0 : (M_next * b_plus_n * (1 - b_plus_n + z_) + b_plus_n * (b_plus_n - 1) * M) / (a_plus_n * z_);
            M = M_next;
            M_next = M2;

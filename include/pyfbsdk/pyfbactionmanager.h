@@ -34,6 +34,10 @@ public:
     const char* GetCurrentInteractionMode();
 
     void SetCurrentInteractionMode( const char *pMode );
+
+	bool RescanCurrentInteractionModeShortcuts();
+
+	bool RescanPythonShortcuts();
 };
 
 

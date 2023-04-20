@@ -15,6 +15,7 @@
 
 #include <fbxsdk/fbxsdk_def.h>
 
+#include <fbxsdk/core/base/fbxset.h>
 #include <fbxsdk/core/base/fbxstringlist.h>
 #include <fbxsdk/core/fbxobject.h>
 #include <fbxsdk/core/fbxsymbol.h>
@@ -1287,9 +1288,7 @@ public:
 	inline const FbxPropertyPage*  GetInstanceOf() const   { return mInstanceOf; }
 	inline FbxPropertyPage*        GetInstanceOf()         { return mInstanceOf; }
 
-	inline const FbxArray<FbxPropertyPage*>&     GetInstances() const    { return mInstances; }
-	inline FbxArray<FbxPropertyPage*>&           GetInstances()          { return mInstances; }
-
+	inline const FbxSet<FbxPropertyPage*>&     GetInstances() const    { return mInstances; }
 
 	// Flags
 	// ------------------------------------------
@@ -1477,7 +1476,7 @@ protected:
         // ------------------------
         mInstanceOf = pInstanceOf;
         if (mInstanceOf) {
-            mInstanceOf->mInstances.Add(this);
+            mInstanceOf->mInstances.Insert(this);
 
             mPropNextId = mInstanceOf->mPropNextId;
             mPropNextId->IncRef();
@@ -1514,37 +1513,32 @@ protected:
     ~FbxPropertyPage()
     {
         // Propagate our property entries.
-        int i = 0, j = 0;
-        for( i = 0; i < mInstances.GetCount(); ++i )
+        for (FbxSet<FbxPropertyPage*>::Iterator iter = mInstances.Begin(); iter != mInstances.End(); ++iter)
         {
-            for( j = 0; j < GetPropertyEntryCount(); ++j )
+            FbxPropertyPage* lPage = iter->GetValue();
+            for (int j = 0; j < GetPropertyEntryCount(); ++j)
             {
-                if( mInstances[i]->ChangePropertyEntryState((FbxInt)j, FbxPropertyFlags::eOverride) )
+                if (lPage->ChangePropertyEntryState((FbxInt)j, FbxPropertyFlags::eOverride))
                 {
                     // Clone the info and values. Don't clone the connections,
                     // since they aren't propagated.
-                    mInstances[i]->ChangePropertyItemState( FBX_TYPE(FbxPropertyInfo), (FbxInt)j, FbxPropertyFlags::eOverride );
-                    mInstances[i]->ChangePropertyItemState( FBX_TYPE(FbxPropertyValue), (FbxInt)j, FbxPropertyFlags::eOverride );
+                    lPage->ChangePropertyItemState(FBX_TYPE(FbxPropertyInfo), (FbxInt)j, FbxPropertyFlags::eOverride);
+                    lPage->ChangePropertyItemState(FBX_TYPE(FbxPropertyValue), (FbxInt)j, FbxPropertyFlags::eOverride);
 
                     // Since all entries have their own flags, just override the ones in the instance.
-                    mInstances[i]->SetFlagsInheritType(FbxPropertyFlags::eOverride, FbxPropertyFlags::eAllFlags, (FbxInt)j );
+                    lPage->SetFlagsInheritType(FbxPropertyFlags::eOverride, FbxPropertyFlags::eAllFlags, (FbxInt)j);
                 }
             }
 
             // Instances become their own copies.
-            mInstances[i]->mInstanceOf = NULL;
+            lPage->mInstanceOf = NULL;
         }
 
-		FbxMapDestroy(mEntryMap);
-
-        if (mInstanceOf) {
-            int lIndex = mInstanceOf->mInstances.Find(this);
-            int lLastItem = mInstanceOf->mInstances.GetCount() - 1;
-            if (lIndex != lLastItem) // try to avoid valgrind error: Source and destination overlap in memcpy (inside Set())
-                mInstanceOf->mInstances.SetAt(lIndex, mInstanceOf->mInstances[lLastItem]);
-            mInstanceOf->mInstances.RemoveAt(lLastItem);
-
-            //mInstanceOf->mInstances.RemoveIt(this);
+        FbxMapDestroy(mEntryMap);
+        
+        if (mInstanceOf)
+        {
+            mInstanceOf->mInstances.Remove(this);
         }
 
         mPropNextId->DecRef();
@@ -1735,7 +1729,7 @@ private:
 
     // instance management
     FbxPropertyPage*				mInstanceOf;
-    FbxArray<FbxPropertyPage*>		mInstances;
+    FbxSet<FbxPropertyPage*>		mInstances;
 
     void*							mDataPtr;
 

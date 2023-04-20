@@ -49,7 +49,6 @@ public:
 	void DeviceOpticalEndSetup() { mFBDeviceOptical->DeviceOpticalEndSetup(); }
 	void DeviceOpticalRecordFrame(FBTime_Wrapper& pTime, FBDeviceNotifyInfo_Wrapper &pDeviceNotifyInfo) { mFBDeviceOptical->DeviceOpticalRecordFrame( *pTime.mFBTime, *pDeviceNotifyInfo.mFBDeviceNotifyInfo ); }
 	
-	bool DeviceOperation(FBDevice::kDeviceOperations pOperation) { return mFBDeviceOptical->DeviceOperation( pOperation ); }
 	//bool AnimationNodeNotify(FBAnimationNode_Wrapper& pAnimationNode, FBEvaluateInfo_Wrapper& pEvaluateInfo) { return mFBDeviceOptical->AnimationNodeNotify( pAnimationNode.mFBAnimationNode, pEvaluateInfo.mFBEvaluateInfo ); }
 	//void DeviceIONotify(FBDevice::kDeviceIOs pAction, FBDeviceNotifyInfo_Wrapper& pDeviceNotifyInfo) { mFBDeviceOptical->DeviceIONotify( pAction, *pDeviceNotifyInfo.mFBDeviceNotifyInfo ); }
 

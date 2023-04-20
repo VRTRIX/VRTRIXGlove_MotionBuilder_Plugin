@@ -83,6 +83,16 @@ public:
     */
     void SetCurrentInteractionMode( const char *pMode );
 
+	/** Rescan the current interaction mode, in case some shortcuts have changed in the config file.
+	* \return True if the operation is successful, false otherwise.
+	*/
+	bool RescanCurrentInteractionModeShortcuts();
+
+	/** Rescan the Python actions shortcuts, in case some shortcuts have changed in the config file.
+	* \return True if the operation is successful, false otherwise.
+	*/
+	bool RescanPythonShortcuts();
+
     /** Returns the only instance of FBActionManager.
     * \return the only instance of FBActionManager
     */

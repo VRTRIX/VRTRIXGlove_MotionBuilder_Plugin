@@ -18,13 +18,30 @@
 
 #ifdef _MSC_VER
 	// Suppress warnings from boost header files.
-	#pragma warning(disable:4005) // 'BOOST_NO_AUTO_PTR': macro redefinition
 	#pragma warning(disable:4100) // Unreferenced formal parameter.
 	#pragma warning(disable:4244) // Conversion from 'long double' to 'double', possible loss of data.
 	#pragma warning(disable:4459) // declaration of 'xxxx' hides global declaration
 #endif
 
-#include <boost/python.hpp>
+#define BOOST_ALL_NO_LIB      1 // Tells the config system not to automatically select which libraries to link against and reduce compile time.
+#define BOOST_ALL_DYN_LINK    1 // All dynamic libraries
+#define BOOST_DISABLE_ASSERTS 1 // No asserts
+#define BOOST_DISABLE_PRAGMA_MESSAGE 1  // note: #pragma message: The practice of declaring the Bind placeholders (_1, _2, ...) in the global namespace is deprecated. Please use <boost/bind/bind.hpp> + using namespace boost::placeholders, or define BOOST_BIND_GLOBAL_PLACEHOLDERS to retain the current behavior.
+                                        // In boost 1.76 : https://github.com/boostorg/python/issues/359
+
+#include <boost/python/class.hpp>
+#include <boost/python/def.hpp>
+#include <boost/python/exec.hpp>
+#include <boost/python/extract.hpp>
+#include <boost/python/import.hpp>
+#include <boost/python/manage_new_object.hpp>
+#include <boost/python/module.hpp>
+#include <boost/python/register_ptr_to_python.hpp>
+#include <boost/python/return_arg.hpp>
+#include <boost/python/return_value_policy.hpp>
+#include <boost/python/return_by_value.hpp>
+#include <boost/python/str.hpp>
+#include <boost/python/tuple.hpp>
 using namespace boost::python;
 
 #include <fbsdk/fbsdk.h>

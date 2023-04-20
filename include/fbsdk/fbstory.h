@@ -676,13 +676,25 @@ public:
 	//--- Animation track functions -----------------------------------------------------------------------------------------------------
 	/**	CopyTakeIntoTrack
 	*	Copy animation from the specified take for affected objects of the track.
+	*	This method will always connect the created clip to the current take.
 	*	\param	pTimeSpan 		Time span for the clip to create.
 	*	\param	pTake	  		Take to get the animation from.
 	*	\param	pOutputOffset  	Time offset for the clip if necessary.
 	*	\param	pMakeUndoable  	If the operation should be undoable.
-	*	\return Created story clip if the operation succeeded otherwize NULL.
+	*	\return Created story clip if the operation succeeded, NULL otherwise.
 	*/
 	FBStoryClip* CopyTakeIntoTrack(FBTimeSpan& pTimeSpan, FBTake* pTake, FBTime pOutputOffset = 0, bool pMakeUndoable = false);
+
+	/**	CopyTakeIntoTrack
+	*	Copy animation from the specified take for affected objects of the track.
+	*	\param	pTimeSpan 				Time span for the clip to create.
+	*	\param	pTake	  				Take to get the animation from.
+	*	\param	pConnectToCurrentTake	True to connect the created clip to the current take, false otherwise.
+	*	\param	pOutputOffset			Time offset for the clip if necessary.
+	*	\param	pMakeUndoable  			If the operation should be undoable.
+	*	\return Created story clip if the operation succeeded, NULL otherwise.
+	*/
+	FBStoryClip* CopyTakeIntoTrack(FBTimeSpan& pTimeSpan, FBTake* pTake, bool pConnectToCurrentTake, FBTime pOutputOffset = FBTime( 0 ), bool pMakeUndoable = false);
 
 	//--- Character track functions -----------------------------------------------------------------------------------------------------
 	/**	EnableBodyPart.
@@ -940,7 +952,7 @@ public:
 	*/
 	bool CanAssignSourcesToDestinations();
 
-	/**	GetAssignSourcesToDestinationsInfo.
+	/**	GetAssignSourcesToDestinationsInfo. Deprecated. Please use the other signature. (For Python, use the GetAssignSourcesToDestinationsInfoEx method instead.)
 	*	Returns the information about the current state of Sources to Destinations assignment.
 	*	The pSrcList, pDefaultDstList & pEffectiveDstList parameters will all be of same size, each index being related to the same index in the other lists.
 	*	The pAvailableDstList parameter can contains more item than the other lists.
@@ -949,7 +961,21 @@ public:
 	*	\param	pDefaultDstList	String list containing the default destinations (contains each string item that will be put back when pressing the 'Reset' button in the UI), will be filled by the method.
 	*	\param	pEffectiveDstList	String list containing the effective destination (destinations currently active), will be filled by the method.
 	*/
-	void GetAssignSourcesToDestinationsInfo( FBStringList& pSrcList, FBStringList& pAvailableDstList, FBStringList& pDefaultDstList, FBStringList& pEffectiveDstList );
+	K_DEPRECATED_2023 void GetAssignSourcesToDestinationsInfo( FBStringList& pSrcList, FBStringList& pAvailableDstList, FBStringList& pDefaultDstList, FBStringList& pEffectiveDstList );
+
+	/**	GetAssignSourcesToDestinationsInfo.
+	*	Returns the information about the current state of Sources to Destinations assignment.
+	*	The pSrcList, pValidAnimatedSrc, pDefaultDstList & pEffectiveDstList parameters will all be of the same size, each index being related to the same index in the other lists/array.
+	*	The pAvailableDstList & pValidAnimatedDst parameters can contain more items than the other lists. Both will all be of the same size, each index being related to the same index in the other list/array.
+	*	\param	pSrcList	(C++ only) String list containing all the sources, will be filled by the method.
+	*	\param	pValidAnimatedSrc	(C++ only) Array of bool containing the animated validity state of the sources, will be filled by the method.
+	*	\param	pAvailableDstList	(C++ only) String list containing all the available destinations, will be filled by the method.
+	*	\param	pValidAnimatedDst	(C++ only) Array of bool containing the animated validity state of the available destinations, will be filled by the method.
+	*	\param	pDefaultDstList	(C++ only) String list containing the default destinations (contains each string item that will be put back when pressing the 'Reset' button in the UI), will be filled by the method.
+	*	\param	pEffectiveDstList	(C++ only) String list containing the effective destination (destinations currently active), will be filled by the method.
+	*	\return	(Python only) A tuple with 6 values: (pSrcList, pValidAnimatedSrc, pAvailableDstList, pValidAnimatedDst, pDefaultDstList, pEffectiveDstList).
+	*/
+	void GetAssignSourcesToDestinationsInfo( FBStringList& pSrcList, FBArrayBool& pValidAnimatedSrc, FBStringList& pAvailableDstList, FBArrayBool& pValidAnimatedDst, FBStringList& pDefaultDstList, FBStringList& pEffectiveDstList );
 
 	/**	SetAssignSourcesToDestinationsInfo.
 	*	Sets the new effective destinations information for the Sources to Destinations assignment.
@@ -970,6 +996,16 @@ public:
     *   \return	Returns true if succeed.
 	*/
 	bool UpdateFromCurrentTake();
+	
+	/**	Get the clip source time (internal time) from a destination time (local time).
+	*	\par Python
+	*	The function takes only one parameter (pDestinationTime) and returns a Python tuple: (sourceTime, loopNumber). ex : lTuple = lClip.GetSourceTimeFromDestinationTime(lDestinationTime)
+	*
+	*	\param	pDestinationTime	The destination time to convert.
+	*	\param	pLoopNumber			The number of loops applied on the source time to match the destination time to convert. Optional. Will be filled by the method.
+	*	\return	The clip source time matching the input destination time.
+	*/
+	FBTime GetSourceTimeFromDestinationTime( FBTime pDestinationTime, int* pLoopNumber = nullptr );
 
 	//--- All clip properties -----------------------------------------------------------------------------------------------------------
 	FBPropertyColor		Color;			//!< <b>Read Write Property:</b> Color of the clip.

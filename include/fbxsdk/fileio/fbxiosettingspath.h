@@ -356,6 +356,19 @@
 #define IOSN_MATERIAL                       "Material"
 #define IOSN_TEXTURE                        "Texture"
 #define IOSN_MODEL                          "Model"
+
+#define IOSN_NORMAL                         "LayerElementNormal"
+#define IOSN_BINORMAL                       "LayerElementBinormal"
+#define IOSN_TANGENT                        "LayerElementTangent"
+#define IOSN_VERTEXCOLOR                    "LayerElementVertexColor"
+#define IOSN_POLYGROUP                      "LayerElementPolygroup"
+#define IOSN_SMOOTHING                      "LayerElementSmoothing"
+#define IOSN_USERDATA                       "LayerElementUserData"
+#define IOSN_VISIBILITY                     "LayerElementVisibility"
+#define IOSN_EDGECREASE                     "LayerElementEdgeCrease"
+#define IOSN_VERTEXCREASE                   "LayerElementVertexCrease"
+#define IOSN_HOLE                           "LayerElementHole"
+
 #define IOSN_EMBEDDED                       "EMBEDDED"
 #define IOSN_PASSWORD                       "Password"
 #define IOSN_PASSWORD_ENABLE                "Password_Enable"
@@ -372,6 +385,7 @@
 #define IOSN_PREFERED_ENVELOPPE_SYSTEM      "kImportPreferedEnveloppeSystem"
 #define IOSN_FIRST_TIME_RUN_NOTICE          "FirstTimeRunNotice"
 #define IOSN_EXTRACT_EMBEDDED_DATA          "ExtractEmbeddedData"
+#define IOSN_CALCULATE_LEGACY_SHAPE_NORMAL  "CalculateLegacyShapeNormal"
 
 // internal usage
 #define IOSN_USETMPFILEPERIPHERAL		   "UseTmpFilePeripheral"
@@ -599,6 +613,19 @@
 #define IMP_FBX_PASSWORD_ENABLE                IMP_FBX "|" IOSN_PASSWORD_ENABLE
 #define IMP_FBX_CURRENT_TAKE_NAME              IMP_FBX "|" IOSN_CURRENT_TAKE_NAME
 #define IMP_FBX_EXTRACT_EMBEDDED_DATA          IMP_FBX "|" IOSN_EXTRACT_EMBEDDED_DATA
+#define IMP_FBX_CALCULATE_LEGACY_SHAPE_NORMAL  IMP_FBX "|" IOSN_CALCULATE_LEGACY_SHAPE_NORMAL // only used on FBX v7 (and above) imports. Turning this flag off will prevent the legacy type shapes to have normals
+
+#define IMP_FBX_NORMAL                   IMP_FBX "|" IOSN_NORMAL
+#define IMP_FBX_BINORMAL                 IMP_FBX "|" IOSN_BINORMAL
+#define IMP_FBX_TANGENT                  IMP_FBX "|" IOSN_TANGENT
+#define IMP_FBX_VERTEXCOLOR              IMP_FBX "|" IOSN_VERTEXCOLOR
+#define IMP_FBX_POLYGROUP                IMP_FBX "|" IOSN_POLYGROUP
+#define IMP_FBX_SMOOTHING                IMP_FBX "|" IOSN_SMOOTHING
+#define IMP_FBX_USERDATA                 IMP_FBX "|" IOSN_USERDATA
+#define IMP_FBX_VISIBILITY               IMP_FBX "|" IOSN_VISIBILITY
+#define IMP_FBX_EDGECREASE               IMP_FBX "|" IOSN_EDGECREASE
+#define IMP_FBX_VERTEXCREASE             IMP_FBX "|" IOSN_VERTEXCREASE
+#define IMP_FBX_HOLE                     IMP_FBX "|" IOSN_HOLE
 
 // internal use
 #define IMP_RELAXED_FBX_CHECK           IMP_FBX "|" IOSN_RELAXED_FBX_CHECK

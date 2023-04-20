@@ -40,6 +40,8 @@ public:
 	void SetCurrentTimeReferenceID( int pCurrentTimeReferenceID ) { mFBReferenceTime->CurrentTimeReferenceID = pCurrentTimeReferenceID; }
 	int GetCurrentTimeReferenceID(  ) { return mFBReferenceTime->CurrentTimeReferenceID; }
     const char* GetReferenceTimeName( int pID ) { return mFBReferenceTime->GetReferenceTimeName(pID); }
+	void SetRelativeLocalTime( bool pUseRelativeLocalTime ) { mFBReferenceTime->UseRelativeLocalTime = pUseRelativeLocalTime; }
+	bool GetRelativeLocalTime() { return mFBReferenceTime->UseRelativeLocalTime; }
 	list GetUniqueIDList()
 	{
 		list lUniqueID;

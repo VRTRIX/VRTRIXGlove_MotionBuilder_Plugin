@@ -296,6 +296,10 @@ public:
 	/** The flag indicates that the header was created by a personal learning edition (PLE) of FBX. */
     bool                        mPLE;
 	//@}
+
+    /** Indicates whether the file is in binary or ASCII format.
+        This variable is only relevant in memory and is not expected to be saved in the FBX file. */
+    bool                        mBinary;
 };
 
 /** FbxIO represents an FBX file. 

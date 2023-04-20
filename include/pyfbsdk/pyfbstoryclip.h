@@ -114,7 +114,8 @@ public:
 		list lEffectiveDstList;
 
 		FBStringList lSrcStringList, lAvailableDstStringList, lDefaultDstStringList, lEffectiveDstStringList;
-		mFBStoryClip->GetAssignSourcesToDestinationsInfo( lSrcStringList, lAvailableDstStringList, lDefaultDstStringList, lEffectiveDstStringList );
+		FBArrayBool lValidAnimatedSrc, lValidAnimatedDst;
+		mFBStoryClip->GetAssignSourcesToDestinationsInfo( lSrcStringList, lValidAnimatedSrc, lAvailableDstStringList, lValidAnimatedDst, lDefaultDstStringList, lEffectiveDstStringList );
 
 		for( int i = 0; i < lSrcStringList.GetCount(); i++ )
 			lSrcList.append( lSrcStringList[ i ] );
@@ -129,6 +130,40 @@ public:
 			lEffectiveDstList.append( lEffectiveDstStringList[ i ] );
 
 		return make_tuple( lSrcList, lAvailableDstList, lDefaultDstList, lEffectiveDstList );
+	}
+
+	tuple GetAssignSourcesToDestinationsInfoEx()
+	{
+		list lSrcList;
+		list lValidAnimatedSrcList;
+		list lAvailableDstList;
+		list lValidAnimatedDstList;
+		list lDefaultDstList;
+		list lEffectiveDstList;
+
+		FBStringList lSrcStringList, lAvailableDstStringList, lDefaultDstStringList, lEffectiveDstStringList;
+		FBArrayBool lValidAnimatedSrcArray, lValidAnimatedDstArray;
+		mFBStoryClip->GetAssignSourcesToDestinationsInfo( lSrcStringList, lValidAnimatedSrcArray, lAvailableDstStringList, lValidAnimatedDstArray, lDefaultDstStringList, lEffectiveDstStringList );
+
+		for( int i = 0; i < lSrcStringList.GetCount(); i++ )
+			lSrcList.append( lSrcStringList[ i ] );
+
+		for( int i = 0; i < lValidAnimatedSrcArray.GetCount(); i++ )
+			lValidAnimatedSrcList.append( lValidAnimatedSrcArray[ i ] );
+
+		for( int i = 0; i < lAvailableDstStringList.GetCount(); i++ )
+			lAvailableDstList.append( lAvailableDstStringList[ i ] );
+
+		for( int i = 0; i < lValidAnimatedDstArray.GetCount(); i++ )
+			lValidAnimatedDstList.append( lValidAnimatedDstArray[ i ] );
+
+		for( int i = 0; i < lDefaultDstStringList.GetCount(); i++ )
+			lDefaultDstList.append( lDefaultDstStringList[ i ] );
+
+		for( int i = 0; i < lEffectiveDstStringList.GetCount(); i++ )
+			lEffectiveDstList.append( lEffectiveDstStringList[ i ] );
+
+		return make_tuple( lSrcList, lValidAnimatedSrcList, lAvailableDstList, lValidAnimatedDstList, lDefaultDstList, lEffectiveDstList );
 	}
 
 	bool SetAssignSourcesToDestinationsInfo( list& pEffectiveDstList )
@@ -150,6 +185,14 @@ public:
 	void Match2(const char* pObjectName, FBStoryClipMatchingTimeType pTimeType, FBStoryClipMatchingTranslationType pTranslationType, FBStoryClipMatchingRotationType pRotationType)
 	{
 		mFBStoryClip->Match( FBString( pObjectName ), pTimeType, pTranslationType, pRotationType );
+	}
+
+	tuple GetSourceTimeFromDestinationTime( FBTime_Wrapper& pDestinationTime )
+	{
+		int pLoopNumber = 0;
+		FBTime lSourceTime = mFBStoryClip->GetSourceTimeFromDestinationTime( *pDestinationTime.mFBTime, &pLoopNumber );
+
+		return make_tuple( FBTime_Wrapper_Factory( lSourceTime ), pLoopNumber );
 	}
 
 	bool MakeWritable() { return mFBStoryClip->MakeWritable( ); }

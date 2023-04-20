@@ -191,6 +191,20 @@ public:
 	*/
 	bool SetAutoUpdateLayout( bool pAutoUpdate );
 
+	/** Get the 'Prevent Docking' state value.
+	*	Note: When 'Prevent Docking' state is true, it is possible to temporary allow docking a window by holding the SHIFT key before moving it.
+	*		  When 'Prevent Docking' state is false, it is possible to temporary prevent docking a window by holding the CTRL key before moving it.
+	*	\return The 'Prevent Docking' state value.
+	*/
+	bool GetPreventDocking();
+
+	/** Set the 'Prevent Docking' state value.
+	*	Note: When 'Prevent Docking' state is true, it is possible to temporary allow docking a window by holding the SHIFT key before moving it.
+	*		  When 'Prevent Docking' state is false, it is possible to temporary prevent docking a window by holding the CTRL key before moving it.
+	*	\param pPreventDocking The 'Prevent Docking' state value.
+	*	\return True if the operation is successful, false otherwise.
+	*/
+	bool SetPreventDocking( bool pPreventDocking );
 
 	/** Returns the only instance of FBToolLayoutManager.
 	* \return The only instance of FBToolLayoutManager.

@@ -33,7 +33,131 @@ public:
 	void EditBegin(int pKeyCount = -1) { mFBFCurve->EditBegin( pKeyCount ); }
 	void EditClear() { mFBFCurve->EditClear(  ); }
 	void EditEnd(int pKeyCount = -1) { mFBFCurve->EditEnd( pKeyCount ); }
-	int	 KeyAdd(FBTime_Wrapper& pTime, double pValue) { return mFBFCurve->KeyAdd( *(pTime.mFBTime), pValue ); }
+	int	 KeyAdd(FBTime_Wrapper& pTime, double pValue, FBInterpolation pInterpolation = kFBInterpolationCubic, FBTangentMode pTangentMode = kFBTangentModeAuto) { return mFBFCurve->KeyAdd( *(pTime.mFBTime), pValue, pInterpolation, pTangentMode ); }
+
+	void ConvertListToTimeArray( list *pList, FBArrayTemplate<FBTime> *pTimeArray )
+	{
+		if( !pList || !pTimeArray ) {
+			return;
+		}
+		for( int itr = 0; itr < len( *pList ); ++itr ) {
+			object lObject = ( *pList )[ itr ];
+			extract<FBTime_Wrapper*> lExtractor( lObject );
+
+			// Make sure this is a valid object, and that it is not a "None" object
+			if( lExtractor.check() && lExtractor() )
+			{
+				FBTime* lTime = lExtractor()->mFBTime;
+				if( lTime )
+				{
+					pTimeArray->Add( *lTime );
+				}
+			}
+		}
+	}
+
+	void ConvertListToDoubleArray( list *pList, FBArrayDouble *pDoubleArray )
+	{
+		if( !pList || !pDoubleArray ) {
+			return;
+		}
+		for( int itr = 0; itr < len( *pList ); ++itr ) {
+			object lObject = ( *pList )[ itr ];
+			extract<double> lExtractor( lObject );
+
+			// Make sure this is a valid object, and that it is not a "None" object
+			if( lExtractor.check() )
+			{
+				pDoubleArray->Add( lExtractor() );
+			}
+		}
+	}
+
+	void ConvertListToUIntArray( list *pList, FBArrayUInt *pUIntArray )
+	{
+		if( !pList || !pUIntArray ) {
+			return;
+		}
+		for( int itr = 0; itr < len( *pList ); ++itr ) {
+			object lObject = ( *pList )[ itr ];
+			extract<unsigned int> lExtractor( lObject );
+
+			// Make sure this is a valid object, and that it is not a "None" object
+			if( lExtractor.check() )
+			{
+				pUIntArray->Add( lExtractor() );
+			}
+		}
+	}
+
+	void ConvertListToInterpolationArray( list *pList, FBArrayTemplate<FBInterpolation> *pInterpolationArray )
+	{
+		if( !pList || !pInterpolationArray ) {
+			return;
+		}
+		for( int itr = 0; itr < len( *pList ); ++itr ) {
+			object lObject = ( *pList )[ itr ];
+			extract<FBInterpolation> lExtractor( lObject );
+
+			// Make sure this is a valid object, and that it is not a "None" object
+			if( lExtractor.check() )
+			{
+				pInterpolationArray->Add( lExtractor() );
+			}
+		}
+	}
+
+	void ConvertListToTangentModeArray( list *pList, FBArrayTemplate<FBTangentMode> *pTangentModeArray )
+	{
+		if( !pList || !pTangentModeArray ) {
+			return;
+		}
+		for( int itr = 0; itr < len( *pList ); ++itr ) {
+			object lObject = ( *pList )[ itr ];
+			extract<FBTangentMode> lExtractor( lObject );
+
+			// Make sure this is a valid object, and that it is not a "None" object
+			if( lExtractor.check() )
+			{
+				pTangentModeArray->Add( lExtractor() );
+			}
+		}
+	}
+
+	bool KeysAdd( list pTimes, list pValues, list pInterpolations = list(), list pTangentModes = list() )
+	{
+		FBArrayTemplate<FBTime> lTimes;
+		ConvertListToTimeArray( &pTimes, &lTimes );
+
+		FBArrayDouble lValues;
+		ConvertListToDoubleArray( &pValues, &lValues );
+
+		FBArrayTemplate<FBInterpolation> lInterpolations;
+		ConvertListToInterpolationArray( &pInterpolations, &lInterpolations );
+
+		FBArrayTemplate<FBTangentMode> lTangentModes;
+		ConvertListToTangentModeArray( &pTangentModes, &lTangentModes );
+
+		return mFBFCurve->KeysAdd( lTimes, lValues, lInterpolations, lTangentModes );
+	}
+
+	bool KeysSetValues( list pIndices, list pValues, list pInterpolations = list(), list pTangentModes = list() )
+	{
+		FBArrayUInt lIndices;
+		ConvertListToUIntArray( &pIndices, &lIndices );
+
+		FBArrayDouble lValues;
+		ConvertListToDoubleArray( &pValues, &lValues );
+
+		FBArrayTemplate<FBInterpolation> lInterpolations;
+		ConvertListToInterpolationArray( &pInterpolations, &lInterpolations );
+
+		FBArrayTemplate<FBTangentMode> lTangentModes;
+		ConvertListToTangentModeArray( &pTangentModes, &lTangentModes );
+
+		return mFBFCurve->KeysSetValues( lIndices, lValues, lInterpolations, lTangentModes );
+	}
+
 	void KeyInsert(FBTime_Wrapper& pTime, FBInterpolation pInterpolation = kFBInterpolationCubic, FBTangentMode pTangentMode = kFBTangentModeAuto) { mFBFCurve->KeyInsert( *pTime.mFBTime, pInterpolation, pTangentMode ); }
 	bool KeyRemove(int pIndex) { return mFBFCurve->KeyRemove( pIndex ); }
 	bool KeyDeleteByIndexRange(int pStartIndex, int pStopIndex) { return mFBFCurve->KeyDelete(pStartIndex, pStopIndex); }

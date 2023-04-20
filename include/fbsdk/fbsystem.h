@@ -287,14 +287,21 @@ namespace FBSDKNamespace {;
          *  By default, there are two startup folders: $(UserConfigDir)/config/PythonStartup and $(MoBuInstDir)/bin/config/PythonStartup.
          *  Users could append additional paths by setting environment variable "MOTIONBUILDER_PYTHON_STARTUP" before launching application.
          *
+         *  Note: It is also possible to run python scripts at startup using the Module functionality. See the documentation around the Modules and the FBModuleManager SDK class.
+         *
          *  \return the python startup path
         */
         const FBStringList& GetPythonStartupPath() const;
 
-        /** Returns the plugin path.
+        /** Returns the plugin paths.
+         *
          *  By default, MotionBuilder searches C++ plug-ins and load them at start-up.
-         *  Users could provide additional plugin paths by setting environment variable "MOTIONBUILDER_PLUGIN_PATH" before running MotionBuilder.
-         *  \return the plugin path
+         *  Users could provide additional plugin paths by setting environment variable "MOTIONBUILDER_PLUGIN_PATH" before running MotionBuilder
+         *  or by adding new paths in the SDK section of the Preferences.
+         *
+         *  Note: It is also possible to load C++ plug-ins at startup using the Module functionality. See the documentation around the Modules and the FBModuleManager SDK class.
+         *
+         *  \return the plugin paths
         */
         const FBStringList& GetPluginPath() const;
 

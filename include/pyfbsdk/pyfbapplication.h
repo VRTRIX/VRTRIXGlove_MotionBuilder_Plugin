@@ -112,6 +112,7 @@ public:
 	void SetSceneRevisionNumber(const char* pRevNumber) { mFBApplication->SetSceneRevisionNumber(pRevNumber); }
 	const char* GetSceneComment() { return mFBApplication->GetSceneComment(); }
 	void SetSceneComment(const char* pComment) { mFBApplication->SetSceneComment(pComment); }
+	FBApplicationState GetApplicationState() { return mFBApplication->ApplicationState; }
     object OnFileNewCompleted();
     object OnFileNew();
     object OnFileOpenCompleted();

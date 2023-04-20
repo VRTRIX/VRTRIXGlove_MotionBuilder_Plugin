@@ -47,6 +47,8 @@ public:
 	void RecordingDoneAnimation(FBAnimationNode_Wrapper& pAnimationNode) { mFBDevice->RecordingDoneAnimation( pAnimationNode.mFBAnimationNode ); }
 	void RecordingInitAnimation(FBAnimationNode_Wrapper& pAnimationNode) { mFBDevice->RecordingInitAnimation( pAnimationNode.mFBAnimationNode ); }
 	object ModelBindingCreate() { return FBWrapperFactory::TheOne().WrapFBObject(mFBDevice->ModelBindingCreate()); }
+	bool DeviceOperation( FBDevice::kDeviceOperations pOperation ) { return mFBDevice->DeviceOperation( pOperation ); }
+	void DeviceSendCommand( FBDevice::kDeviceOperations pOperation ) { mFBDevice->DeviceSendCommand( pOperation ); }
 	void SetCommType( int pCommType ) { mFBDevice->CommType = pCommType; }
 	int GetCommType(  ) { return mFBDevice->CommType; }
 	void SetHardwareVersionInfo( const char* pHardwareVersionInfo ) { mFBDevice->HardwareVersionInfo = pHardwareVersionInfo; }

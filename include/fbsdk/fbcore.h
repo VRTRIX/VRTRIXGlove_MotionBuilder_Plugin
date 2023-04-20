@@ -320,8 +320,16 @@ private:
         //@}
 
         const char* UniqueName;					//!< internal Unique name.
-        virtual const char* FbxGetObjectSubType();//!< returns UniqueName if not overloaded.
-        virtual const char* FbxGetObjectType();	//!< Object Type "Box".
+
+		/** Returns the class type inherited by the class of an object, for example: 'Box', 'Constraint', 'TimelineXTrack'.
+		*	\return The class type inherited by the class of an object.
+		*/
+        virtual const char* FbxGetObjectType();
+
+		/** Returns the class sub type inherited by the class of an object, for example: 'Relations', 'Parent-Child', 'Number to Vector', 'Shot'.
+		*	\return The class sub type inherited by the class of an object.
+		*/
+		virtual const char* FbxGetObjectSubType();
 
         IObject_Declare(override);	// Interface to IObject.
 
@@ -773,7 +781,27 @@ private:
     typedef class FBSDK_DLL FBArrayTemplate<FBModel*> FBModelList;
     __FB_FORWARD( FBDevice );
 
-    //! Base Device class. Cannot be instantiated from Python.
+    /** Base Device class. Cannot be instantiated from Python.
+
+    @code
+    # This example shows how to create a Vicon Stream Device (a third-party device), initialize it and add it to the scene:
+
+    # Create the Vicon Stream Device
+    viconStreamDevice = FBCreateObject( 'Browsing/Templates/Devices', 'Vicon Stream Device', 'Vicon Stream Device' )
+
+    if viconStreamDevice:
+        # Initialize the device
+        viconStreamDevice.DeviceOperation( kDeviceOperations.kOpInit )
+
+        # Import the device to the current file
+        FBSystem().Scene.Devices.append( viconStreamDevice )
+
+        print( 'Vicon Stream Device initialized and added to the scene' )
+    else:
+        print( 'Vicon Stream Device not found' )
+
+    @endcode
+    */
     class FBSDK_DLL FBDevice : public FBBox {
         __FBClassDeclare( FBDevice,FBBox );
     public:
@@ -889,7 +917,10 @@ private:
         */
         virtual bool AnimationNodeNotify( FBAnimationNode* pAnimationNode, FBEvaluateInfo* pEvaluateInfo ) override;
 
-        virtual const char* FbxGetObjectType() override;	//!< Object Type "Device".
+		/** Returns the class type inherited by the class of an object, for example: 'Device'.
+		*	\return The class type inherited by the class of an object.
+		*/
+        virtual const char* FbxGetObjectType() override;
 
         //@{
         /** Storage/Retrieval of information into the FBX file format.

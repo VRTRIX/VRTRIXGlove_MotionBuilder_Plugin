@@ -60,6 +60,7 @@ namespace FBSDKNamespace {
     FB_DEFINE_COMPONENT( FBSDK_DLL, VideoOut		);
     FB_DEFINE_COMPONENT( FBSDK_DLL, VideoClip		);
     FB_DEFINE_COMPONENT( FBSDK_DLL, VideoClipImage	);
+    FB_DEFINE_COMPONENT( FBSDK_DLL, VideoClipImageDDS	);
     FB_DEFINE_COMPONENT( FBSDK_DLL, VideoSwitcher	);
 
     /** Video declaration.
@@ -149,6 +150,10 @@ private:
     FB_DEFINE_ENUM( FBSDK_DLL, VideoFormat			);
     FB_DEFINE_ENUM( FBSDK_DLL, VideoResolution      );
 
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBVideo
+	////////////////////////////////////////////////////////////////////////////////////
+
     /** Video media class.
     *	Similar to the FBModel class, the FBVideo class serves as a general media
     *	class for images, video clips and video memory, as well as the possibility
@@ -179,6 +184,11 @@ private:
         FBPropertyBool					KeepOnGPU;		//!< <b>Read Write Property:</b> Don't auto flush from GPU if true. session runtime flag, won't be saved.
     };
 
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBVideoClip
+	////////////////////////////////////////////////////////////////////////////////////
+
+	//! Video clip media class.
     class FBSDK_DLL FBVideoClip : public FBVideo {
         __FBClassDeclare( FBVideoClip,FBVideo );
     public:
@@ -264,8 +274,12 @@ private:
 		virtual bool GetEmbeddedTimecode( int pFrame, FBTimeCode& pTimeCode );
     };
 
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBVideoClipImage
+	////////////////////////////////////////////////////////////////////////////////////
     __FB_FORWARD( FBVideoClipImage );
 
+	//! Video clip image media class. Used for a variety of image types. For DDS images, use the FBVideoClipImageDDS instead.
     class FBSDK_DLL FBVideoClipImage : public FBVideoClip {
         __FBClassDeclare( FBVideoClipImage,FBVideoClip );
     public:
@@ -285,6 +299,22 @@ private:
 		FBPropertyBool					UseSystemFrameRate;	//!< <b>Read Write Property:</b> Clip is using system frame rate?
         FBPropertyVideoResolution       MaxMipMapResolution;//!< <b>Read Write Property:</b> Maximum MipMap resolution will be loaded into GPU.
     };
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// FBVideoClipImageDDS
+	////////////////////////////////////////////////////////////////////////////////////
+	__FB_FORWARD( FBVideoClipImageDDS );
+
+	//! Video clip image media class for DDS images.
+	class FBSDK_DLL FBVideoClipImageDDS : public FBVideoClipImage {
+		__FBClassDeclare( FBVideoClipImageDDS, FBVideoClipImage );
+	public:
+		/**	Constructor.
+		*	\param	pName		Name of DDS image file.
+		*	\param	pObject		Internal parent object (default = nullptr).
+		*/
+		FBVideoClipImageDDS( const char* pName, HIObject pObject = nullptr );
+	};
 
     ////////////////////////////////////////////////////////////////////////////////////
     // FBVideoMemory

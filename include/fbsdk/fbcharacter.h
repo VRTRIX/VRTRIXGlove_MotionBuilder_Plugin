@@ -2009,6 +2009,17 @@ FBSDK_DLL bool FBSaveCharacterPinningPreset( const char* pPresetName, bool pAllo
 */
 FBSDK_DLL bool FBDeleteCharacterPinningPreset( const char* pPresetName );
 
+/**	Return the Character comparison threshold value used when comparing two characters (e.g.: when applying a Character Clip using the "Control Rig" Solving Mode).
+*	\return	The threshold value.
+*/
+FBSDK_DLL double FBGetCharacterComparisonThresholdValue();
+
+/**	Set the Character threshold value used when comparing two characters (e.g.: when applying a Character Clip using the "Control Rig" Solving Mode).
+*	\param	pValue				The new threshold value to set.
+*/
+FBSDK_DLL void FBSetCharacterComparisonThresholdValue( double pValue );
+
+
 #ifdef FBSDKUseNamespace
 	}
 #endif

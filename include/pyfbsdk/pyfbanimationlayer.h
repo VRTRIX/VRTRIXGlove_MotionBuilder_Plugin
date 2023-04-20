@@ -51,6 +51,8 @@ public:
         return lResult;
     }
 
+	void SetColor( FBColor_Wrapper& pColor ) { mFBAnimationLayer->Color = *pColor.mFBColor; }
+	FBColor_Wrapper* GetColor( ) { return FBColor_Wrapper_Factory( mFBAnimationLayer->Color ); }
 	void SetSolo( bool pSolo ) { mFBAnimationLayer->Solo = pSolo; }
 	bool GetSolo(  ) { return mFBAnimationLayer->Solo; }
 	void SetMute( bool pMute ) { mFBAnimationLayer->Mute = pMute; }

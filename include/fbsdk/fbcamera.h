@@ -311,6 +311,7 @@ public:
     FBPropertyBool                       ViewCameraInterest;        //!< <b>Read Write Property:</b> Show the camera interest?
     FBPropertyBool                       ViewNearFarPlane;        //!< <b>Read Write Property:</b> Show near/far planes?
     FBPropertyBool                       ViewShowName;            //!< <b>Read Write Property:</b> Show name?
+    FBPropertyBool                       ViewShowManipulators;    //!< <b>Read Write Property:</b> Show manipulators?
     FBPropertyBool                       ViewShowGrid;            //!< <b>Read Write Property:</b> Show grid?
     FBPropertyBool                       ViewShowAxis;            //!< <b>Read Write Property:</b> Show axis?
     FBPropertyBool                       ViewShowTimeCode;        //!< <b>Read Write Property:</b> Show time code?

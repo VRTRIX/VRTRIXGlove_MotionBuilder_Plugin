@@ -42,5 +42,7 @@ public:
 	kReference GetParent(  ) { return mFBSpreadRow->Parent; }
 	void SetRowSelected( bool pSelected ) { mFBSpreadRow->RowSelected = pSelected; }
 	bool GetRowSelected(  ) { return mFBSpreadRow->RowSelected; }
+	void SetRowVisible( bool pVisible ) { mFBSpreadRow->RowVisible = pVisible; }
+	bool GetRowVisible() { return mFBSpreadRow->RowVisible; }
 };
 #endif // pyfbspreadrow_h__

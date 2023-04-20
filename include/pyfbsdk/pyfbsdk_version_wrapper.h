@@ -15,13 +15,12 @@
 #define PYSDK_DLL K_DLLEXPORT
 #endif
 
+// Suppress warnings from boost header files.
+
 #ifdef _MSC_VER
-	// Suppress warnings from boost header files.
 	#pragma warning(disable:4100) // Unreferenced formal parameter.
 	#pragma warning(disable:4244) // Conversion from 'long double' to 'double', possible loss of data.
 	#pragma warning(disable:4459) // declaration of 'xxxx' hides global declaration
-
-    #undef _DEBUG   // Cannot use crt debug, it would required using debug python
 #endif
 
 #include <boost/python/call_method.hpp>

@@ -44,8 +44,21 @@ public:
     void TimeWarpCopyTake(FBTake_Wrapper& pDstTake, FBTake_Wrapper& pSrcTake) { mFBTimeWarpManager->TimeWarpCopyTake( pDstTake.mFBTake, pSrcTake.mFBTake ); }
 	
     void TimeWarpAddToTake(FBTake_Wrapper& pTake, FBAnimationNode_Wrapper& pTimeWarp, int pNickNumber = 0) { mFBTimeWarpManager->TimeWarpAddToTake( pTake.mFBTake, pTimeWarp.mFBAnimationNode, pNickNumber ); }
-    void DestroyTimeWarpFromTake(FBTake_Wrapper& pTake, FBAnimationNode_Wrapper& pTimeWarp ) { mFBTimeWarpManager->DestroyTimeWarpFromTake( pTake.mFBTake, pTimeWarp.mFBAnimationNode ); }
-    void RemoveTimeWarpFromScene(FBAnimationNode_Wrapper& pTimeWarp) { mFBTimeWarpManager->RemoveTimeWarpFromScene( pTimeWarp.mFBAnimationNode ); }
+#ifdef _MSC_VER
+	#pragma warning( push )
+	#pragma warning( disable : 4996 ) // was declared deprecated
+#else
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+	K_DEPRECATED_2023 void DestroyTimeWarpFromTake(FBTake_Wrapper& pTake, FBAnimationNode_Wrapper& pTimeWarp ) { mFBTimeWarpManager->DestroyTimeWarpFromTake( pTake.mFBTake, pTimeWarp.mFBAnimationNode ); }
+	K_DEPRECATED_2023 void RemoveTimeWarpFromScene_deprecated(FBAnimationNode_Wrapper& pTimeWarp) { mFBTimeWarpManager->RemoveTimeWarpFromScene( pTimeWarp.mFBAnimationNode ); }
+#ifdef _MSC_VER
+	#pragma warning( pop )
+#else
+	#pragma GCC diagnostic pop
+#endif
+	void RemoveTimeWarpFromScene( FBTake_Wrapper& pTake, FBAnimationNode_Wrapper& pTimeWarp ) { mFBTimeWarpManager->RemoveTimeWarpFromScene( pTake.mFBTake, pTimeWarp.mFBAnimationNode ); }
 	
     kLong GetTimeWarpCount(FBTake_Wrapper& pTake) { return mFBTimeWarpManager->GetTimeWarpCount( pTake.mFBTake ); }
     object GetTimeWarpAtIndex(FBTake_Wrapper& pTake, kLong pIndex) { return FBWrapperFactory::TheOne().WrapFBObject(mFBTimeWarpManager->GetTimeWarpAtIndex( pTake.mFBTake, pIndex )); }

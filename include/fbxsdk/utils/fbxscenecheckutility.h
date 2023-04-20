@@ -81,7 +81,7 @@ public:
 	static bool ValidateSurfaceMode(FbxGeometry::ESurfaceMode pSurfaceMode);
 
 	// Return 0 if an error is detected or the expected size of the reference array based on the mapping & reference modes
-	static int ExpectedNbItems(const FbxGeometry* pGeom, FbxLayerElement::EMappingMode pMappingMode);
+	static int ExpectedNbItems(const FbxGeometryBase* pGeom, FbxLayerElement::EMappingMode pMappingMode);
 
 
 	/** Validate that the data in the given structure is within acceptable ranges
@@ -127,6 +127,11 @@ private:
 	bool LineHaveInvalidData(int pCheckMode, FbxGeometry* pGeom, const FbxString& pName);
 	bool GeometryHaveInvalidData(int pCheckMode, FbxGeometry* pGeom, const FbxString& pBase);
 
+    bool LayersHaveInvalidData(FbxGeometryBase* pGeom, const FbxString& pBase, int pNbConnectedMaterials=0);
+    bool ClusterHaveInvalidData(FbxCluster* pCluster, const FbxString& pBase, int lMaxValue=-1);
+    
+    bool ShapeHaveInvalidData();
+    bool SelectionNodeHaveInvalidData();
 	bool GlobalSettingsHaveInvalidData();
 
 	bool AnimationHaveInvalidData(int pCheckMode);

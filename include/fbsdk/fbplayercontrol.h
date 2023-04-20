@@ -566,6 +566,7 @@ public:
     /*K_DEPRECATED_2019*/ FBPropertyInt				ItemIndex;		//!< <b>Read Write Property:</b> Current reference time index. Deprecated, use CurrentTimeReferenceID instead.
 
 	FBPropertyInt				CurrentTimeReferenceID;		//!< <b>Read Write Property:</b> Current reference time ID
+	FBPropertyBool				UseRelativeLocalTime;		//!< <b>Read Write Property:</b> True to show the relative local time, false otherwise. This will only be effective when displaying the Local Time, but the state can be changed even if not currently displaying the Local Time.
 };
 
 #ifdef FBSDKUseNamespace

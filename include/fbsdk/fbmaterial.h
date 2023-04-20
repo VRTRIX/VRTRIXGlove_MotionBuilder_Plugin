@@ -153,10 +153,12 @@ public:
     virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 
     /** Returns the class type inherited by the class of an object, for example: 'Material'.
+    *	\return The class type inherited by the class of an object.
     */
     virtual const char*    FbxGetObjectType() override;
 
-    /** Returns the class sub type inherited by the class of an object, for example: 'Default', 'Custom Material'.
+    /** Returns the class sub type inherited by the class of an object, for example: 'Default', 'Custom Material', 'FBMaterial'.
+    *	\return The class sub type inherited by the class of an object.
     */
     virtual const char*    FbxGetObjectSubType() override;
 

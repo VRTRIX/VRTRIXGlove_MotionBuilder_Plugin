@@ -48,6 +48,8 @@ public:
 	const char* RenameLayout( const char* pOldLayoutName, const char* pNewLayoutName );
 	bool GetAutoUpdateLayout();
 	bool SetAutoUpdateLayout( bool pAutoUpdate );
+	bool GetPreventDocking();
+	bool SetPreventDocking( bool pPreventDocking );
 };
 
 

@@ -104,9 +104,9 @@ __FB_FORWARD( FBDeck );
 enum FBDeckTransportMode{	
 	kFBDeckTransportNone,		//!< No transport interaction.
 	kFBDeckTransportSync,		//!< Sync to transport controls.
-    kFBDeckTransportSlave= kFBDeckTransportSync,		//!< K_DEPRECATED_2021, use kFBDeckTransportSync.
+    kFBDeckTransportSlave= kFBDeckTransportSync,		//!< K_DEPRECATED_2022, use kFBDeckTransportSync.
     kFBDeckTransportMain,		//!< Transport main.
-    kFBDeckTransportMaster = kFBDeckTransportMain,		//!< K_DEPRECATED_2021, use kFBDeckTransportMain.
+    kFBDeckTransportMaster = kFBDeckTransportMain,		//!< K_DEPRECATED_2022, use kFBDeckTransportMain.
 };
 
 FB_DEFINE_ENUM		( FBSDK_DLL, DeckTransportMode );

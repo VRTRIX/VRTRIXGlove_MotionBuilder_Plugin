@@ -626,10 +626,12 @@ public:
     bool RayCast(FBCamera* pCamera, int pMouseX, int pMouseY, FBVector3d& pHitPosition,  FBVector3d& pHitNormal);
 
     /** Returns the class type inherited by the class of an object, for example: 'Model'.
+    *	\return The class type inherited by the class of an object.
     */
     virtual const char*    FbxGetObjectType() override;
 
     /** Returns the class sub type inherited by the class of an object, for example: 'Default', 'Mesh'.
+    *	\return The class sub type inherited by the class of an object.
     */
     virtual const char*    FbxGetObjectSubType() override;
 
@@ -706,8 +708,8 @@ FBSDK_DLL FBModel* FBFindModelByLabelName( const char* pModelLabelName );
 *   A model could have a single unique ColorID, but SDK plugin user could request 
 *   additional ColorID per model to support multi sub items picking. see FBModel::SetAdditionalUniqueColorIDCount().
 *   \param	pColor  Color channel values are in range of [0,1] with precision 1.0/255    
-*   \param  pSubItemIndex Pass out SubImtem index value if not null.  In pyfbsdk no such parameter.
-*   \return	A handle onto the model with unique color id matching, returns NULL if no model was found by the search. In pyfbsdk return tuple [model, subItemIndex]
+*   \param  pSubItemIndex (C++ only) Pass out SubItem index value if not null.
+*   \return	(C++ only) A handle onto the model with unique color id matching, returns NULL if no model was found by the search. (Python only) A tuple with 2 values: (FBModel return value, pSubItemIndex).
 */
 FBSDK_DLL FBModel* FBFindModelByUniqueColorId( const FBColor& pColor, int* pSubItemIndex = NULL );
 
@@ -793,10 +795,12 @@ public:
     virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 
     /** Returns the class type inherited by the class of an object, for example: 'Model'.
+    *	\return The class type inherited by the class of an object.
     */
     virtual const char* FbxGetObjectType() override;
 
-    /** Returns the class sub type inherited by the class of an object, for example: 'Default', 'Mesh'.
+    /** Returns the class sub type inherited by the class of an object, for example: 'Default', 'Mesh', 'FBModelNull'.
+    *	\return The class sub type inherited by the class of an object.
     */
     virtual const char* FbxGetObjectSubType() override;
 };
@@ -896,10 +900,12 @@ public:
     virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 
     /** Returns the class type inherited by the class of an object, for example: 'Model'.
+    *	\return The class type inherited by the class of an object.
     */
     virtual const char* FbxGetObjectType() override;
 
-    /** Returns the class sub type inherited by the class of an object, for example: 'Default', 'Mesh'.
+    /** Returns the class sub type inherited by the class of an object, for example: 'Default', 'Mesh', 'FBModelMarker'.
+    *	\return The class sub type inherited by the class of an object.
     */
     virtual const char* FbxGetObjectSubType() override;
 };
@@ -1210,7 +1216,7 @@ public:
     *    Most of the time, kFBGeometry_TRIANGLES will be returned.
     *   \param  pSubPatchIndex  Index of the sub patch to be queried.
     *   \param  pIsOptimized    (C++ only) Out parameter, return true if the specified sub patch is optimized for fast rendering, custom shader & render should use the optimized sub patch only.
-    *   \return (C++) The primitive type of the queried sub patch. (Python) A tuple with 2 values: (the primitive type of the queried sub patch, the value of pIsOptimized).
+    *   \return (C++ only) The primitive type of the queried sub patch. (Python only) A tuple with 2 values: (FBGeometryPrimitiveType return value, pIsOptimized).
     */
     FBGeometryPrimitiveType GetSubPatchPrimitiveType(int pSubPatchIndex, bool* pIsOptimized = NULL);
 

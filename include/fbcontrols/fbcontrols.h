@@ -1208,11 +1208,12 @@ public:
     //! Constructor.
     FBImageContainer();
 
-	FBPropertyString		Filename;		//!< <b>Read Write Property:</b> Filename for image.
-	FBPropertyInt			ImageWidth;		//!< \deprecated <b>Read Write Property:</b> Image width. Useless property to be removed. 
-	FBPropertyInt			ImageHeight;	//!< \deprecated <b>Read Write Property:</b> Image height. Useless property to be removed. 
+	FBPropertyString		Filename;					//!< <b>Read Write Property:</b> Filename for image.
+	FBPropertyBool			UseTransparentBackground;	//!< <b>Read Write Property:</b> True to specify that the image is using a transparent background, false otherwise.
+	FBPropertyInt			ImageWidth;					//!< \deprecated <b>Read Write Property:</b> Image width. Useless property to be removed. 
+	FBPropertyInt			ImageHeight;				//!< \deprecated <b>Read Write Property:</b> Image height. Useless property to be removed. 
 
-    FBPropertyEvent			OnDragAndDrop;	//!< <b>Event:</b> Drag and drop.
+    FBPropertyEvent			OnDragAndDrop;				//!< <b>Event:</b> Drag and drop.
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -1495,6 +1496,7 @@ public:
     FBPropertyString		Caption;		//!< <b>Read Write Property:</b> Caption to display with row.
     FBPropertykReference	Parent;			//!< <b>Read Write Property:</b> Parent of row (reference).
     FBPropertyBool			RowSelected;	//!< <b>Read Write Property:</b> Is row selected? 
+    FBPropertyBool			RowVisible;		//!< <b>Read Write Property:</b> Is row visible? Set to true to show the row, false to hide the row.
 };
 
 __FB_FORWARD( FBSpreadColumn );
@@ -1627,6 +1629,10 @@ public:
     *	This function will empty spreadsheet of all its rows, columns and cells.
     */
     virtual void Clear();
+
+	/** Position the vertical scrollbar of the spreadsheet to the top.
+	*/
+	virtual void Home();
 };
 
 __FB_FORWARD( FBEventSpread );

@@ -122,7 +122,7 @@ namespace FBSDKNamespace {
         kFBPropertyFlagForceStaticProperty = (1 << 1),
         kFBPropertyFlagDisableProperty = (1 << 2),
         kFBPropertyFlagDrivenProperty = (1 << 3),     //!< This is property is connected and driven by other same type of main property, and it always ask value from its main property.
-        kFBPropertyFlagSlavedProperty = kFBPropertyFlagDrivenProperty, //!< K_DEPRECATED_2021, use kFBPropertyFlagDrivenProperty
+        kFBPropertyFlagSlavedProperty = kFBPropertyFlagDrivenProperty, //!< K_DEPRECATED_2022, use kFBPropertyFlagDrivenProperty
         kFBPropertyFlagAnimated = (1 << 4),
         kFBPropertyFlagNotSavable = (1 << 5),         //!< Should not be saved to or loaded from an FBX file
         kFBPropertyFlagReadOnly = (1 << 6),
@@ -130,7 +130,7 @@ namespace FBSDKNamespace {
         kFBValueAllocated = (1 << 8),                 //!< The value has been allocated and must be delete in destructor.
         kFBDynamicHidden = (1 << 9),                  //!< This flag is used to show/hide the property in the propertiview. When turn on/ff DynamicHidden flag, this property will show/hide.  The nodes hidden by this flag still exist in UI.
         kFBDrivenSetByMain = (1 << 10),                //!< Driven property can be modified, valid only when the main property is modified
-        kFBSlaveSetByMaster = kFBDrivenSetByMain,      //!< K_DEPRECATED_2021, use kFBDrivenSetByMain
+        kFBSlaveSetByMaster = kFBDrivenSetByMain,      //!< K_DEPRECATED_2022, use kFBDrivenSetByMain
         kFBLoadedUserProperty = (1 << 11)             //!< This property is loaded from file
     };
 

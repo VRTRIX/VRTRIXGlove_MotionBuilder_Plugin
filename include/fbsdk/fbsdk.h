@@ -139,6 +139,10 @@
 #include <fbsdk/fbfilereference.h>
 #include <fbsdk/fbpython.h>
 #include <fbsdk/fbmotionfileoptions.h>
+#include <fbsdk/fbmotionblend.h>
+#include <fbsdk/fbmotionblendedit.h>
+
+#include <fbsdk/fbmodulemanager.h>
 
 #if !defined(K_NO_UI)
 	// User interface includes

@@ -39,7 +39,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 #include <karch/arch.h>
 
-#if defined(_MSC_VER) || (defined(__GNUC__) && defined(_WIN32))
+#if defined(_MSC_VER) && !defined(__clang__)
     #if defined(K_NODLL)
 		#define K_DLLIMPORT __declspec()
 		#define K_DLLEXPORT __declspec()

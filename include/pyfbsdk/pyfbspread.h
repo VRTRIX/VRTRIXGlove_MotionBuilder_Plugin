@@ -37,6 +37,7 @@ public:
 	FBSpread_Wrapper();
 	virtual ~FBSpread_Wrapper( ) {  }
 	void Clear() { mFBSpread->Clear(  ); }
+	void Home() { mFBSpread->Home(  ); }
 	void ColumnAdd(const char * pString, kReference pRef = 0) { mFBSpread->ColumnAdd( pString, pRef ); }
 
 	object GetSpreadCell(kReference pRef, int pColumn);

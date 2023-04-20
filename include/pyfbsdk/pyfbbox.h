@@ -50,5 +50,7 @@ public:
 	int GetInConnectorCount() { return mFBBox->GetInConnectorCount(); }
 	object GetOutConnector( int pIndex ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBBox->GetOutConnector( pIndex ) ); }
 	object GetInConnector( int pIndex ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBBox->GetInConnector( pIndex ) ); }
+	const char* FbxGetObjectSubType() { return mFBBox->FbxGetObjectSubType(); }
+	const char* FbxGetObjectType() { return mFBBox->FbxGetObjectType(); }
 };
 #endif // pyfbbox_h__

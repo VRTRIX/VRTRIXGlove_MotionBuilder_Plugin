@@ -49,6 +49,8 @@ public:
 	FbxStatus(EStatusCode pCode);
     FbxStatus(const FbxStatus& rhs);
 
+    ~FbxStatus();
+
     FbxStatus&      operator=(const FbxStatus& rhs);
 	FbxStatus&      operator+=(const FbxStatus& rhs);
 

@@ -18,18 +18,6 @@
 	#define PYSDK_DLL K_DLLIMPORT
 #endif
 
-/**
-	FBPythonGuard: Auto-class that calls PyGILState_Ensure/PyGILState_Release to prevent crashes when doing Python calls
-*/
-class FBPythonGuard
-{
-public:
-    FBPythonGuard();
-    ~FBPythonGuard();
-private:
-    PyGILState_STATE mGILState{ (PyGILState_STATE)-1 };
-};
-
 void FBPythonWrapper_Init();
 
 /**
@@ -230,110 +218,47 @@ public:
     }
 };
 
+template<class FBWrapper_, class P1, class P2> 
+class Wrapper_Container_2_Opts : public FBWrapper_
+{
+public:
+	Wrapper_Container_2_Opts( PyObject* pObject, P1 p1, P2 p2 )
+		: FBWrapper_( p1, p2 )
+	{
+		FBWrapper_::SetSelf(pObject);
+		//this.mSelf = pObject;
+	}
+
+	explicit Wrapper_Container_2_Opts( PyObject* pObject, P1 p1 )
+		: FBWrapper_( p1 )
+	{
+		FBWrapper_::SetSelf(pObject);
+		//this.mSelf = pObject;
+	}
+
+	explicit Wrapper_Container_2_Opts( PyObject* pObject )
+		: FBWrapper_()
+	{
+		FBWrapper_::SetSelf(pObject);
+		//this.mSelf = pObject;
+	}
+};
+
 // Functions for calling python from C++ where we don't wish the errors to propagate
 template <typename R>
-R FBCallPythonCatch(PyObject *pObject, const char *pName, R pErrorValue)
-{
-	FBPythonGuard lPythonGuard;
+R FBCallPythonCatch( PyObject *pObject, const char *pName, R pErrorValue );
 
-    try
-    {
-        return call_method<R>(pObject, pName);
-    } 
-    catch(const error_already_set&) 
-    {
-        PyErr_Print();
-        // Stop the error propagating to the next python use
-        PyErr_Clear();
-        return pErrorValue;
-    } 
-}
-
-
-inline void FBCallPythonCatch(PyObject *pObject, const char *pName)
-{
-	FBPythonGuard lPythonGuard;
-
-    try
-    {
-        call_method<void>(pObject, pName);
-    } 
-    catch(const error_already_set&) 
-    {
-        PyErr_Print();
-        // Stop the error propagating to the next python use
-        PyErr_Clear();
-    } 
-}
-
+void FBCallPythonCatch( PyObject *pObject, const char *pName );
 
 template <typename R, typename P1>
-R FBCallPythonCatch1(PyObject *pObject, const char *pName, P1 const &pParam1, R pErrorValue)
-{
-	FBPythonGuard lPythonGuard;
-
-    try
-    {
-        return call_method<R>(pObject, pName, pParam1);
-    } 
-    catch(const error_already_set&) 
-    {
-        PyErr_Print();
-        // Stop the error propagating to the next python use
-        PyErr_Clear();
-        return pErrorValue;
-    } 
-}
+R FBCallPythonCatch1( PyObject *pObject, const char *pName, P1 const &pParam1, R pErrorValue );
 
 template <typename P1>
-void FBCallPythonCatch1(PyObject *pObject, const char *pName, P1 const &pParam1)
-{
-	FBPythonGuard lPythonGuard;
-
-    try
-    {
-        call_method<void>(pObject, pName, pParam1);
-    } 
-    catch(const error_already_set&) 
-    {
-        PyErr_Print();
-        // Stop the error propagating to the next python use
-        PyErr_Clear();
-    } 
-}
+void FBCallPythonCatch1( PyObject *pObject, const char *pName, P1 const &pParam1 );
 
 template <typename R, typename P1, typename P2>
-R FBCallPythonCatch2(PyObject *pObject, const char *pName, P1 const &pParam1, P2 const &pParam2, R pErrorValue)
-{
-	FBPythonGuard lPythonGuard;
-
-    try
-    {
-        return call_method<R>(pObject, pName, pParam1, pParam2);
-    } 
-    catch(const error_already_set&) 
-    {
-        PyErr_Print();
-        // Stop the error propagating to the next python use
-        PyErr_Clear();
-        return pErrorValue;
-    } 
-}
+R FBCallPythonCatch2( PyObject *pObject, const char *pName, P1 const &pParam1, P2 const &pParam2, R pErrorValue );
 
 template <typename P1, typename P2>
-void FBCallPythonCatch2(PyObject *pObject, const char *pName, P1 const &pParam1, P2 const &pParam2)
-{
-	FBPythonGuard lPythonGuard;
-
-    try
-    {
-        call_method<void>(pObject, pName, pParam1, pParam2);
-    } 
-    catch(const error_already_set&) 
-    {
-        PyErr_Print();
-        // Stop the error propagating to the next python use
-        PyErr_Clear();
-    } 
-}
+void FBCallPythonCatch2( PyObject *pObject, const char *pName, P1 const &pParam1, P2 const &pParam2 );
 #endif // pyfbpythonwrapper_h__

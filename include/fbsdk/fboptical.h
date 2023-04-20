@@ -866,9 +866,6 @@ namespace FBSDKNamespace {
         virtual bool FBCreate() override;
         virtual void FBDestroy() override;
 
-        // Standard device virtual function device operation notify
-        virtual bool DeviceOperation( kDeviceOperations pOperation ) override;
-
         // Standard device virtual functions evaluation
         virtual bool AnimationNodeNotify(FBAnimationNode* pAnimationNode,FBEvaluateInfo* pEvaluateInfo) override;
         virtual void DeviceIONotify(kDeviceIOs pAction,FBDeviceNotifyInfo &pDeviceNotifyInfo) override;

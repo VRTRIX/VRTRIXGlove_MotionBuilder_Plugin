@@ -209,6 +209,11 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#ifndef fdopen
 		#define fdopen		_fdopen
 	#endif
+
+	#ifdef __clang__
+		#define sealed			//	Prevents classes from being used as base classes
+		#define abstract	=0	//	Indicates functions or classes are abstract 
+	#endif
 #else
 	#define _MSC_EMULATOR
 
@@ -369,20 +374,20 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 // the timing.
 
 #if defined(KARCH_DEV_GNUC) // GNU compiler
-	#define K_DEPRECATED_2018 __attribute__((deprecated))
 	#define K_DEPRECATED_2019 __attribute__((deprecated))
 	#define K_DEPRECATED_2020 __attribute__((deprecated))
-	#define K_DEPRECATED_2021 __attribute__((deprecated))
+	#define K_DEPRECATED_2022 __attribute__((deprecated))
+	#define K_DEPRECATED_2023 __attribute__((deprecated))
 #elif defined(KARCH_DEV_MSC) // Microsoft
-	#define K_DEPRECATED_2018 __declspec(deprecated)
 	#define K_DEPRECATED_2019 __declspec(deprecated)
 	#define K_DEPRECATED_2020 __declspec(deprecated)
-	#define K_DEPRECATED_2021 __declspec(deprecated)
+	#define K_DEPRECATED_2022 __declspec(deprecated)
+	#define K_DEPRECATED_2023 __declspec(deprecated)
 #else // Unknown compiler
-	#define K_DEPRECATED_2018
 	#define K_DEPRECATED_2019
 	#define K_DEPRECATED_2020
-	#define K_DEPRECATED_2021
+	#define K_DEPRECATED_2022
+	#define K_DEPRECATED_2023
 #endif
 
 #endif // _KAYDARA_H_

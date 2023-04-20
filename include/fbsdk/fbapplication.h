@@ -263,6 +263,16 @@ enum FBOneClickApplication
 };
 #endif
 
+/**
+*	Application state the MotionBuilder application has been started in.
+*/
+enum FBApplicationState {
+	kFBInteractive,			//!< Running in an interactive mode with the UI. Default mode.
+	kFBBatch,				//!< Running in a batch mode, without the UI, i.e.: when starting MotionBuilder from the command line with the -batch command flag.
+	kFBMobuPy,				//!< Running via the mobupy executable.
+};
+FB_DEFINE_ENUM( FBSDK_DLL, ApplicationState );
+
 ////////////////////////////////////////////////////////////////////////////////////
 // FBEventOverrideFileOpen
 ////////////////////////////////////////////////////////////////////////////////////
@@ -311,6 +321,8 @@ public:
     *	\param	pObject	Internal parent object(default=NULL).
     */
     FBApplication(HIObject pObject=NULL);
+
+	FBPropertyApplicationState				ApplicationState;			//!< <b>Read Only Property:</b> State the MotionBuilder application has been started in.
 
     FBPropertyEvent	OnFileNewCompleted;		//!< <b>Event:</b> A File New has been completed.
     FBPropertyEvent	OnFileNew;				//!< <b>Event:</b> A File New has been requested, nothing has been destroyed yet.
@@ -367,7 +379,7 @@ public:
 
     /** Open a file from memory. 
     *   \warning this is advanced & not supported function, use with caution. 
-    *   \param pBuffer  the memory buffer for the file. Raw memory address is expected in pyfbsdk. 
+    *   \param pBuffer  the memory buffer for the file. Raw memory address is expected in Python. 
     *   \param pBufferLength the memory buffer size.
     *   \return true if file opened successfully.
     */
@@ -375,11 +387,11 @@ public:
 
     /** Get max frame count from a scene file in memory. 
     *   \warning this is advanced & not supported function, use with caution. 
-    *   \param pBuffer  the memory buffer for the file. Raw memory address is expected in pyfbsdk. 
+    *   \param pBuffer  the memory buffer for the file. Raw memory address is expected in Python. 
     *   \param pBufferLength the memory buffer size.
-    *   \param pFrameCount out parameter to hold max frame count. this parameter is not needed in pyfbsdk. 
+    *   \param pFrameCount (C++ only) out parameter to hold max frame count.
     *   \param pTimeScale   Time scale. 
-    *   \return true if file opened successfully. In pyfbsdk, a tuple (bool, kLong) will return instead, the first one is ORSDK function return value, the second is for max frame count. 
+    *   \return (C++ only) True if file opened successfully. (Python only) A tuple with 2 values: (bool return value, pFrameCount). 
     */
     bool GetMaxFrameCount(void* pBuffer, kULong pBufferLength, kLong* pFrameCount, int pTimeScale);	
 

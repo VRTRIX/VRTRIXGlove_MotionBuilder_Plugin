@@ -34,7 +34,7 @@
         {
            BOOST_MATH_STD_USING
            T log_term = log(x) * -alpha;
-           log_scaling = itrunc(log_term - 3 - boost::math::tools::log_min_value<T>() / 50);
+           log_scaling = lltrunc(log_term - 3 - boost::math::tools::log_min_value<T>() / 50);
            term = exp(log_term - log_scaling);
            refill_cache();
         }
@@ -64,19 +64,19 @@
         T delta_poch, alpha_poch, x, term;
         T gamma_cache[cache_size];
         int k;
-        int log_scaling;
+        long long log_scaling;
         int cache_offset;
         Policy pol;
      };
 
      template <class T, class Policy>
-     T hypergeometric_1F1_igamma(const T& a, const T& b, const T& x, const T& b_minus_a, const Policy& pol, int& log_scaling)
+     T hypergeometric_1F1_igamma(const T& a, const T& b, const T& x, const T& b_minus_a, const Policy& pol, long long& log_scaling)
      {
         BOOST_MATH_STD_USING
         if (b_minus_a == 0)
         {
            // special case: M(a,a,z) == exp(z)
-           int scale = itrunc(x, pol);
+           long long scale = lltrunc(x, pol);
            log_scaling += scale;
            return exp(x - scale);
         }
@@ -86,13 +86,13 @@
         T result = boost::math::tools::sum_series(s, boost::math::policies::get_epsilon<T, Policy>(), max_iter);
         boost::math::policies::check_series_iterations<T>("boost::math::tgamma<%1%>(%1%,%1%)", max_iter, pol);
         T log_prefix = x + boost::math::lgamma(b, pol) - boost::math::lgamma(a, pol);
-        int scale = itrunc(log_prefix);
+        long long scale = lltrunc(log_prefix);
         log_scaling += scale;
         return result * exp(log_prefix - scale);
      }
 
      template <class T, class Policy>
-     T hypergeometric_1F1_shift_on_a(T h, const T& a_local, const T& b_local, const T& x, int a_shift, const Policy& pol, int& log_scaling)
+     T hypergeometric_1F1_shift_on_a(T h, const T& a_local, const T& b_local, const T& x, int a_shift, const Policy& pol, long long& log_scaling)
      {
         BOOST_MATH_STD_USING
         T a = a_local + a_shift;
@@ -104,7 +104,7 @@
            // Forward recursion on a is stable as long as 2a-b+z > 0.
            // If 2a-b+z < 0 then backwards recursion is stable even though
            // the function may be strictly increasing with a.  Potentially
-           // we may need to split the recurrnce in 2 sections - one using 
+           // we may need to split the recurrence in 2 sections - one using 
            // forward recursion, and one backwards.
            //
            // We will get the next seed value from the ratio
@@ -136,16 +136,16 @@
               T first = 1;
               T second = ((1 + crossover_a - b_local) / crossover_a) + ((b_local - 1) / crossover_a) / b_ratio;
               //
-              // Recurse down to a_local, compare values and re-nomralise first and second:
+              // Recurse down to a_local, compare values and re-normalise first and second:
               //
               boost::math::detail::hypergeometric_1F1_recurrence_a_coefficients<T> a_coef(crossover_a, b_local, x);
-              int backwards_scale = 0;
+              long long backwards_scale = 0;
               T comparitor = boost::math::tools::apply_recurrence_relation_backward(a_coef, crossover_shift, second, first, &backwards_scale);
               log_scaling -= backwards_scale;
               if ((h < 1) && (tools::max_value<T>() * h > comparitor))
               {
                  // Need to rescale!
-                 int scale = itrunc(log(h), pol) + 1;
+                 long long scale = lltrunc(log(h), pol) + 1;
                  h *= exp(T(-scale));
                  log_scaling += scale;
               }
@@ -218,7 +218,7 @@
               if (boost::math::tools::min_value<T>() * comparitor > h)
               {
                  // Ooops, need to rescale h:
-                 int rescale = itrunc(log(fabs(h)));
+                 long long rescale = lltrunc(log(fabs(h)));
                  T scale = exp(T(-rescale));
                  h *= scale;
                  log_scaling += rescale;
@@ -230,7 +230,7 @@
      }
 
      template <class T, class Policy>
-     T hypergeometric_1F1_shift_on_b(T h, const T& a, const T& b_local, const T& x, int b_shift, const Policy& pol, int& log_scaling)
+     T hypergeometric_1F1_shift_on_b(T h, const T& a, const T& b_local, const T& x, int b_shift, const Policy& pol, long long& log_scaling)
      {
         BOOST_MATH_STD_USING
 
@@ -257,13 +257,13 @@
               // Reset coefficients and recurse:
               //
               boost::math::detail::hypergeometric_1F1_recurrence_b_coefficients<T> b_coef_2(a, b - 1, x);
-              int local_scale = 0;
+              long long local_scale = 0;
               T comparitor = boost::math::tools::apply_recurrence_relation_backward(b_coef_2, --b_shift, first, second, &local_scale);
               log_scaling -= local_scale;
               if (boost::math::tools::min_value<T>() * comparitor > h)
               {
                  // Ooops, need to rescale h:
-                 int rescale = itrunc(log(fabs(h)));
+                 long long rescale = lltrunc(log(fabs(h)));
                  T scale = exp(T(-rescale));
                  h *= scale;
                  log_scaling += rescale;
@@ -300,7 +300,7 @@
 
 
      template <class T, class Policy>
-     T hypergeometric_1F1_large_igamma(const T& a, const T& b, const T& x, const T& b_minus_a, const Policy& pol, int& log_scaling)
+     T hypergeometric_1F1_large_igamma(const T& a, const T& b, const T& x, const T& b_minus_a, const Policy& pol, long long& log_scaling)
      {
         BOOST_MATH_STD_USING
         //
@@ -321,7 +321,7 @@
         T a_local = a - a_shift;
         T b_local = b - b_shift;
         T b_minus_a_local = (a_shift == 0) && (b_shift == 0) ? b_minus_a : b_local - a_local;
-        int local_scaling = 0;
+        long long local_scaling = 0;
         T h = hypergeometric_1F1_igamma(a_local, b_local, x, b_minus_a_local, pol, local_scaling);
         log_scaling += local_scaling;
 
@@ -335,7 +335,7 @@
      }
 
      template <class T, class Policy>
-     T hypergeometric_1F1_large_series(const T& a, const T& b, const T& z, const Policy& pol, int& log_scaling)
+     T hypergeometric_1F1_large_series(const T& a, const T& b, const T& z, const Policy& pol, long long& log_scaling)
      {
         BOOST_MATH_STD_USING
         //
@@ -366,7 +366,7 @@
            // a_local == 0.  However, the value of h calculated was trivial (unity), so
            // calculate a second 1F1 for a == 1 and recurse as normal:
            //
-           int scale = 0;
+           long long scale = 0;
            T h2 = boost::math::detail::hypergeometric_1F1_generic_series(T(a_local + 1), b_local, z, pol, scale, "hypergeometric_1F1_large_series<%1%>(a,b,z)");
            if (scale != log_scaling)
            {
@@ -385,7 +385,7 @@
      }
 
      template <class T, class Policy>
-     T hypergeometric_1F1_large_13_3_6_series(const T& a, const T& b, const T& z, const Policy& pol, int& log_scaling)
+     T hypergeometric_1F1_large_13_3_6_series(const T& a, const T& b, const T& z, const Policy& pol, long long& log_scaling)
      {
         BOOST_MATH_STD_USING
         //
@@ -399,12 +399,12 @@
      }
 
      template <class T, class Policy>
-     T hypergeometric_1F1_large_abz(const T& a, const T& b, const T& z, const Policy& pol, int& log_scaling)
+     T hypergeometric_1F1_large_abz(const T& a, const T& b, const T& z, const Policy& pol, long long& log_scaling)
      {
         BOOST_MATH_STD_USING
         //
         // This is the selection logic to pick the "best" method.
-        // We have a,b,z >> 0 and need to comute the approximate cost of each method
+        // We have a,b,z >> 0 and need to compute the approximate cost of each method
         // and then select whichever wins out.
         //
         enum method
@@ -456,7 +456,7 @@
         // but that's not clear...
         // Also need to add on a fudge factor to the cost to account for the fact that we need
         // to calculate the Bessel functions, this is not quite as high as the gamma function 
-        // method above as this is generally more accurate and so prefered if the methods are close:
+        // method above as this is generally more accurate and so preferred if the methods are close:
         //
         cost = 50 + fabs(b - a);
         if((b > 1) && (cost <= current_cost) && (z < tools::log_max_value<T>()) && (z < 11356) && (b - a != 0.5f))

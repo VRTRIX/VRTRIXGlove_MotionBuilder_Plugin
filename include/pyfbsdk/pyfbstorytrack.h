@@ -67,7 +67,8 @@ public:
 	void ChangeDetailsEnd() { mFBStoryTrack->ChangeDetailsEnd(  ); }
 	void EnableBodyPart(FBStoryTrackBodyPart pPart, bool pEnable) { mFBStoryTrack->EnableBodyPart( pPart, pEnable ); }
 	void AddClip(FBComponent_Wrapper& pClip, FBTime_Wrapper& pTime) {mFBStoryTrack->AddClip(pClip.mFBComponent, *(pTime.mFBTime));}
-    object CopyTakeIntoTrack(FBTimeSpan_Wrapper& pTimeSpan, FBTake_Wrapper& pTake, FBTime_Wrapper* pOutputOffset = NULL, bool pMakeUndoable = true);
+    object CopyTakeIntoTrack_1(FBTimeSpan_Wrapper& pTimeSpan, FBTake_Wrapper& pTake, FBTime_Wrapper* pOutputOffset = nullptr, bool pMakeUndoable = true);
+	object CopyTakeIntoTrack_2(FBTimeSpan_Wrapper& pTimeSpan, FBTake_Wrapper& pTake, bool pConnectToCurrentTake, FBTime_Wrapper* pOutputOffset = nullptr, bool pMakeUndoable = true);
 	void FBDelete() { mFBStoryTrack->FBDelete(  ); }
 	void Load(bool pLoad) { mFBStoryTrack->Load( pLoad ); }
 	bool IsBodyPartEnabled(FBStoryTrackBodyPart pPart) { return mFBStoryTrack->IsBodyPartEnabled( pPart ); }
