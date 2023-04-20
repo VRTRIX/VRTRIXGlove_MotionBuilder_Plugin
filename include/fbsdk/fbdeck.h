@@ -103,8 +103,10 @@ __FB_FORWARD( FBDeck );
 //! FBDeckTransportMode
 enum FBDeckTransportMode{	
 	kFBDeckTransportNone,		//!< No transport interaction.
-	kFBDeckTransportSlave,		//!< Slave to transport controls.
-	kFBDeckTransportMaster		//!< Transport master.
+	kFBDeckTransportSync,		//!< Sync to transport controls.
+    kFBDeckTransportSlave= kFBDeckTransportSync,		//!< K_DEPRECATED_2021, use kFBDeckTransportSync.
+    kFBDeckTransportMain,		//!< Transport main.
+    kFBDeckTransportMaster = kFBDeckTransportMain,		//!< K_DEPRECATED_2021, use kFBDeckTransportMain.
 };
 
 FB_DEFINE_ENUM		( FBSDK_DLL, DeckTransportMode );
@@ -123,7 +125,7 @@ public:
 	*/
 	FBDeck(const char* pName, HIObject pObject=NULL);	
 
-    IObject_Declare(K_IMPLEMENTATION);			//! Interface to IObject
+    IObject_Declare(override);			//! Interface to IObject
 
 	//--- Real-Time deck callback
 	virtual void	DeckStatusUpdateNotify();			//!< Deck status update notification.
@@ -171,7 +173,7 @@ public:
 	FBPropertyTime					Latency;				//!< <b>Read Write Property:</b> Latency of response for the deck;
 	FBPropertyTime					PreRoll;				//!< <b>Read Write Property:</b> Pre-Roll.
 	FBPropertyTime					PostRoll;				//!< <b>Read Write Property:</b> Post-Roll.
-	FBPropertyDeckTransportMode		TransportControl;		//!< <b>Read Write Property:</b> Mode w/r to TC (None, Slave, Master );
+	FBPropertyDeckTransportMode		TransportControl;		//!< <b>Read Write Property:</b> Mode w/r to TC (None, Sync, Main );
 
 	//--- State
 	FBPropertyBool					CassetteInside;			//!< <b>Read Only Property:</b> Is the cassette inside?

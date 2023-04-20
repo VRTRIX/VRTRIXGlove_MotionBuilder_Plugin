@@ -53,7 +53,10 @@ public:
     void UpdateValues( FBEvaluateInfo* pEvalInfo ) { mFBActor->UpdateValues( pEvalInfo ); }
     void GetDefinitionScaleVector(	FBSkeletonNodeId pSkeletonId, FBVector3d_Wrapper &pScaleVector ) { mFBActor->GetDefinitionScaleVector( pSkeletonId, *(pScaleVector.mFBVector3d) ); }
     void SetDefinitionScaleVector(	FBSkeletonNodeId pSkeletonId, FBVector3d_Wrapper& pScaleVector, bool pSymmetricUpdate = true ) { mFBActor->SetDefinitionScaleVector( pSkeletonId, *pScaleVector.mFBVector3d,pSymmetricUpdate ); }
+    void GetDefinitionRotationVector(	FBSkeletonNodeId pSkeletonId, FBVector3d_Wrapper &pRotationVector ) { mFBActor->GetDefinitionRotationVector( pSkeletonId, *(pRotationVector.mFBVector3d) ); }
     void SetDefinitionRotationVector(	FBSkeletonNodeId pSkeletonId, FBVector3d_Wrapper& pRotationVector, bool pSymmetricUpdate = true ) { mFBActor->SetDefinitionRotationVector( pSkeletonId, *pRotationVector.mFBVector3d,pSymmetricUpdate ); }
+    void GetDefinitionTranslationVector(	FBSkeletonNodeId pSkeletonId, FBVector3d_Wrapper &pTranslationVector ) { mFBActor->GetDefinitionTranslationVector( pSkeletonId, *(pTranslationVector.mFBVector3d) ); }
+	void SetDefinitionTranslationVector(	FBSkeletonNodeId pSkeletonId, FBVector3d_Wrapper& pTranslationVector, bool pSymmetricUpdate = true ) { mFBActor->SetDefinitionTranslationVector( pSkeletonId, *pTranslationVector.mFBVector3d, pSymmetricUpdate ); }
     FBSkeletonState_Wrapper* GetDefaultSkeletonState( ) { return FBSkeletonState_Wrapper_Factory(mFBActor->GetDefaultSkeletonState()); }
 	FBSkeletonState_Wrapper* GetCurrentSkeletonState( ) { return FBSkeletonState_Wrapper_Factory(mFBActor->GetCurrentSkeletonState()); }
     FBSkeletonState_Wrapper* GetCurrentSkeletonState1( bool pResetOrientation ) { return FBSkeletonState_Wrapper_Factory(mFBActor->GetCurrentSkeletonState(pResetOrientation)); }
@@ -399,7 +402,13 @@ public:
 	void SetManipulateOffsets( bool pManipulateOffsets ) { mFBActor->ManipulateOffsets = pManipulateOffsets; }
 	bool GetManipulateOffsets(  ) { return mFBActor->ManipulateOffsets; }
 	void SetIKManip( bool pIKManip ) { mFBActor->IKManip = pIKManip; }
-	bool GetIKManip(  ) { return mFBActor->IKManip; }
+	bool GetIKManip() { return mFBActor->IKManip; }
+	void SetSymmetryEditTranslation( bool pSymmetryEditTranslation ) { mFBActor->SymmetryEditTranslation = pSymmetryEditTranslation; }
+	bool GetSymmetryEditTranslation() { return mFBActor->SymmetryEditTranslation; }
+	void SetSymmetryEditRotation( bool pSymmetryEditRotation ) { mFBActor->SymmetryEditRotation = pSymmetryEditRotation; }
+	bool GetSymmetryEditRotation() { return mFBActor->SymmetryEditRotation; }
+	void SetSymmetryEditScaling( bool pSymmetryEditScaling ) { mFBActor->SymmetryEditScaling = pSymmetryEditScaling; }
+	bool GetSymmetryEditScaling() { return mFBActor->SymmetryEditScaling; }
 
 };
 #endif // pyfbactor_h__

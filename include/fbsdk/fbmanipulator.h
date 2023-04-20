@@ -121,7 +121,7 @@ public:
 	*/
 	FBManipulator(const char* pName, HIObject pObject=NULL);
 
-	virtual bool FBCreate	();
+	virtual bool FBCreate	() override;
 
 	// ***** Picking routines ******
 	//---- Rectangle -----

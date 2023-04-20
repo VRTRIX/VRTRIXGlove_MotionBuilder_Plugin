@@ -126,7 +126,7 @@ public:
 	FBCharacterSolver(const char* pName, HIObject pObject=NULL);
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    IObject_Declare(K_IMPLEMENTATION);
+    IObject_Declare(override);
 #endif
 
 	int mEvaluationId;						//!< Last Evaluation Id

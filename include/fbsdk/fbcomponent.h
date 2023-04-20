@@ -64,7 +64,6 @@
 #include <fbsdk/fbproperties.h>
 
 #ifdef _MSC_VER
-	#pragma warning (disable: 4275)	// 'int' : forcing value to bool 'true' or 'false' (performance warning) 
 	#pragma warning (disable: 4661)	// no suitable definition provided for explicit template instantiation request
 #endif
 
@@ -385,7 +384,7 @@ inline  bool FBUnregisterObject( const char * pGroupName, const char * pEntryNam
 *	For internal use only.
 */
 #define FBRegisterObject( LocalId,Path,Name,Description,Constructor,IsMultipleAllowed,IconFilename ) \
-	static int __R##LocalId = FBObject_Register( Path,Name,Description,Constructor,IsMultipleAllowed,IconFilename )
+	[[maybe_unused]] static bool __R##LocalId = FBObject_Register( Path,Name,Description,Constructor,IsMultipleAllowed,IconFilename )
 
 /** HISender*/
 typedef HIRegister	HISender;
@@ -505,7 +504,7 @@ class FBSDK_DLL FBPropertyListComponentBase : public FBPropertyBasicList
 	/**	Remove the component at \e pIndex from list.
 	*	\param	pIndex	Index of Component to remove.
 	*/
-    virtual void RemoveAt( int pIndex );
+    virtual void RemoveAt( int pIndex ) override;
 	/**	Get the Component at \e pIndex.
 	*	\param	pIndex	Index of Component to get a handle on.
 	*	\return Component at \e pIndex.
@@ -519,7 +518,7 @@ class FBSDK_DLL FBPropertyListComponentBase : public FBPropertyBasicList
 	/**	Get the Component count.
 	*	\return Number of Components.
 	*/
-	virtual int GetCount();
+	virtual int GetCount() override;
 
 	/**	Locate a property in the list.
 	*	\param pItem Property to find in the list.
@@ -865,16 +864,16 @@ public:
 
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    IObject_Declare(K_IMPLEMENTATION);
-    ICallback_Declare(K_IMPLEMENTATION);
+    IObject_Declare(override);
+    ICallback_Declare(override);
 #endif
 
 	/** Returns true if object is of type TypeId.
 	*	\param pTypeId TypeId to compare object to.
 	*	\return Result of the comparison.
 	*/
-	virtual bool Is( int pTypeId );
-    virtual int GetTypeId();
+	virtual bool Is( int pTypeId ) override;
+    virtual int GetTypeId() override;
 
 	static void FBComponentSetName( FBComponent* pObject, const char *pName );
 	static const char* FBComponentGetName( FBComponent* pObject );
@@ -1086,8 +1085,8 @@ class FBSDK_DLL FBLibraryBase : public ICallback
 public:
 	FBLibraryBase();
 	virtual ~FBLibraryBase();
-    IObject_Declare(K_IMPLEMENTATION);
-    ICallback_Declare(K_IMPLEMENTATION);
+    IObject_Declare(override);
+    ICallback_Declare(override);
 
 	/** Initialize library.
 	*	Initial load of DLL into memory.
@@ -1310,7 +1309,7 @@ public:
     /** Open Reality Creation function.
     *   \return Outcome of creation (true/false).
     */
-    virtual bool FBCreate();
+    virtual bool FBCreate() override;
 
     /** This method is called upon the loading of the plugin, right after
     *   FBCreate is called. Since it happens very early in the lifespan of

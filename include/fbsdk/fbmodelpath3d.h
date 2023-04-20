@@ -318,16 +318,6 @@ public:
     */
     bool       PathKeySetControlNode(int pKeyIndex, FBModel* pControlNode);
 
-    //--- Curve -------------------------------------------------------------------------------------------------------------------------
-    /** Adds a new key either at the start, end or along the path as per specified. 
-    *    \param  pTotalPercent     Double value indicating where the key is to be added. If < 0, key added before start of the path,
-    *                              if > 0, key added at end of path, otherwise it is added somewhere along the path depending on value specified
-    *    \param  pTLocal        Vector to use to set values to Key
-    *    \return  Index as integer for the path key added 
-    *    \deprecated use PathKeyStartAdd(), PathKeyEndAdd(), PathKeyInsertAfter(), or PathKeySet() instead.
-    */
-    K_DEPRECATED_2017 int Total_PathKeyAdd(double pTotalPercent, FBVector4d pTLocal, FBEvaluateInfo* pEvaluateInfo=NULL);
-
     /** Query whether a percentage value has a key associated at that point in the path.
     *    \param  pTotalPercent        Double value (as percentage) at which the path would be queried for existence of key
     *    \return A valid key index in integer if key is present, otherwise -1
@@ -357,15 +347,6 @@ public:
     *    \return    Derivative value at the required point in the path
     */
     FBVector4d Total_LocalPathEvaluateDerivative(double pTotalPercent, FBEvaluateInfo* pEvaluateInfo=NULL);
-
-    /** Adds a new key either at the start, end or along the path as per specified. 
-    *    \param  pSegmentPercent     Double value indicating where the key is to be added. If < 0, key added before start of the path,
-    *                              if > 0, key added at end of path, otherwise it is added somewhere along the path depending on value specified
-    *    \param  pTLocal           Vector to use to set values to Key
-    *    \return    Vector value at the required point in the path
-    *    \deprecated use PathKeyStartAdd(), PathKeyEndAdd(), PathKeyInsertAfter(), or PathKeySet() instead.
-    */
-    K_DEPRECATED_2017 int Segment_PathKeyAdd(double pSegmentPercent, FBVector4d pTLocal, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Query whether a percentage value has a key associated at that point in the path.
     *    \param  pSegmentPercent        Double value (as time) at which the path would be queried for existence of key

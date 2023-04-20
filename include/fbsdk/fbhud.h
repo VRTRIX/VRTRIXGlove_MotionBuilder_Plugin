@@ -143,13 +143,13 @@ public:
     *    \param    pFbxObject    FBX Object that is used to communicate I/O operations.
     *    \param    pStoreWhat    Which attributes are currently stored/retrieved.
     */
-    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
+    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 
     /**    Retrieve function that can be overloaded.
     *    \param    pFbxObject    FBX Object that is used to communicate I/O operations.
     *    \param    pStoreWhat    Which attributes are currently stored/retrieved.
     */
-    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
+    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 };
 
 /** Custom Storable HUDELement Class implementation.
@@ -354,7 +354,29 @@ public:
     FBPropertyTime TailDuration;                //!< <b>Read Write Property:</b> Specifies duration of the Tail region.    
 };
 
+////////////////////////////////////////////////////////////////////////////////////
+// FBPropertyListHUD
+////////////////////////////////////////////////////////////////////////////////////
 __FB_FORWARD( FBHUD ); 
+
+FB_DEFINE_LIST( FBSDK_DLL, HUD );
+FB_FORWARD( FBPropertyListHUD );
+
+//! \b PropertyList: Handle.
+class FBSDK_DLL FBPropertyListHUD : public FBPropertyListComponent
+{
+public:
+	FBPropertyListHUD();
+    /**	Get the model template at \e pIndex.
+	*	\param	pIndex	Index of model template to get.
+	*	\return Model template at \e pIndex.
+	*/
+	FBHUD* operator[](int pIndex);
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+// FBHUD
+////////////////////////////////////////////////////////////////////////////////////
 FB_DEFINE_COMPONENT( FBSDK_DLL, HUD );
 
 /** Heads Up display.
@@ -403,25 +425,11 @@ public:
     FBPropertyBool              Visibility; //!< <b>Read Write Property:</b> Indicate if the information will be displayed or not.
 	FBPropertyEvent	            OnDisplay;	//!< <b>Event:</b> Callback just before HUD is displayed to update custom values
     FBPropertyListHUDElement    Elements;   //!< <b>List:</b> Elements present in the HUD.
+	FBPropertyListHUD           HUDs;		//!< <b>List:</b> HUDS attached to this HUD.
 };
 
-////////////////////////////////////////////////////////////////////////////////////
-// FBPropertyListHUD
-////////////////////////////////////////////////////////////////////////////////////
-FB_DEFINE_LIST( FBSDK_DLL, HUD );
-FB_FORWARD( FBPropertyListHUD );
 
-//! \b PropertyList: Handle.
-class FBSDK_DLL FBPropertyListHUD : public FBPropertyListComponent
-{
-public:
-	FBPropertyListHUD();
-    /**	Get the model template at \e pIndex.
-	*	\param	pIndex	Index of model template to get.
-	*	\return Model template at \e pIndex.
-	*/
-	FBHUD* operator[](int pIndex);
-};
+
 
 /** Heads Up display manager.
 *

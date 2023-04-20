@@ -1000,7 +1000,7 @@ public:
     /** Actual Actor destructor.
     *   This method is used to delete the actual actor object represented by an instance of FBActor.
     */
-    virtual void FBDelete();
+    virtual void FBDelete() override;
 
 	FBPropertyMarkerSet		MarkerSet;		//!< <b>Read Write Property:</b> Associated marker set.
 	FBPropertyMarkerSet		OutputMarkerSet;//!< <b>Read Write Property:</b> Associated output marker set.
@@ -1216,7 +1216,11 @@ public:
 
 	FBPropertyBool 				ManipulateOffsets; 		//!< <b>Read Write Property:</b> Flag to compute offsets while manipulating. If it is set to false, the manipulator is re-snapping as before. If it is set to true, offsets properties (T and R) are computed and candidated instead.
 	
-	FBPropertyBool				IKManip; 				//!< <b>Read Write Property:</b> Access to the IK Manip mode. The IKManip property is shared for all actors.
+	FBPropertyBool				IKManip; 				//!< <b>Read Write Property:</b> Access to the IK Manip mode. This property is shared for all actors.
+
+	FBPropertyBool				SymmetryEditTranslation;//!< <b>Read Write Property:</b> Symmetry Edit (Translation) mode state. Only effective when IKManip property is set to false. This property is shared for all actors.
+	FBPropertyBool				SymmetryEditRotation;	//!< <b>Read Write Property:</b> Symmetry Edit (Rotation) mode state. Only effective when IKManip property is set to false. This property is shared for all actors.
+	FBPropertyBool				SymmetryEditScaling; 	//!< <b>Read Write Property:</b> Symmetry Edit (Scaling) mode state. Only effective when IKManip property is set to false. This property is shared for all actors.
 
 	/** Snap the marker set of the actor.
 	*	\return	True if the operation completed successfully.
@@ -1229,27 +1233,46 @@ public:
     */
 	void	UpdateValues( FBEvaluateInfo* pEvalInfo );
 
-	/** Set Actor Scaling Definition
+	/** Set Actor Scaling Definition.
 	*   \param		pSkeletonId		Skeleton Node Id
 	*	\param		pScaleVector	Actor Scaling value for the given ID
 	*	\param		pSymmetricUpdate	Update right and left part at the same time
     */
 	void	SetDefinitionScaleVector(	FBSkeletonNodeId pSkeletonId, FBVector3d pScaleVector, bool pSymmetricUpdate = true );
 
-	/** Get Actor Scaling Definition
+	/** Get Actor Scaling Definition.
 	*   \param		pSkeletonId		Skeleton Node Id
 	*	\retval		pScaleVector	Actor Scaling Definition for the given ID
     */
 	void	GetDefinitionScaleVector(	FBSkeletonNodeId pSkeletonId, FBVector3d &pScaleVector );
 
-	/** Set Actor Rotation Definition
+	/** Set Actor Rotation Definition. Only effective when IKManip property is set to false.
 	*   \param		pSkeletonId		Skeleton Node Id
 	*	\param		pRotationVector	Actor Rotation value for the given ID
 	*	\param		pSymmetricUpdate	Update right and left part at the same time
     */
 	void	SetDefinitionRotationVector(	FBSkeletonNodeId pSkeletonId, FBVector3d pRotationVector, bool pSymmetricUpdate = true );
+
+	/** Get Actor Rotation Definition. Only effective when IKManip property is set to false.
+	*   \param		pSkeletonId		Skeleton Node Id
+	*	\retval		pRotationVector	Actor Rotation Definition for the given ID
+    */
+	void	GetDefinitionRotationVector(	FBSkeletonNodeId pSkeletonId, FBVector3d &pRotationVector );
+
+	/** Set Actor Translation Definition. Only effective when IKManip property is set to false.
+	*   \param		pSkeletonId		Skeleton Node Id
+	*	\param		pTranslationVector	Actor Translation value for the given ID
+	*	\param		pSymmetricUpdate	Update right and left part at the same time
+    */
+	void	SetDefinitionTranslationVector(	FBSkeletonNodeId pSkeletonId, FBVector3d pTranslationVector, bool pSymmetricUpdate = true );
+
+	/** Get Actor Translation Definition. Only effective when IKManip property is set to false.
+	*   \param		pSkeletonId		Skeleton Node Id
+	*	\retval		pTranslationVector	Actor Translation Definition for the given ID
+    */
+	void	GetDefinitionTranslationVector(	FBSkeletonNodeId pSkeletonId, FBVector3d &pTranslationVector );
     
-    /** Translate Actor, similar to moving the hips of the Actor in the UI
+    /** Translate Actor, similar to moving the hips of the Actor in the UI. Only effective when IKManip property is set to false.
 	*   \param		pTranslationVector      Will move the entire Actor to pTranslationVector coordinate
     */
 	void	SetActorTranslation( FBVector3d pTranslationVector );    
@@ -1373,15 +1396,15 @@ public:
 	*/
 	FBCharacter(const char* pName, HIObject pObject=NULL);
 
-	IObject_Declare(K_IMPLEMENTATION);				// Interface to IObject.
+	IObject_Declare(override);				// Interface to IObject.
 
     /** Actual Character destructor.
     *   This method is used to delete the actual character object represented by an instance of FBCharacter.
     */
-    virtual void FBDelete();
+    virtual void FBDelete() override;
 
 	//! Clone the character.
-    FBCharacter* Clone();
+    FBCharacter* Clone() override;
 
 	FBPropertyCharacterInputType	InputType;		//!< <b>Read Write Property:</b> The input type for the character (ex: Actor).
 	FBPropertyCharacterKeyingMode	KeyingMode;		//!< <b>Read Write Property:</b> The current keying mode.

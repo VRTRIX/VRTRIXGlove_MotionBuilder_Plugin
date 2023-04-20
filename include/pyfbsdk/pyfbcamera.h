@@ -69,6 +69,14 @@ public:
     bool GetForeGroundImageFit(  ) { return mFBCamera->ForeGroundImageFit; }
     void SetForeGroundImageKeepRatio( bool pForeGroundImageKeepRatio ) { mFBCamera->ForeGroundImageKeepRatio = pForeGroundImageKeepRatio; }
     bool GetForeGroundImageKeepRatio(  ) { return mFBCamera->ForeGroundImageKeepRatio; }
+    void SetForeGroundImageOffsetX( double pOffsetX ) { mFBCamera->ForeGroundImageOffsetX = pOffsetX; }
+    object GetForeGroundImageOffsetX(  ) { return WrapFBObject<FBPropertyAnimatableDouble_Wrapper,FBPropertyAnimatableDouble>( &mFBCamera->ForeGroundImageOffsetX ); }
+    void SetForeGroundImageOffsetY( double pOffsetY ) { mFBCamera->ForeGroundImageOffsetY = pOffsetY; }
+    object GetForeGroundImageOffsetY(  ) { return WrapFBObject<FBPropertyAnimatableDouble_Wrapper,FBPropertyAnimatableDouble>( &mFBCamera->ForeGroundImageOffsetY ); }
+    void SetForeGroundImageScaleX( double pScaleX ) { mFBCamera->ForeGroundImageScaleX = pScaleX; }
+    object GetForeGroundImageScaleX(  ) { return WrapFBObject<FBPropertyAnimatableDouble_Wrapper,FBPropertyAnimatableDouble>( &mFBCamera->ForeGroundImageScaleX ); }
+    void SetForeGroundImageScaleY( double pScaleY ) { mFBCamera->ForeGroundImageScaleY = pScaleY; }
+    object GetForeGroundImageScaleY(  ) { return WrapFBObject<FBPropertyAnimatableDouble_Wrapper,FBPropertyAnimatableDouble>( &mFBCamera->ForeGroundImageScaleY ); }
     void SetForeGroundMaterialThreshold( double pForeGroundMaterialThreshold ) { mFBCamera->ForeGroundMaterialThreshold = pForeGroundMaterialThreshold; }
     double GetForeGroundMaterialThreshold(  ) { return mFBCamera->ForeGroundMaterialThreshold; }
     void SetForeGroundTexture( FBTexture_Wrapper* pForeGroundTexture ) { mFBCamera->ForeGroundTexture = pForeGroundTexture->mFBTexture; }
@@ -87,6 +95,14 @@ public:
     bool GetBackGroundImageFit(  ) { return mFBCamera->BackGroundImageFit; }
     void SetBackGroundImageKeepRatio( bool pBackGroundImageKeepRatio ) { mFBCamera->BackGroundImageKeepRatio = pBackGroundImageKeepRatio; }
     bool GetBackGroundImageKeepRatio(  ) { return mFBCamera->BackGroundImageKeepRatio; }
+    void SetBackGroundImageOffsetX( double pOffsetX ) { mFBCamera->BackGroundImageOffsetX = pOffsetX; }
+    object GetBackGroundImageOffsetX(  ) { return WrapFBObject<FBPropertyAnimatableDouble_Wrapper,FBPropertyAnimatableDouble>( &mFBCamera->BackGroundImageOffsetX ); }
+    void SetBackGroundImageOffsetY( double pOffsetY ) { mFBCamera->BackGroundImageOffsetY = pOffsetY; }
+    object GetBackGroundImageOffsetY(  ) { return WrapFBObject<FBPropertyAnimatableDouble_Wrapper,FBPropertyAnimatableDouble>( &mFBCamera->BackGroundImageOffsetY ); }
+    void SetBackGroundImageScaleX( double pScaleX ) { mFBCamera->BackGroundImageScaleX = pScaleX; }
+    object GetBackGroundImageScaleX(  ) { return WrapFBObject<FBPropertyAnimatableDouble_Wrapper,FBPropertyAnimatableDouble>( &mFBCamera->BackGroundImageScaleX ); }
+    void SetBackGroundImageScaleY( double pScaleY ) { mFBCamera->BackGroundImageScaleY = pScaleY; }
+    object GetBackGroundImageScaleY(  ) { return WrapFBObject<FBPropertyAnimatableDouble_Wrapper,FBPropertyAnimatableDouble>( &mFBCamera->BackGroundImageScaleY ); }
     void SetBackGroundTexture( FBTexture_Wrapper* pBackGroundTexture ) { mFBCamera->BackGroundTexture = pBackGroundTexture->mFBTexture; }
     object GetBackGroundTexture(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBCamera->BackGroundTexture ); }
     void SetBackGroundMedia( FBVideo_Wrapper* pBackGroundMedia );

@@ -67,7 +67,7 @@ class FBSDK_DLL FBActionManager: public FBComponent
 {
     FBClassDeclare( FBActionManager, FBComponent );
 
-public:
+protected:
     /** Constructor.
     */
     FBActionManager();

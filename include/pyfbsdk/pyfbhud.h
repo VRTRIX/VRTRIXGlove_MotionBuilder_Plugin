@@ -35,6 +35,7 @@ public:
 	bool GetVisibility(  ) { return mFBHUD->Visibility; }
 	object OnDisplay();
     object GetElements() { return FBPropertyListHUDElement_Wrapper_Factory( mFBHUD->Elements ); }
+	object GetHUDs() { return FBPropertyListHUD_Wrapper_Factory( mFBHUD->HUDs ); }
 
     object CreateElement( FBHUD::EStockElement pType, const char *pName );
     object CreateCustomElement( const char* pHUDElementClassName, const char* pName );

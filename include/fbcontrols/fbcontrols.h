@@ -323,8 +323,8 @@ public:
     //! Constructor.
     FBVisualComponent(HIObject pObject);
 
-    IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject
-    ICallback_Declare(K_IMPLEMENTATION);		// Interface to ICallback
+    IObject_Declare(override);		// Interface to IObject
+    ICallback_Declare(override);		// Interface to ICallback
 
     /**	Get internal toolkit object.
     *	\return Handle to internal toolkit object.
@@ -515,7 +515,7 @@ public:
     */
     FBEventDragAndDrop ( HKEventBase pEvent );
 
-    virtual ~FBEventDragAndDrop(){}
+    virtual ~FBEventDragAndDrop()=default;
 
     /** Accept a drag and drop sequence.
     *	This will cause the region in question to accept a drag and drop action when this
@@ -970,7 +970,7 @@ public:
     */
     void Restructure( bool pNoMove );
 
-    IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+    IObject_Declare(override);		// Interface to IObject.
 
     //--- Events
     FBPropertyEvent		OnInput;		//!< <b>Event:</b> Input.
@@ -1903,7 +1903,7 @@ public:
     */
     FBView();
 
-    IObject_Declare(K_IMPLEMENTATION);	// Interface to IObject
+    IObject_Declare(override);	// Interface to IObject
 
     /**	Create an OpenGL pbuffer.
     *	\return	Operation was successful (\b true or \b false).
@@ -1913,12 +1913,12 @@ public:
 	/**	Refresh view.
     *	\param	pNow		If \b true, refresh immediately (default = \b false).
     */
-    virtual void Refresh(bool pNow=false);
+    virtual void Refresh(bool pNow=false) override;
 
     /** Checks if object is a view.
     *	\return	Is object a view? (\b true or \b false)
     */
-    virtual bool IsView();
+    virtual bool IsView() override;
 
     /**	Draw a string in the view.
     *	\param	pText		Text to draw.

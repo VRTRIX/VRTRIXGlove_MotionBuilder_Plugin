@@ -879,24 +879,24 @@ namespace FBSDKNamespace {
 
         /** Begin NURBS definition.
         */
-        virtual void    SurfaceBegin();
+        virtual void    SurfaceBegin() override;
 
         /** End NURBS definition.
         */
-        virtual void    SurfaceEnd();
+        virtual void    SurfaceEnd() override;
 
         /**    Begin NURBS surface edition
         */
-        virtual void    SurfaceEditBegin();
+        virtual void    SurfaceEditBegin() override;
         /**    End NURBS surface edition
         */
-        virtual void    SurfaceEditEnd();
+        virtual void    SurfaceEditEnd() override;
         /**    Begin NURBS control points edition
         */
-        virtual void    ControlPointsBegin();
+        virtual void    ControlPointsBegin() override;
         /**    End NURBS control points edition
         */
-        virtual void    ControlPointsEnd();
+        virtual void    ControlPointsEnd() override;
         /**    Set weight of control point
         *    \param    pIndex Index of control point to set weight at.
         *    \param    pWeight Weight of control point.
@@ -963,26 +963,26 @@ namespace FBSDKNamespace {
 
         /** Begin Patch definition
         */
-        virtual void SurfaceBegin();
+        virtual void SurfaceBegin() override;
 
         /** End Patch definition
         */
-        virtual void SurfaceEnd();
+        virtual void SurfaceEnd() override;
 
         /**    Begin patch surface edit.
         */
-        virtual void SurfaceEditBegin();
+        virtual void SurfaceEditBegin() override;
 
         /**    End patch surface edit.
         */
-        virtual void SurfaceEditEnd();
+        virtual void SurfaceEditEnd() override;
 
         /** Begin control points edition
         */
-        virtual void ControlPointsBegin();
+        virtual void ControlPointsBegin() override;
         /** End control points edition
         */
-        virtual void ControlPointsEnd();
+        virtual void ControlPointsEnd() override;
 
 
         FBPropertySurfaceType    USurfaceType;        //!< <b>Read Write Property:</b> Patch mode for U direction.

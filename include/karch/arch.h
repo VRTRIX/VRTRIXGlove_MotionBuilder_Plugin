@@ -49,11 +49,6 @@
  */
 #define KARCH_ARCH_AMD64_GENERIC	800
 
-/*
- *	Intel IA64 Architecture
- */
-#define KARCH_ARCH_ITANIUM			1000
-
 #if defined(__linux__) || defined(__CYGWIN__) //////////////////////////////////////////////// LINUX and CYGWIN
 	#define KARCH_DEV_GNUC			__GNUC__
 	#define KARCH_ENV_UNIX			1
@@ -70,14 +65,16 @@
 
 		#if (__GNUC__ < 4)
 			#error "Compiler is too old !!!"
+		#else
+			#if __cplusplus < 201603L
+				#define maybe_unused gnu::unused // until maybe_unused gets defined by the compiler
+			#endif
 		#endif
 
 		#define GCC_VERSION		(__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 
 		// CPU Determination.
-		#if defined(__ia64__)
-			#define KARCH_CPU_IA64		KARCH_ARCH_ITANIUM
-		#elif defined(__x86_64)
+		#if defined(__x86_64)
 			#define KARCH_CPU_AMD64 	KARCH_ARCH_AMD64_GENERIC
 		#elif defined(__i386__)
 			#define KARCH_CPU_IA32	 	KARCH_ARCH_X86
@@ -122,35 +119,16 @@
 	#ifndef _CRT_SECURE_NO_WARNINGS
 		#define _CRT_SECURE_NO_WARNINGS 1
 	#endif
-	#ifndef _CRT_SECURE_NO_DEPRECATE
-		#define _CRT_SECURE_NO_DEPRECATE 1
-	#endif
-
-	// Use a newer version of comctl32.dll tooltips for Sketchbook
-	#if defined _M_IX86
-		#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")
-	#elif defined _M_IA64
-		#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='ia64' publicKeyToken='6595b64144ccf1df' language='*'\"")
-	#elif defined _M_X64
-		#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='amd64' publicKeyToken='6595b64144ccf1df' language='*'\"")
-	#else
-		#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-	#endif
 
 	#if defined(__MINGW32__)
 		#define KARCH_ENV_MING32	__MINGW32__
-	#endif
-	#if defined(__ICL)
-		#define KARCH_DEV_INTEL		__ICL
 	#endif
 	#if defined(_MSC_VER)
 		#define KARCH_DEV_MSC		_MSC_VER
 	#elif defined(__GNUC__)
 		#define KARCH_DEV_GNUC			__GNUC__
 		// CPU Determination.
-		#if defined(__ia64__)
-			#define KARCH_CPU_IA64		KARCH_ARCH_ITANIUM
-		#elif defined(__x86_64)
+		#if defined(__x86_64)
 			#define KARCH_CPU_AMD64 	KARCH_ARCH_AMD64_GENERIC
 		#elif !defined(__i386__)
 			#define KARCH_CPU_IA32	 	KARCH_ARCH_X86
@@ -171,28 +149,6 @@
 	#else
 		#error "Architecture not supported"
 	#endif
-
-#elif defined(__MACH__)
-
-	#if defined(__i386__)
-		#define KARCH_CPU_IA32		KARCH_ARCH_X86
-	 	#define KARCH_ARCH_IA32		KARCH_CPU_IA32
-	#elif defined(__x86_64__)
-	 	#define KARCH_ARCH_X64		_M_X64
-		#define KARCH_ARCH_64		1
-	#elif defined(__arm__)
-		#define KARCH_ARCH_ARM
-		#define KARCH_CPU_ARM
-		#define K_REQUIRE_DATA_ALIGNMENT
-	#else
-		#error "Architecture not supported"
-	#endif
-	
-    #define KARCH_DEV_MACOSX
-    #define KARCH_ENV_MACOSX
-    #define KARCH_DEV_GNUC			__GNUC__
-	#define KARCH_ENV_UNIX			1
-	#define KARCH_ENV_POSIX			1
 
 #else	//////////////////////////////////////////////// GENERIC
 	#error "Environment not supported"

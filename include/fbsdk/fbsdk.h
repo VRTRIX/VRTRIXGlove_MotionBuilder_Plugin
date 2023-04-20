@@ -62,6 +62,9 @@
 #include <fbsdk/fbevaluatemanager.h>
 #include <fbsdk/fbapplication.h>
 #include <fbsdk/fbactionmanager.h>
+#include <fbsdk/fbtransportaudiomanager.h>
+#include <fbsdk/fbcameraswitcheraudiomanager.h>
+#include <fbsdk/fbtoollayoutmanager.h>
 #if !defined(K_NO_RENDERER)
 #include <fbsdk/fbrenderer.h>
 #endif

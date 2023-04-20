@@ -365,13 +365,8 @@ typedef class FBSDK_DLL FBArrayTemplate<double>	        FBArrayDouble;
 *	\param	DllTag		Associated DLL.
 *	\param	Type		Type to register as an array.
 */
-#if defined(KARCH_DEV_INTEL)
-	#define FBImplementArray( DllTag, Type ) 
-#else
-	#define FBImplementArray( DllTag, Type ) \
-		template class DllTag FBSDKNamespaceFunc( FBArrayTemplate ) < FB##Type* >;
-#endif
-
+#define FBImplementArray( DllTag, Type ) \
+	template class DllTag FBSDKNamespaceFunc( FBArrayTemplate ) < FB##Type* >;
 
 #ifdef FBSDKUseNamespace
 	}

@@ -70,6 +70,7 @@ public:
     DECLARE_DEFINE_ORSDK_PROPERTY_PYTHON_ACCESS(FBMotionFileOptions, CreateUnusedOpticalSegments, bool);
     DECLARE_DEFINE_ORSDK_PROPERTY_PYTHON_ACCESS(FBMotionFileOptions, SetOccludedToLastValidPosition, bool);
     DECLARE_DEFINE_ORSDK_PROPERTY_PYTHON_ACCESS(FBMotionFileOptions, KeepActorPrefix, bool);
+	DECLARE_DEFINE_ORSDK_PROPERTY_PYTHON_ACCESS(FBMotionFileOptions, UpAxisUsedInFile, FBUpAxis);
 
 };
 #endif // pyfbmotionfileoptions_h__

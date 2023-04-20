@@ -87,12 +87,12 @@ public:
 	*/
 	virtual bool PlotAnimation( );
 
-	IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+	IObject_Declare(override);		// Interface to IObject.
 
     /** Actual Actor Face destructor.
     *   This method is used to delete the actual actor face object represented by an instance of FBActorFace.
     */
-    virtual void FBDelete();
+    virtual void FBDelete() override;
 };
 
 
@@ -118,7 +118,7 @@ public:
 	*/
 	FBCharacterFace(const char* pName, HIObject pObject=NULL);
 
-	IObject_Declare(K_IMPLEMENTATION);				// Interface to IObject.
+	IObject_Declare(override);				// Interface to IObject.
 
 	FBPropertyActorFace				InputActorFace;	//!< <b>Read Write Property:</b> The index of the actor used for the input.
 	FBPropertyBool					ActiveInput;	//!< <b>Read Write Property:</b> Is the character input active?
@@ -131,7 +131,7 @@ public:
     /** Actual Character Face destructor.
     *   This method is used to delete the actual character face object represented by an instance of FBCharacterFace.
     */
-    virtual void FBDelete();
+    virtual void FBDelete() override;
 
 	/** Set the character face back to its rest shape.
 	*/

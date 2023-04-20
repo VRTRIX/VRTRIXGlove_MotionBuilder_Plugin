@@ -53,5 +53,7 @@ public:
     const char* GetToolName() { return mFBTool->Name; }
 	FBToolPossibleDockPosition GetPossibleDockPosition() { return mFBTool->GetPossibleDockPosition(); }
 	void SetPossibleDockPosition(FBToolPossibleDockPosition pFlags) { mFBTool->SetPossibleDockPosition(pFlags); }
+	const char* GetDisplayName() { return mFBTool->DisplayName; }
+	void SetDisplayName( const char* pDisplayName ) { mFBTool->DisplayName = pDisplayName; }
 };
 #endif // pyfbtool_h__

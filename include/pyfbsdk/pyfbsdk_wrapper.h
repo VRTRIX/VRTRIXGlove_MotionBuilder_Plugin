@@ -13,6 +13,5 @@
 	#define PYFBSDKNamespaceFunc( Name )    PYFBSDKNamespace::Name
 #endif
 
-#include <kmath/maths.h>	// Must be included first otherwise Boost is messing with isnan()
 #include "pyfbsdk_version_wrapper.h"
 

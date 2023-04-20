@@ -282,6 +282,10 @@ public:
     FBPropertyBool                       BackGroundImageFit;             //!< <b>Read Write Property:</b> Fit the background image
     FBPropertyBool                       BackGroundImageKeepRatio;       //!< <b>Read Write Property:</b> Keep the background image's ratio
     FBPropertyBool                       BackGroundImageCrop;            //!< <b>Read Write Property:</b> Crop the background image
+    FBPropertyAnimatableDouble           BackGroundImageOffsetX;         //!< <b>Read Write Property:</b> Ignored if BackGroundImageFit is true. X offset, in term of percentage of the fit background image width, applied on the background image.
+    FBPropertyAnimatableDouble           BackGroundImageOffsetY;         //!< <b>Read Write Property:</b> Ignored if BackGroundImageFit is true. Y offset, in term of percentage of the fit background image height, applied on the background image.
+    FBPropertyAnimatableDouble           BackGroundImageScaleX;          //!< <b>Read Write Property:</b> Ignored if BackGroundImageFit is true. X scale, in term of percentage of the fit background image width, applied on the background image.
+    FBPropertyAnimatableDouble           BackGroundImageScaleY;          //!< <b>Read Write Property:</b> Ignored if BackGroundImageFit and/or BackGroundImageKeepRatio is true. Y scale, in term of percentage of the fit background image height, applied on the background image. The X scale property is considered instead of this Y scale property if BackGroundImageKeepRatio is set to true.
     FBPropertyDouble                     BackGroundPlaneDistance;        //!< <b>Read Write Property:</b> Set the distance for the background plane.
     FBPropertyCameraDistanceMode         BackGroundPlaneDistanceMode;    //!< <b>Read Write Property:</b> Select mode for the background plane's distance.
 
@@ -296,6 +300,10 @@ public:
     FBPropertyBool                       ForeGroundImageFit;             //!< <b>Read Write Property:</b> Fit the foreground image
     FBPropertyBool                       ForeGroundImageKeepRatio;       //!< <b>Read Write Property:</b> Keep the foreground image's ratio?
     FBPropertyBool                       ForeGroundImageCrop;            //!< <b>Read Write Property:</b> Crop the foreground image
+    FBPropertyAnimatableDouble           ForeGroundImageOffsetX;         //!< <b>Read Write Property:</b> Ignored if ForeGroundImageFit is true. X offset, in term of percentage of the fit foreground image width, applied on the foreground image.
+    FBPropertyAnimatableDouble           ForeGroundImageOffsetY;         //!< <b>Read Write Property:</b> Ignored if ForeGroundImageFit is true. Y offset, in term of percentage of the fit foreground image height, applied on the foreground image.
+    FBPropertyAnimatableDouble           ForeGroundImageScaleX;          //!< <b>Read Write Property:</b> Ignored if ForeGroundImageFit is true. X scale, in term of percentage of the fit foreground image width, applied on the foreground image.
+    FBPropertyAnimatableDouble           ForeGroundImageScaleY;          //!< <b>Read Write Property:</b> Ignored if ForeGroundImageFit and/or ForeGroundImageKeepRatio is true. Y scale, in term of percentage of the fit foreground image height, applied on the foreground image. The X scale property is considered instead of this Y scale property if ForeGroundImageKeepRatio is set to true.
     FBPropertyDouble                     ForeGroundPlaneDistance;        //!< <b>Read Write Property:</b> Set the distance for the foreground plane.
     FBPropertyCameraDistanceMode         ForeGroundPlaneDistanceMode;    //!< <b>Read Write Property:</b> Select mode for the foreground plane's distance.
 

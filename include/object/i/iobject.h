@@ -50,7 +50,6 @@ typedef unsigned long kInterfaceID;
 
 /** MACRO Base definitions **/
 #define FncDefine(PFNC,ISPURE) virtual PFNC##ISPURE
-#define K_IMPLEMENTATION	
 #define IObjectImplement(ClassName,IObjectOwner) \
     HIObject ClassName##::IQuery(kInterfaceID pInterfaceID,int IsLocal) {\
         if ((IObjectOwner!=NULL) && (!IsLocal)) {\

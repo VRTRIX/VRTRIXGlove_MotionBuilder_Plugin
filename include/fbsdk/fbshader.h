@@ -461,7 +461,7 @@ private:
 		*/
 		FBShader( const char* pName, HIObject pObject=NULL);
 
-		IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+		IObject_Declare(override);		// Interface to IObject.
 
 		/** Create a new shader-model information object.
 		*	\param	pModelRenderInfo 	Internal Model Render Info.
@@ -484,13 +484,15 @@ private:
 
 		/** Replace all shader in \e pModel.
 		*	\param	pModel	Model to replace all shader to.
+		*	\return	True if the operation is successful, false otherwise.
 		*/
-		virtual void ReplaceAll( FBModel* pModel );
+		virtual bool ReplaceAll( FBModel* pModel );
 
 		/** Append shader to \e pModel.
 		*	\param	pModel	Model to append shader to.
+		*	\return	True if the operation is successful, false otherwise.
 		*/
-		virtual void Append( FBModel* pModel );
+		virtual bool Append( FBModel* pModel );
 
 		/** Does the shader need a begin render call.
 		*	\remark	Re-implement this function and return true if you need it. This method is called once per shader on each render pass.

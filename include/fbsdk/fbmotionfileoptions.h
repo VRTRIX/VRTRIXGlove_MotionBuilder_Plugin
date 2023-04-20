@@ -62,8 +62,15 @@ enum FBModelSelection {
 	kFBInHierarchy,						//!< Will find the root node and will try to merge the data on the hierarchy, only useful if one model is selected.
 	kFBAllModels,						//!< Will imports motion into the hierarchies of all models in your scene. This is the only merge option when nothing is selected.
 };
-
 FB_DEFINE_ENUM( FBSDK_DLL, ModelSelection ); // FBPropertyModelSelection 
+
+/** This enumeration indicates which up axis is used in the motion file (so far, only effective when loading c3d files).
+*/
+enum FBUpAxis { 
+	kFBUpAxisY, //!< Use the Y-axis as the up axis.
+	kFBUpAxisZ, //!< Use the Z-axis as the up axis.
+};
+FB_DEFINE_ENUM( FBSDK_DLL, UpAxis ); // FBPropertyUpAxis
 
 //! Customize motion file loading.
 class FBSDK_DLL FBMotionFileOptions : public FBComponent {
@@ -99,6 +106,7 @@ public:
 	FBPropertyBool CreateUnusedOpticalSegments;		//!< <b>Read Write Property:</b> If set to true, unused optical segments will be created. Used for trc, c3d files.
 	FBPropertyBool SetOccludedToLastValidPosition;	//!< <b>Read Write Property:</b> If set to true, occluded segments will be set to their last valid position. Used for trc, c3d files.
 	FBPropertyBool KeepActorPrefix;					//!< <b>Read Write Property:</b> If set to true, the Actor prefix will be kept when naming each optical marker. Used with c3d files.
+    FBPropertyUpAxis UpAxisUsedInFile;              //!< <b>Read Write Property:</b> Indicated the up axis used in the motion file. Only effective when loading c3d files.
 
     /**	Return the take count in the file to be loaded.
     *   \warning You need to use an appropriate constructor with the file path to be able to get the take information.

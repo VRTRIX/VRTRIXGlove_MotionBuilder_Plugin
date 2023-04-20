@@ -178,6 +178,7 @@ namespace FBSDKNamespace {;
         FBPropertyDouble						Version;					//!< <b>Read Only Property:</b> Application version.
         FBPropertyString						BuildId;				    //!< <b>Read Only Property:</b> Unique build Id string.
         FBPropertyString						BuildVersion;				//!< <b>Read Only Property:</b> Unique build version string. The format of the build version information is: Major.Minor.Revision.BuildNumber. All sub-parts of the build version string are containing only numeric characters.
+        FBPropertyInt                           PythonVersion;              //!< <b>Read Only Property:</b> The Python interpreter version being used. The value is either 27 or 37.
 
 
 		FBPropertyBool							SuspendMessageBoxes;		//!< <b>Read Write Property:</b> While true, all the message boxes, that would normally be displayed, are suspended.
@@ -265,9 +266,9 @@ namespace FBSDKNamespace {;
         /**	Returns the command line arguments for SDK.
         *   This function returns portion of the command line arguments within a pair of delimiters (--sdk-begin & --sdk-end). Example:
         *
-        *   >>> motionbuilder -console -g500,500 -suspendMessages --sdk-begin --department mocap --usage on-stage --sdk-end C:/temp/sample.fbx 
+        *   >>> motionbuilder -console -G500,500 -suspendMessages --sdk-begin --department mocap --usage on-stage --sdk-end C:/temp/sample.fbx 
         *
-        *   Note that "-console", "-suspendMessages" and "C:\temp\sample.fbx" are for MotionBuilder itself hence are consumed accordingly.
+        *   Note that "-console", "-G500,500", "-suspendMessages" and "C:/temp/sample.fbx" are for MotionBuilder itself hence are consumed accordingly.
         *   Only those arguments between --sdk-begin and --sdk-end are accessible with this function. In this example, they will be 
         *   "--department mocap --usage on-stage"
         *

@@ -140,7 +140,7 @@ public:
 	*/
 	FBConstraint(const char* pName, HIObject pObject=NULL);
 
-    IObject_Declare(K_IMPLEMENTATION);			// Interface to IObject
+    IObject_Declare(override);			// Interface to IObject
 
 	virtual void ActiveChanged();				//!< Notification for Activation Status Change.
 
@@ -328,8 +328,8 @@ public:
 	*	\param	pStoreWhat	Attributes to store in FBX file.
 	*	\return \b true if successful.
 	*/
-	virtual bool FbxStore	( FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat );
-	virtual bool FbxRetrieve( FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat );
+	virtual bool FbxStore	( FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat ) override;
+	virtual bool FbxRetrieve( FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat ) override;
 	//@}
 
 	FBPropertyBool				Deformer;			//!< <b>Read Write Property:</b> Is a deformer constraint?
@@ -459,7 +459,7 @@ public:
 	*/
 	FBConstraintRelation(const char* pName, HIObject pObject=NULL);
 
-    IObject_Declare(K_IMPLEMENTATION);			// Interface to IObject
+    IObject_Declare(override);			// Interface to IObject
 
     /** Create a sender box.
     *   Use an existing FBBox object to create a sender in the relation.

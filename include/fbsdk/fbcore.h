@@ -323,7 +323,7 @@ private:
         virtual const char* FbxGetObjectSubType();//!< returns UniqueName if not overloaded.
         virtual const char* FbxGetObjectType();	//!< Object Type "Box".
 
-        IObject_Declare(K_IMPLEMENTATION);	// Interface to IObject.
+        IObject_Declare(override);	// Interface to IObject.
 
 		/** Get the number of animation node outputs for this box.
 		*	\return The number of animation node outputs for this box.
@@ -819,12 +819,12 @@ private:
         FBDevice(const char * pName,HIObject pObject=NULL);
 
         // See FBBox class
-        virtual bool FBCreate	();
-        virtual void FBDestroy	();
+        virtual bool FBCreate	() override;
+        virtual void FBDestroy	() override;
 
         // See FBBox class
-        virtual FBAnimationNode* AnimationNodeInCreate (kReference pUserId,const char * pName ,const char * pDataType,bool pIsPublic=true,double *pMin=NULL,double *pMax=NULL,bool pUserData=false);
-        virtual FBAnimationNode* AnimationNodeOutCreate(kReference pUserId,const char * pName ,const char * pDataType,bool pIsPublic=true,double *pMin=NULL,double *pMax=NULL,bool pUserData=false);
+        virtual FBAnimationNode* AnimationNodeInCreate (kReference pUserId,const char * pName ,const char * pDataType,bool pIsPublic=true,double *pMin=NULL,double *pMax=NULL,bool pUserData=false) override;
+        virtual FBAnimationNode* AnimationNodeOutCreate(kReference pUserId,const char * pName ,const char * pDataType,bool pIsPublic=true,double *pMin=NULL,double *pMax=NULL,bool pUserData=false) override;
 
         /**	Operate device.
         *	This is an operation such as Init, Start, Done, Reset, etc.
@@ -907,7 +907,7 @@ private:
         */
         virtual void DeviceSendCommand( kDeviceOperations pOperation );
 
-        IObject_Declare( K_IMPLEMENTATION );				// Interface to IObject
+        IObject_Declare( override );				// Interface to IObject
 
         FBPropertyString				Status;					//!< <b>Read Write Property:</b> Device information: status.
         FBPropertyString				Information;			//!< <b>Read Write Property:</b> Device information: information.
@@ -1042,12 +1042,12 @@ private:
         /**	When recording, initialize animation.
         *	\param	pAnimationNode	Animation node to read information from.
         */
-        virtual void RecordingInitAnimation( FBAnimationNode* pAnimationNode );
+        virtual void RecordingInitAnimation( FBAnimationNode* pAnimationNode ) override;
 
         /** When recording, finish animation.
         *	\param	pAnimationNode	Animation node to write information to.
         */
-        virtual void RecordingDoneAnimation( FBAnimationNode* pAnimationNode );
+        virtual void RecordingDoneAnimation( FBAnimationNode* pAnimationNode ) override;
 
     protected:
         /** Initialize the hand model geometry. You should set the LeftHand property prior to using this

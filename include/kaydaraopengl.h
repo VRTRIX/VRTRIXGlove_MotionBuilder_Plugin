@@ -55,26 +55,10 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#endif
 #endif
 
-#if defined(__APPLE__)
-	#include <OpenGl/gl.h>
-	#include <OpenGl/glu.h>
-#else
-	#include <GL/gl.h>
-	#include <GL/glu.h>
-#endif
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #if defined(_WIN32)
-	#ifndef GL_BGR
-		#define GL_BGR									GL_BGR_EXT
-	#endif
-	#ifndef GL_BGRA
-		#define GL_BGRA									GL_BGRA_EXT
-	#endif
-
-	#ifndef GL_EXT_abgr
-		#define GL_ABGR_EXT							0x8000
-		#define GL_EXT_abgr 1
-	#endif
 	#define GL_TEXTURE_MAX_ANISOTROPY_EXT			0x84FE
 	#define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT		0x84FF
 #endif

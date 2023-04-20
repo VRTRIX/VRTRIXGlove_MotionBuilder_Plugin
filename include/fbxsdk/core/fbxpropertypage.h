@@ -1125,7 +1125,11 @@ public:
         {
             FbxPropertyPage*   lReferencePage  = NULL;
             FbxPropertyValue*  lPropertyValue  = GetPropertyItem( FBX_TYPE(FbxPropertyValue),pId,&lReferencePage );
-            void* lCurrentValue = FbxTypeAllocate( pValueType );
+            union {
+                void* lCurrentValue;
+                char buffer[sizeof(FbxDouble4x4)];
+            };
+            FBX_ASSERT(sizeof(buffer) >= FbxTypeSizeOf(pValueType));
             bool lValuesEqual = false;
             bool lValueChanged = false;
             if( lReferencePage && lReferencePage != this )
@@ -1133,8 +1137,10 @@ public:
                 // this page inherits, so check if we have to override the value.
                 if( lPropertyValue )
                 {
-                    lPropertyValue->Get( lCurrentValue, pValueType );
-                    lValuesEqual = FbxTypeCompare( pValue, lCurrentValue, pValueType );
+                    FbxTypeAllocate(pValueType, lCurrentValue, sizeof(buffer));
+                    lPropertyValue->Get( &lCurrentValue, pValueType );
+                    lValuesEqual = FbxTypeCompare( pValue, &lCurrentValue, pValueType );
+                    FbxTypeDeallocate(pValueType, lCurrentValue, sizeof(buffer));
                 }
             }
             else
@@ -1143,9 +1149,11 @@ public:
                 FbxPropertyValue*  lPropertyValue2 = mInstanceOf ? mInstanceOf->GetPropertyItem( FBX_TYPE(FbxPropertyValue),pId,&lReferencePage2 ) : NULL;
                 if( lReferencePage2 && lPropertyValue2 )
                 {
+                    FbxTypeAllocate(pValueType, lCurrentValue, sizeof(buffer));
                     // this page is an override, but there is another page before us that overrides the value
-                    lPropertyValue2->Get( lCurrentValue, pValueType );
-                    lValuesEqual = FbxTypeCompare( pValue, lCurrentValue, pValueType );
+                    lPropertyValue2->Get( &lCurrentValue, pValueType );
+                    lValuesEqual = FbxTypeCompare( pValue, &lCurrentValue, pValueType );
+                    FbxTypeDeallocate(pValueType, lCurrentValue, sizeof(buffer));
 
                     if( lValuesEqual )
                     {
@@ -1156,9 +1164,6 @@ public:
                 }
                 // else this page is the originator of the property, so no need to check,
             }
-
-            FbxTypeDeallocate(pValueType, lCurrentValue);
-            lCurrentValue = NULL;
 
             if( lValuesEqual )
                 return lValueChanged;

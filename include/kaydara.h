@@ -36,10 +36,6 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 **************************************************************************/
 
-// *** if you update this version, make sure to update the other version value in src/motionbuilder/motionbuilder/resource.h
-#define K_KERNEL_VERSION	20000 
-// ***
-
 #define K_NO_PROJECTSETTINGS
 #define K_NO_NAMESPACE_UPGRADE			// Support for NamespaceUpgradeToFileReference and NamespaceDowngradeFromFileReference
 #define K_NO_PYTHON_CODE_GENERATION		// Python code generator
@@ -49,7 +45,6 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 #if defined(FB_KERNEL)
 
 #ifndef FB_KERNEL_WITH_UI
-	#define K_CONFIG_MEMORY
 	#define	K_NO_MANIPULATOR		
 	#define	K_NO_UI
 	#define	K_DISABLE_UI
@@ -98,9 +93,6 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#ifndef _CRT_SECURE_NO_WARNINGS
 		#define _CRT_SECURE_NO_WARNINGS 1
 	#endif
-	#ifndef _CRT_SECURE_NO_DEPRECATE
-		#define _CRT_SECURE_NO_DEPRECATE 1
-	#endif
 #endif
 
 // Memory extra debugging information
@@ -113,31 +105,18 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 #if defined(_DEBUG) && !defined(NDEBUG) && !defined(__CUDACC__)
 	#if defined(_MSC_VER) && !defined(_MFC_VER)
+		#include <stdlib.h>
 		#ifdef MEMORY_DEBUG
-            #undef __cdecl
+			#ifdef _XMEMORY_
+//				#pragma error kaydara.h should be included first for memory leak information.
+			#endif
 			#define MEMORY_DEBUG_ACTIVE 1
 			#define _CRTDBG_MAP_ALLOC 1
-			#include <stdio.h>
-			#include <string.h>
-			#include <stdlib.h>
 			#include <crtdbg.h>
-			#include <malloc.h>
-            #include <new>
-			#if (_MSC_VER<1900)
-				#include <xdebug>
-			#endif
-            #include <xlocale>
-            #include <xiosbase>
-            #include <xlocnum>
-            #include <xlocmon>
-            #include <xtree>
-
 			#define KaydaraNew new( _NORMAL_BLOCK, __FILE__, __LINE__)
 			#ifndef new
 				#define new KaydaraNew
 			#endif
-		#else
-			#include <malloc.h>
 		#endif
 	#endif
 #endif	
@@ -152,7 +131,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 #include <karch/types.h>
 
 #ifndef K_NO_QUICKTIME
-	#if defined(KARCH_ENV_LINUX) || defined(KARCH_ENV_CYGWIN) || defined(KARCH_ENV_MING32) || (defined(KARCH_ENV_MACOSX) && defined(KARCH_ARCH_X64))
+	#if defined(KARCH_ENV_LINUX) || defined(KARCH_ENV_CYGWIN) || defined(KARCH_ENV_MING32)
 		#define K_NO_QUICKTIME	// No QuickTime implementions for those platforms
 	#endif
 #endif
@@ -196,11 +175,9 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 #define K_SAFE_DESTROY_OBJECT( p )		{ if( p ){ (p)->Destroy(); (p) = NULL; } }
 
+#define K_UNUSED_ARG(x) ((void)(x))
 
 #ifdef KARCH_ENV_WIN
-	#if _MSC_VER < 1900 // < VS2015
-		#define snprintf _snprintf // for stdio.h platform compatibility
-	#endif
 	#ifndef WIN32_LEAN_AND_MEAN
 		#define WIN32_LEAN_AND_MEAN  // Defined to speed up compilation
 	#endif
@@ -219,9 +196,6 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#endif
 	#ifndef strnicmp
 		#define strnicmp	_strnicmp
-	#endif
-	#ifndef itoa
-		#define itoa		_itoa
 	#endif
 	#ifndef getcwd
 		#define getcwd		_getcwd
@@ -290,6 +264,10 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 		return result;
 	}
 
+    #ifndef sscanf_s
+        #define sscanf_s sscanf
+    #endif
+
 	inline int strcat_s( char *dst, size_t /*bufsize*/, const char *src )
 	{
 		strcat( dst,src );
@@ -301,15 +279,19 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	}
 
 	#ifndef strtok_s
-		#define strtok_s( token,sep,context )	strtok( token,sep )
+		#define strtok_s( token,sep,context )	strtok( token,sep ); K_UNUSED_ARG(context)
 	#endif
 
 	#ifndef strncat_s
-		#define strncat_s( dst,bufsize,src,len ) strncat( dst,src,len )
+		#define strncat_s( dst,bufsize,src,len ) strncat( dst,src,len ); K_UNUSED_ARG(bufsize)
 	#endif
 
 	#ifndef localtime_s
 		#define localtime_s( _Tm,_Time ) _Tm = localtime( _Time )
+	#endif
+
+	#ifndef _strdup
+		#define _strdup	strdup
 	#endif
 
 	#ifndef _stricmp
@@ -335,16 +317,6 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 		#define _atoi64( str ) strtoll( str,NULL,10 )
 	#endif
 
-	inline char* _itoa(int pValue, char* pString, int pRadix)
-	{
-		assert(pRadix==10);
-		if (pString) sprintf(pString,"%d", pValue);
-		return pString;
-	}
-
-	#ifndef itoa
-		#define itoa		_itoa
-	#endif
 #endif
 
 #if defined(KARCH_ENV_LINUX)
@@ -352,12 +324,8 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#pragma GCC diagnostic ignored "-Wdelete-non-virtual-dtor"
 #endif
 
-#if defined(KARCH_ENV_MACOSX)
-	#include <stdlib.h>
-#endif
-
 // Compiler specific
-#if defined(KARCH_DEV_MSC) && !defined(KARCH_DEV_INTEL)
+#if defined(KARCH_DEV_MSC)
 	#pragma warning(disable : 4097)	// warning C4097: typedef-name 'ClassType' used as synonym for class-name 'KTextTag'
 	#pragma warning(disable : 4100)	// warning C4100: '?' : unreferenced formal parameter
 	#pragma warning(disable : 4201)	// nonstandard extension used : nameless struct/union (Level 4) portability  
@@ -372,6 +340,8 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 	#pragma warning(error : 4002)	// too many actual parameters for macro 'identifier'
 	#pragma warning(error : 4018)	// warning C4018: '>': signed/unsigned mismatch
+//	#pragma warning(error : 4062)	// warning C4062: enumerator 'identifier' in switch of enum 'enumeration' is not handled
+	#pragma warning(error : 4101)	// warning C4101: 'identifier' : unreferenced local variable
 	#pragma warning(error : 4130)	// warning C4130: '==' : logical operation on address of string constant
 	#pragma warning(error : 4189)	// warning C4189: local variable is initialized but not referenced
 	#pragma warning(error : 4238)	// warning C4238: nonstandard extension used : class rvalue used as lvalue
@@ -399,23 +369,20 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 // the timing.
 
 #if defined(KARCH_DEV_GNUC) // GNU compiler
-	#define K_DEPRECATED_2016 __attribute__((deprecated))
-	#define K_DEPRECATED_2017 __attribute__((deprecated))
 	#define K_DEPRECATED_2018 __attribute__((deprecated))
 	#define K_DEPRECATED_2019 __attribute__((deprecated))
-    #define K_DEPRECATED_2020 __attribute__((deprecated))
-#elif defined(KARCH_DEV_MSC) || defined(KARCH_DEV_INTEL) // Microsoft or Intel compiler
-	#define K_DEPRECATED_2016 __declspec(deprecated)
-	#define K_DEPRECATED_2017 __declspec(deprecated)
+	#define K_DEPRECATED_2020 __attribute__((deprecated))
+	#define K_DEPRECATED_2021 __attribute__((deprecated))
+#elif defined(KARCH_DEV_MSC) // Microsoft
 	#define K_DEPRECATED_2018 __declspec(deprecated)
 	#define K_DEPRECATED_2019 __declspec(deprecated)
-    #define K_DEPRECATED_2020 __declspec(deprecated)
+	#define K_DEPRECATED_2020 __declspec(deprecated)
+	#define K_DEPRECATED_2021 __declspec(deprecated)
 #else // Unknown compiler
-	#define K_DEPRECATED_2016
-	#define K_DEPRECATED_2017
 	#define K_DEPRECATED_2018
 	#define K_DEPRECATED_2019
-    #define K_DEPRECATED_2020
+	#define K_DEPRECATED_2020
+	#define K_DEPRECATED_2021
 #endif
 
 #endif // _KAYDARA_H_

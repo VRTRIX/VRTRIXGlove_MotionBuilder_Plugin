@@ -141,9 +141,10 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
-	FBPropertyBool				IncludePartInFullBody;		//!< <b>Read Write Property:</b> Include or not this extension when fullBody is active.
+	FBPropertyBool				IncludePartInFullBody;		//!< <b>Read Write Property:</b> Include or not this extension when the Full Body mode is active.
+	FBPropertyBool				IncludePartInBodyPart;		//!< <b>Read Write Property:</b> Include or not this extension when the Body Part mode is active.
 	FBPropertyString			Label;		                //!< <b>Read Write Property:</b> The logical name of the extension, use for mirroring.
 	FBPropertyInt				MirrorLabel;	            //!< <b>Read Write Property:</b> Enum that indicate which extension is used as mirror, 0 is none, 1 is self, 2-n represent the (ith - 2)character extension in the attached character excluding self.
 	FBPropertyPlotAllowed		PlotAllowed;	            //!< <b>Read Write Property:</b> Controls if objects in the set are transformable.

@@ -452,31 +452,31 @@ public:
 
     //For the following function, please see the description in the parent class.
     //Translation
-    virtual FBManipulationGetResult	    TranslationIsEditable( bool &pEditable, FBReferencialType pRefType );
+    virtual FBManipulationGetResult	    TranslationIsEditable( bool &pEditable, FBReferencialType pRefType ) override;
 	// Manipulation Get/Set
-    virtual FBManipulationSetResult	    TranslationSet( FBTVector &pT, FBReferencialType pRefType, FBSetType pSetType, FBSetWhat pSetWhat );
-	virtual FBManipulationGetResult	    TranslationGet( FBTVector &pT, FBReferencialType pRefType, FBManipPivot pPivot = FBManipPivotObjectTranslation );
+    virtual FBManipulationSetResult	    TranslationSet( FBTVector &pT, FBReferencialType pRefType, FBSetType pSetType, FBSetWhat pSetWhat ) override;
+	virtual FBManipulationGetResult	    TranslationGet( FBTVector &pT, FBReferencialType pRefType, FBManipPivot pPivot = FBManipPivotObjectTranslation ) override;
 	// Manipulation
-	virtual FBManipulationStartResult	TranslationStartManipulation( FBReferencialType pRefType, const FBTime* pTime = NULL );
-	void					            TranslationStopManipulation ();
+	virtual FBManipulationStartResult	TranslationStartManipulation( FBReferencialType pRefType, const FBTime* pTime = NULL ) override;
+	void					            TranslationStopManipulation () override;
 
     //Rotation
-    virtual FBManipulationGetResult		RotationIsEditable( bool &pEditable, FBReferencialType pRefType );
+    virtual FBManipulationGetResult		RotationIsEditable( bool &pEditable, FBReferencialType pRefType ) override;
 	/* Matrix Get/Set */
-    virtual FBManipulationSetResult		RotationSet( FBMatrix &pRM, FBReferencialType pRefType, FBSetType pSetType, bool pOnlyRoot = false );
-	virtual FBManipulationGetResult		RotationGet( FBMatrix &pRM, FBReferencialType pRefType );
+    virtual FBManipulationSetResult		RotationSet( FBMatrix &pRM, FBReferencialType pRefType, FBSetType pSetType, bool pOnlyRoot = false ) override;
+	virtual FBManipulationGetResult		RotationGet( FBMatrix &pRM, FBReferencialType pRefType ) override;
 	/* Manipulation */
-	virtual FBManipulationStartResult	RotationStartManipulation( FBReferencialType pRefType );
-	virtual void						RotationStopManipulation ();
+	virtual FBManipulationStartResult	RotationStartManipulation( FBReferencialType pRefType ) override;
+	virtual void						RotationStopManipulation () override;
 
     //Scaling
-    virtual FBManipulationGetResult	    ScalingIsEditable( bool &pEditable );
+    virtual FBManipulationGetResult	    ScalingIsEditable( bool &pEditable ) override;
 	/* Manipulation Get/Set*/
-	virtual FBManipulationGetResult	    ScalingGet( FBSVector &pS, FBReferencialType pRefType );
-    virtual FBManipulationSetResult	    ScalingSet( FBSVector &pS, FBReferencialType pRefType, FBSetType pSetType, FBSetWhat pSetWhat );
+	virtual FBManipulationGetResult	    ScalingGet( FBSVector &pS, FBReferencialType pRefType ) override;
+    virtual FBManipulationSetResult	    ScalingSet( FBSVector &pS, FBReferencialType pRefType, FBSetType pSetType, FBSetWhat pSetWhat ) override;
 	/* Manipulation */
-	virtual FBManipulationStartResult   ScalingStartManipulation( FBReferencialType pRefType );
-	virtual void					    ScalingStopManipulation ();
+	virtual FBManipulationStartResult   ScalingStartManipulation( FBReferencialType pRefType ) override;
+	virtual void					    ScalingStopManipulation () override;
 };
 
 #ifdef FBSDKUseNamespace

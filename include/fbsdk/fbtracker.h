@@ -113,13 +113,13 @@ class FBSDK_DLL FBDeviceSync : public FBDevice
 	virtual void PrintDebugIONotifyInfo	( FBDeviceNotifyInfo& pInfo, int pPacketCount );
 
     // Standard device virtual functions creation/destruction
-	virtual bool FBCreate	();
-	virtual void FBDestroy	();
+	virtual bool FBCreate	() override;
+	virtual void FBDestroy	() override;
 
 	// Overloaded FBDevice functions
-	virtual bool AnimationNodeNotify( FBAnimationNode* pAnimationNode, FBEvaluateInfo* pEvaluateInfo	);
-    virtual bool FbxStore			( FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat	);
-	virtual bool FbxRetrieve		( FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat	);
+	virtual bool AnimationNodeNotify( FBAnimationNode* pAnimationNode, FBEvaluateInfo* pEvaluateInfo	) override;
+    virtual bool FbxStore			( FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat	) override;
+	virtual bool FbxRetrieve		( FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat	) override;
 
 	/**	Real-Time synchronous evaluation callback.
 	*	Note that this function must be overloaded to instanciate a synchronous device class.
@@ -294,17 +294,17 @@ class FBSDK_DLL FBDeviceCamera : public FBDeviceSync
 	FBDeviceCamera(const char* pName, HIObject pObject=NULL);
 
     // Standard device virtual functions creation/destruction
-    virtual bool FBCreate	();
-    virtual void FBDestroy	();
+    virtual bool FBCreate	() override;
+    virtual void FBDestroy	() override;
 
 	// Overloaded parent functions
-	virtual bool DeviceSyncAnimationNodeNotify	( FBAnimationNode* pAnimationNode, FBEvaluateInfo* pEvaluateInfo, int pCorrectedSync );
-	virtual void DeviceIONotify					( kDeviceIOs pAction, FBDeviceNotifyInfo& pDeviceNotifyInfo	);
-    virtual bool ModelTemplateBindNotify( FBModel* pModel,int pIndex, FBModelTemplate* pModelTemplate		);
-    virtual bool FbxStore				( FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat	);
-	virtual bool FbxRetrieve			( FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat	);
-	virtual void RecordingInitAnimation	( FBAnimationNode* pAnimationNode );
-	virtual void RecordingDoneAnimation	( FBAnimationNode* pAnimationNode );
+	virtual bool DeviceSyncAnimationNodeNotify	( FBAnimationNode* pAnimationNode, FBEvaluateInfo* pEvaluateInfo, int pCorrectedSync ) override;
+	virtual void DeviceIONotify					( kDeviceIOs pAction, FBDeviceNotifyInfo& pDeviceNotifyInfo	) override;
+    virtual bool ModelTemplateBindNotify( FBModel* pModel,int pIndex, FBModelTemplate* pModelTemplate		) override;
+    virtual bool FbxStore				( FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat	) override;
+	virtual bool FbxRetrieve			( FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat	) override;
+	virtual void RecordingInitAnimation	( FBAnimationNode* pAnimationNode ) override;
+	virtual void RecordingDoneAnimation	( FBAnimationNode* pAnimationNode ) override;
 
 	/**	Evaluation engine callback for camera device.
 	*	\param	pEvaluateInfo	Evaluation information structure.

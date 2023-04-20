@@ -78,7 +78,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	FBPropertyString		Filename;		//!< <b>Read Write Property:</b> Filename and path of motion file.
 	FBPropertyString		RelativePath;	//!< <b>Read Only Property:</b> Relative path to the motion file.

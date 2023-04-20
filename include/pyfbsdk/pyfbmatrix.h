@@ -264,23 +264,6 @@ public:
     { 
         return (kReference)mFBMatrix->operator double*();
     }
-
-    const char* GetRepr()
-    {
-        char lBuffer[1024];
-        double* lDouble = mFBMatrix->operator double*();
-
-        sprintf( lBuffer, "(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n(%f, %f, %f, %f)",
-                 lDouble[ 0], lDouble[ 1], lDouble[ 2], lDouble[ 3],
-                 lDouble[ 4], lDouble[ 5], lDouble[ 6], lDouble[ 7],
-                 lDouble[ 8], lDouble[ 9], lDouble[10], lDouble[11],
-                 lDouble[12], lDouble[13], lDouble[14], lDouble[15]);
-
-        char* lRepr = new char[ strlen( lBuffer ) + 1 ];
-        strcpy( lRepr, lBuffer );
-
-        return lRepr;
-    };
 };
 
 inline FBMatrix_Wrapper* FBMatrix_Wrapper_Factory( const FBMatrix& pFBMatrix )

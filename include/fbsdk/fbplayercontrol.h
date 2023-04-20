@@ -207,11 +207,6 @@ public:
     */
     double GetPlaySpeed();
 
-    /**	Set Play Speed .
-    *	\param	pPlaySpeed	indicate the play speed when a play command occur.
-    */
-    K_DEPRECATED_2016 void SetPlaySpeed (FBTransportPlaySpeed pPlaySpeed );
-    
     /**	Stop button.
     *	\return	true if successful.
     */

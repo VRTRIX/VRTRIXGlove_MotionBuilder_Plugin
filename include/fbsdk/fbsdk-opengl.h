@@ -55,13 +55,8 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 	#endif
 #endif
 
-#if defined(KARCH_ENV_MACOSX)
-	#include <OpenGl/gl.h>
-	#include <OpenGl/glu.h>
-#else
 	#include <GL/gl.h>
 	#include <GL/glu.h>
-#endif
 
 #if defined(KARCH_ENV_WIN32) || defined(KARCH_ENV_WIN64)
 	#ifndef GL_BGR
@@ -79,10 +74,6 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS OR DAMAGE.
 
 #if defined(KARCH_ENV_LINUX)
 	#include <GL/glext.h>
-#endif
-
-#if defined(KARCH_ENV_MACOSX)
-    #include <OpenGl/glext.h>
 #endif
 
 #ifndef GL_LIGHT_MODEL_COLOR_CONTROL

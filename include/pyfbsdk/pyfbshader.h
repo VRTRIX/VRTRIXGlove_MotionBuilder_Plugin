@@ -38,9 +38,9 @@ public:
 public:
 	FBShader_Wrapper( FBComponent* pFBComponent ) : FBBox_Wrapper( pFBComponent ) { mFBShader = (FBShader*)pFBComponent; }
 	virtual ~FBShader_Wrapper( ) {}
-	void Append(FBModel_Wrapper* pModel) { mFBShader->Append( pModel->mFBModel ); }
+	bool Append(FBModel_Wrapper* pModel) { return mFBShader->Append( pModel->mFBModel ); }
 	void CloneShaderParameter(FBShader_Wrapper& pNewShader) { mFBShader->CloneShaderParameter( pNewShader.mFBShader ); }
-	void ReplaceAll(FBModel_Wrapper& pModel) { mFBShader->ReplaceAll( pModel.mFBModel ); }
+	bool ReplaceAll(FBModel_Wrapper& pModel) { return mFBShader->ReplaceAll( pModel.mFBModel ); }
 	bool ShaderNeedBeginRender() { return mFBShader->ShaderNeedBeginRender(  ); }
 	void SetRenderingPass( FBRenderingPass pRenderingPass ) { mFBShader->RenderingPass = pRenderingPass; }
 	FBRenderingPass GetRenderingPass(  ) { return mFBShader->RenderingPass; }

@@ -1,5 +1,5 @@
 #ifndef pyfbpropertymanager_h__
-#define pyfbpropertymanager
+#define pyfbpropertymanager_h__
 /**************************************************************************
  Copyright 2010 Autodesk, Inc.
  All rights reserved.

@@ -816,7 +816,7 @@ namespace FBSDKNamespace {
         __FBClassDeclare( FBDeviceOptical,FBDevice );
     public:
         friend class FBDeviceOpticalLayout;
-        //IObject_Declare						( K_IMPLEMENTATION );
+        //IObject_Declare						( override );
         /**	Constructor.
         *	\param	pName		Unique name of optical device.
         *	\param	pObject 	Internal parent object.
@@ -859,23 +859,23 @@ namespace FBSDKNamespace {
         //--- See base class ---
 
         // Standard FBX interface functions
-        virtual bool FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat);
-        virtual bool FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat);
+        virtual bool FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat) override;
+        virtual bool FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat) override;
 
         // Standard device virtual functions creation/destruction
-        virtual bool FBCreate();
-        virtual void FBDestroy();
+        virtual bool FBCreate() override;
+        virtual void FBDestroy() override;
 
         // Standard device virtual function device operation notify
-        virtual bool DeviceOperation( kDeviceOperations pOperation );
+        virtual bool DeviceOperation( kDeviceOperations pOperation ) override;
 
         // Standard device virtual functions evaluation
-        virtual bool AnimationNodeNotify(FBAnimationNode* pAnimationNode,FBEvaluateInfo* pEvaluateInfo);
-        virtual void DeviceIONotify(kDeviceIOs pAction,FBDeviceNotifyInfo &pDeviceNotifyInfo);
+        virtual bool AnimationNodeNotify(FBAnimationNode* pAnimationNode,FBEvaluateInfo* pEvaluateInfo) override;
+        virtual void DeviceIONotify(kDeviceIOs pAction,FBDeviceNotifyInfo &pDeviceNotifyInfo) override;
 
         // Standard device virtual functions recording for animation.
-        virtual void RecordingInitAnimation(FBAnimationNode* pAnimationNode);
-        virtual void RecordingDoneAnimation(FBAnimationNode* pAnimationNode);
+        virtual void RecordingInitAnimation(FBAnimationNode* pAnimationNode) override;
+        virtual void RecordingDoneAnimation(FBAnimationNode* pAnimationNode) override;
     };
 
 #ifdef FBSDKUseNamespace

@@ -997,7 +997,7 @@ private:
       * \param pStringArray string array
       * \return return the index of the array if the string is found, otherwise return \c -1
       */
-    int  FindString(FbxString pString, FbxArray<FbxString*>& pStringArray);
+    int  FindString(const char* pString, FbxArray<FbxString*>& pStringArray);
 
     /** Read password from string
       *	\param pPassword        password in string
@@ -1096,6 +1096,9 @@ private:
     Fbx6ClassTemplateMap    mClassTemplateMap;
     FbxProgress*            mProgress;
     bool                    mProgressPause;
+
+	bool                    mValidateData;
+	FbxSceneCheckUtility*   mCheckUtility;
 };
 
 #include <fbxsdk/fbxsdk_nsend.h>

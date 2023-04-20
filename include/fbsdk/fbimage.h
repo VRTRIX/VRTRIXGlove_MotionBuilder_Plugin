@@ -115,7 +115,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	/** Cleanup image data, making it black.
 	*/

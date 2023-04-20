@@ -74,7 +74,7 @@ public:
 	*/
 	FBNote( const char *pName, HIObject pObject = NULL );
 
-    IQuery_Declare(K_IMPLEMENTATION);
+    IQuery_Declare(override);
 
     /** Attach the note to a component.
     *   Will attach the note to the component.  If \b pComp is NULL, 

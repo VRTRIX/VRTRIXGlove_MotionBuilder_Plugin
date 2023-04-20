@@ -70,10 +70,11 @@ public:
 	bool FileExportBatch(const char* pName, FBTake_Wrapper& pTake, FBBatchOptions_Wrapper& pBatchOptions, FBModelList_Wrapper& pExportModels) { return mFBApplication->FileExportBatch( pName, pTake.mFBTake, pBatchOptions.mFBBatchOptions, *pExportModels.mFBModelList ); }
 	bool FileImportBatch(const char* pName, FBBatchOptions_Wrapper& pBatchOptions, FBModel_Wrapper& pReference) { return mFBApplication->FileImportBatch( pName, pBatchOptions.mFBBatchOptions, pReference.mFBModel ); }
     bool IsValidBatchFile(const char* pFilename) { return mFBApplication->IsValidBatchFile( pFilename ); }
+	bool IsSceneModified() { return mFBApplication->IsSceneModified(); }
     bool FileAppend(const char * pFilename, bool pShowUIMsg=false, FBFbxOptions_Wrapper* pOptions = NULL) { return mFBApplication->FileAppend( pFilename, pShowUIMsg, pOptions ? pOptions->mFBFbxOptions : NULL ); }
 	bool FileMerge (const char * pFilename, bool pShowUIMsg=false, FBFbxOptions_Wrapper* pOptions = NULL) { return mFBApplication->FileMerge( pFilename, pShowUIMsg, pOptions ? pOptions->mFBFbxOptions : NULL ); }
 	bool FileMerge(FBStringList_Wrapper& pPathlist, bool pShowUIMsg=false, FBFbxOptions_Wrapper* pOptions = NULL);
-	bool FileNew() { return mFBApplication->FileNew(  ); }
+	bool FileNew(bool pAskUser = false, bool pClearSceneName = true) { return mFBApplication->FileNew( pAskUser, pClearSceneName ); }
 	bool FileOpen(const char * pFilename, bool pShowUIMsg=false, FBFbxOptions_Wrapper* pOptions = NULL) { return mFBApplication->FileOpen( pFilename, pShowUIMsg, pOptions ? pOptions->mFBFbxOptions : NULL ); }
     bool FileOpenFromMemory( kReference pBuffer, kULong pBufferLength ) { return mFBApplication->FileOpen((void*)pBuffer, pBufferLength); }
     object GetMaxFrameCount(kReference pBuffer, kULong pBufferLength, int pTimeScale);
@@ -86,7 +87,6 @@ public:
 	bool Minimize(bool pBlocking = true) { return mFBApplication->Minimize( pBlocking ); }
     void UpdateAllWidgets() { mFBApplication->UpdateAllWidgets(); }
     void FlushEventQueue() { mFBApplication->FlushEventQueue(); }
-	void SwitchViewerCamera(FBCamera_Wrapper& pCamera);
     void SetCurrentActor( FBActor_Wrapper* pCurrentActor ) { mFBApplication->CurrentActor = pCurrentActor ? pCurrentActor->mFBActor : NULL; }
     object GetCurrentActor(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBApplication->CurrentActor ); }
     void SetCurrentCharacter( FBCharacter_Wrapper* pCurrentCharacter ) { mFBApplication->CurrentCharacter = pCurrentCharacter ? pCurrentCharacter->mFBCharacter : NULL; }

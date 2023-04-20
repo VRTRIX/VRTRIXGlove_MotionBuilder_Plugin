@@ -108,7 +108,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
     /** Clone the group.
     *    This will duplicated the current group. 
@@ -155,7 +155,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	/** Select
 	*	\param	pSelect	If <b>true</b>, set contents will be selected.

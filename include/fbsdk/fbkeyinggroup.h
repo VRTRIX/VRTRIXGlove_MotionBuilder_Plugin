@@ -99,7 +99,7 @@ namespace FBSDKNamespace {
 
         /** Virtual FBDelete function.
         */
-        virtual void FBDelete();
+        virtual void FBDelete() override;
 
         /**	Set the object type filter for and object type keying group.
         *	\param	pObject	Object that will be used to set the keying group object type. Use NULL to remove the filter.

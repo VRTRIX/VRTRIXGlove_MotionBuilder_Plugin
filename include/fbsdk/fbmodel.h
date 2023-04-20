@@ -279,10 +279,10 @@ public:
     *    \param    pObject    For internal use only(default=NULL).
     */
     FBModel(const char* pName, HIObject pObject=NULL);
-    virtual void    FBDelete();
+    virtual void    FBDelete() override;
 
-    IQuery_Declare       (K_IMPLEMENTATION);                //!< Interface to IObject.
-    ICallback_Declare    (K_IMPLEMENTATION);                //!< Interface to ICallback.
+    IQuery_Declare       (override);                //!< Interface to IObject.
+    ICallback_Declare    (override);                //!< Interface to ICallback.
 
     FBPropertyListModel             Children;               //!< <b>List:</b> Children for model.
 
@@ -375,12 +375,22 @@ public:
     void SetMatrix(FBMatrix pMatrix, FBModelTransformationType pWhat=kModelTransformation,    bool pGlobalInfo=true, bool pPushUndo = false, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get a matrix from the model.
+    *   \param  pMatrix         Matrix to fill with requested information.
     *   \param  pWhat           Type of information requested (default=transformation).
     *   \param  pGlobalInfo     \b true if it is GlobalInfo, \b false if Local (default=true).
-    *   \retval pMatrix         Matrix to fill with requested information.
     *   \param  pEvaluateInfo   EvaluateInfo, Take Display if none specified.
     */
     void GetMatrix(FBMatrix &pMatrix, FBModelTransformationType pWhat=kModelTransformation,    bool pGlobalInfo=true, FBEvaluateInfo* pEvaluateInfo=NULL);
+
+	/** Get the local transformation (or local inverse transformation) matrix with the global Rotation DoF values from the model.
+	*   The GetMatrix method was previously wrongly returning the local transformation (and local inverse transformation) matrices with global Rotation DoF values.
+	*   The GetMatrix method implementation has been updated to not include the global Rotation DoF values.
+	*   This method returns the same matrix values returned by the legacy GetMatrix implementation when retrieving the local transformation (and local inverse transformation) matrices.
+	*   \param  pMatrix         Matrix to fill with requested information.
+	*   \param  pInverse        False for the transformation matrix, true for the inverse transformation matrix.
+	*   \param  pEvaluateInfo   EvaluateInfo, Take Display if none specified.
+	*/
+	void GetLocalTransformationMatrixWithGlobalRotationDoF(FBMatrix &pMatrix, bool pInverse = false, FBEvaluateInfo* pEvaluateInfo = NULL);
 
     /** Set a vector for the model.
     *   \param  pVector         Vector to use to set values.
@@ -392,10 +402,10 @@ public:
     void SetVector(FBVector3d pVector, FBModelTransformationType pWhat=kModelTranslation,    bool pGlobalInfo=true, bool pPushUndo = false, FBEvaluateInfo* pEvaluateInfo=NULL);
 
     /** Get a vector from the model.
+    *   \param   pVector          Vector to fill with requested values.
     *   \param    pWhat           Type of information requested (default=translation, inverses not supported).
     *   \param    pGlobalInfo     \b true if it is GlobalInfo, \b false if Local (default=true).
     *   \param    pEvaluateInfo   EvaluateInfo, Take Display if none specified
-    *   \retval   pVector         Vector to fill with requested values.
     */
     void GetVector(FBVector3d &pVector,    FBModelTransformationType pWhat=kModelTranslation,    bool pGlobalInfo=true, FBEvaluateInfo* pEvaluateInfo=NULL);
 
@@ -407,28 +417,28 @@ public:
     bool IsEvaluationReady(FBModelEvaluationTaskType pWhat, FBEvaluateInfo* pEvaluateInfo=NULL) const;
 
     /** Convert Rotation Matrix to Euler Vector based on model's rotation order.
+    *   \param    pRotation		Resulting euler vector, whose angles are stored in [X,Y,Z] order.
     *   \param    pMatrix		Matrix to convert.
-    *   \retval   pRotation		Resulting euler vector, whose angles are stored in [X,Y,Z] order.
     */
     void MatrixToRotation(FBRVector &pRotation, const FBMatrix &pMatrix);
 
     /** Convert Euler Vector to Rotation Matrix based on model's rotation order.
+    *   \param    pMatrix	Resulting rotation matrix.
     *   \param    pRotation	Object space rotation vector to convert, whose angles are stored in [X,Y,Z] order.
-    *   \retval   pMatrix	Resulting rotation matrix.
     */
     void RotationToMatrix( FBMatrix &pMatrix, const FBRVector &pRotation);
 
     /** Convert local matrix to object space vector.
+    *   \param    pDof	Resulting object space vector.
     *   \param    pLM	Local rotation matrix to convert
-    *   \retval   pDof	Resulting object space vector.
     *	\note	Use this function when you want to convert local rotation to euler 
     *			with proper pre/post transformation and rotation order applied from this model.
     */
     void LRMToDof(FBRVector &pDof, const FBMatrix &pLM);
 
     /** Convert object space vector to local matrix
+    *   \param    pLM	Resulting local rotation matrix.
     *   \param    pDof	Vector to convert
-    *   \retval   pLM	Resulting local rotation matrix.
     *	\note	Use this function when you want to convert euler to local rotation
     *			with proper pre/post transformation and rotation order applied from this model.
     */
@@ -452,8 +462,8 @@ public:
 
     /** Get the bounding box of the model.
     *   Note. for deformable model, this function will provide the approximated (larger than the smallest) bounding box for performance consideration. 
-    *   \retval pMin    Minimum value of the bounding box.
-    *   \retval pMax    Maximum value of the bounding box.
+    *   \param pMin    Output parameter. Minimum value of the bounding box.
+    *   \param pMax    Output parameter. Maximum value of the bounding box.
     */
     void GetBoundingBox( FBVector3d& pMin, FBVector3d& pMax );
 
@@ -593,8 +603,8 @@ public:
     *    \param    pFbxObject    FBX Object that is used to communicate I/O operations.
     *    \param    pStoreWhat    Which attributes are currently stored/retrieved.
     */
-    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
-    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
+    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
+    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 
     /** Setup Shape Properties.
     *    Normally this function is called automatically at the next global 
@@ -727,6 +737,17 @@ FBSDK_DLL void FBFindModelsOfType( FBModelList& pList, int pTypeInfo, FBModel* p
 */
 FBSDK_DLL void FBGetSelectedModels( FBModelList& pList, FBModel* pParent=NULL, bool pSelected=true, bool pSortBySelectOrder = false );
 
+/** Get the last selected model, which is the one having the manipulator in the viewer.
+*	\return The last selected model or nullptr (C++) or None (Python) if no model is selected.
+*/
+FBSDK_DLL FBModel* FBGetLastSelectedModel();
+
+/** Set the given model as the last one selected, so the manipulator in the viewer will then be on that particular model.
+*	If the model is not selected, it will also be selected.
+*	\param  pModel		Model that will be flagged as the last selected model.
+*/
+FBSDK_DLL void FBSetLastSelectedModel( FBModel* pModel );
+
 /**	Call begin change to all models (need to be closed).
 *	Useful for selection of many models that can trigger many related callbacks)
 */
@@ -768,8 +789,8 @@ public:
     *    \param    pFbxObject    FBX Object that is used to communicate I/O operations.
     *    \param    pStoreWhat    Which attributes are currently stored/retrieved.
     */
-    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
-    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
+    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
+    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 
     /** Returns the class type inherited by the class of an object, for example: 'Model'.
     */
@@ -871,8 +892,8 @@ public:
     *    \param    pFbxObject    FBX Object that is used to communicate I/O operations.
     *    \param    pStoreWhat    Which attributes are currently stored/retrieved.
     */
-    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
-    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
+    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
+    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 
     /** Returns the class type inherited by the class of an object, for example: 'Model'.
     */
@@ -1146,71 +1167,93 @@ protected:
 
 public:
 
-    //! Return true if the model is deformable.
-    bool IsDeformable();        
+    /** Return true if the model is deformable.
+    *	\return True if the model is deformable, false otherwise.
+    */
+    bool IsDeformable();
 
     /** Queries if this model should be drawn, e.g., in custom render callback.
-    *   Returns false if e.g., deformed vertex data has not been computed for this frame(thus not ready to be drawn),
-    *   or if model should be hidden when Z-Depth selection tool is active.   
+    *   Returns false if e.g., deformed vertex data has not been computed for this frame (thus not ready to be drawn),
+    *   or if model should be hidden when Z-Depth selection tool is active.
+    *	\return True if the model should be drawn, false otherwise.
     */
     bool IsDrawable();
 
-    //! Return the Vertex Count.
+    /** Return the number of vertices.
+    *	\return The number of vertices.
+    */
     int GetVertexCount();
 
     /**
-    * \name Sub Patch Management. Each sub patch contain same type of primitives mapped with same material. 
+    * \name Sub Patch Management. Each sub patch contains same type of primitives mapped with same material. 
     */
     //@{
 
-    //! Return number of sub patches
+    /** Return the number of sub patches.
+    *	\return The number of sub patches.
+    */
     int GetSubPatchCount();
 
-    //! Return the mapped material for this sub patch.
+    /** Return the mapped material ID for the specified sub patch.
+	*	\param pSubPatchIndex    Index of the sub patch to be queried.
+    *	\return The mapped material ID for the specified sub patch, -1 if the specific sub path index is invalid.
+    */
     int GetSubPatchMaterialId(int pSubPatchIndex);
 
-    //! Return the mapped material for this sub patch.
+    /** Return the mapped material for the specified sub patch.
+    *	\param pSubPatchIndex    Index of the sub patch to be queried.
+    *	\return The mapped material for the specified sub patch, the default material if the specific sub path index is invalid.
+    */
     FBMaterial* GetSubPatchMaterial(int pSubPatchIndex);
 
-    /** Return the primitive type for this sub patch.
-    *    Most of the time, kFBGeometry_TRIANGLES will return.
-    *   \param  pSubPatchIndex  Index of sub patch to be queried.
-    *   \param  pIsOptimized    Out parameter, return true if this sub patch is optimized for fast rendering, custom shader & render should use the optimized subpatch only
-    *   \return The primitive type of the queried sub patch.
+    /** Return the primitive type for the specified sub patch.
+    *    Most of the time, kFBGeometry_TRIANGLES will be returned.
+    *   \param  pSubPatchIndex  Index of the sub patch to be queried.
+    *   \param  pIsOptimized    (C++ only) Out parameter, return true if the specified sub patch is optimized for fast rendering, custom shader & render should use the optimized sub patch only.
+    *   \return (C++) The primitive type of the queried sub patch. (Python) A tuple with 2 values: (the primitive type of the queried sub patch, the value of pIsOptimized).
     */
     FBGeometryPrimitiveType GetSubPatchPrimitiveType(int pSubPatchIndex, bool* pIsOptimized = NULL);
 
-    //! Return the start offset of the indexes for this sub patch (see GetIndexArray()).
+    /** Return the start offset of the indexes for the specified sub patch (see GetIndexArray()).
+    *	\param pSubPatchIndex    Index of the sub patch to be queried.
+    *	\return The start offset of the indexes for the specified sub patch, -1 if the specific sub path index is invalid.
+    */
     int GetSubPatchIndexOffset(int pSubPatchIndex);
 
-    //! Return the size of the indexes for this sub patch (see GetIndexArray()).
+    /** Return the size of the indexes for the specified sub patch (see GetIndexArray()).
+	*	\param pSubPatchIndex    Index of the sub patch to be queried.
+	*	\return The size of the indexes for the specified sub patch, -1 if the specific sub path index is invalid.
+	*/
     int GetSubPatchIndexSize(int pSubPatchIndex);
 
-    /** Draw Sub Patch. Must be called between Enable/DisableOGLVertexData function calls.
-    *    \param pSubPatchIndex    Index of sub region to be drawn.
-    *    \param pWireFrame        draw wire frame if true.
+    /** Draw the specified sub patch. Must be called between Enable/DisableOGLVertexData function calls.
+    *    \param pSubPatchIndex    Index of the sub patch to be drawn.
+    *    \param pWireFrame        Draw wire frame if true.
     */
     void DrawSubPatch(int pSubPatchIndex, bool pWireFrame = false);
 
     //@}
 
     /**
-    * \name Sub Regions Management. Each Sub Regions are composed by one or several patches which
+    * \name Sub Regions Management. Each sub region is composed by one or several patches which
     *  are composed with same material.
     */
     //@{
 
-    //! Return number of sub regions (mapping with different materials)
+    /** Return the number of sub regions (mapping with different materials).
+    *    \return The number of sub regions.
+    */
     int GetSubRegionCount();
 
-    /** Return sub region's material.
-    *    \param pSubRegionIndex    Index of the sub region.
+    /** Return the specified sub region's material.
+    *    \param pSubRegionIndex    Index of the sub region to be queried.
+    *    \return The sub region's material, the default material if the specific sub region index is invalid.
     */
     FBMaterial* GetSubRegionMaterial(int pSubRegionIndex);
 
-    /** Draw Sub Region. Must be called between Enable/DisableOGLVertexData function calls.
-    *    \param pSubRegionIndex    Index of sub region to be drawn.
-    *    \param pWireFrame        draw wire frame if true.
+    /** Draw the specified sub region. Must be called between Enable/DisableOGLVertexData function calls.
+    *    \param pSubRegionIndex    Index of the sub region to be drawn.
+    *    \param pWireFrame         Draw wire frame if true.
     */
     void DrawSubRegion(int pSubRegionIndex, bool pWireFrame = false);
 
@@ -1232,72 +1275,103 @@ public:
     /**
     * \name Vertex Array Management
     */
-
     //@{
-    /** Enable (Setup) OpenGL Vertex Array (Pos & Normal)*/
-    void EnableOGLVertexData(bool pAfterdeform = true);
 
-    /** Disable OpenGL Vertex Array (Pos & Normal)*/
+    /** Enable (Setup) OpenGL Vertex Array (Pos & Normal).
+    *   \param  pAfterDeform  Unused parameter.
+    */
+    void EnableOGLVertexData(bool pAfterDeform = true);
+
+    /** Disable OpenGL Vertex Array (Pos & Normal).*/
     void DisableOGLVertexData();
 
     /** Request deformed vertex array mapping on CPU. 
     *   Model's deformation computation could be executed on GPU, and thus the deformed vertex data will reside in GPU memory only by default.
     *   Calling this function VertexArrayMappingRequest() will ensure the deformed vertex array to be always mapped to CPU memory.
-    *    \note: this function should be called at least once before GetVertexArray(pArrayId, true) to give engine chance to process request properly.
+    *    \note: This function should be called at least once before GetVertexArray(pArrayId, true) to give engine chance to process request properly.
     */
     void VertexArrayMappingRequest();
 
     /** Release deformed vertex array mapping on CPU.
-    *   call this function if plugin don't need CPU access of the deformed vertex array to be mapped on CPU memory anymore, 
-    *   hence allow the application flexbility to choose higher performance approach. 
+    *   Call this function if plug-in don't need CPU access of the deformed vertex array to be mapped on CPU memory anymore, 
+    *   hence allow the application flexibility to choose higher performance approach. 
     */
     void VertexArrayMappingRelease();
 
-    /** The FBModel::TessellatedMesh could contain per-face mapping UVset/Normal or other layer elements. 
+    /** The FBModel::TessellatedMesh could contain per-face mapping UVSet/Normal or other layer elements. 
     *   In order to build a valid VBO buffer for accelerated rendering, those control points with multiple
     *   attribute data must be duplicated. 
-    *   This function return the duplicated vertexes' ID mapping from FBModel::ModelVertexData vertex array 
-    *   to its FBModel::TessellatedMesh vertex array. Note those duplicated vertexs are always appended 
+    *   This function returns the duplicated vertices' ID mapping from FBModel::ModelVertexData vertex array 
+    *   to its FBModel::TessellatedMesh vertex array. Note those duplicated vertices are always appended 
     *   after the original vertex array. 
-    *   \param  pDuplicatedVertexCound  return the count of those duplicated vertexs.
-    *   \return A pointer to the original vertex ID mapping for those duplicated vertexs.
+    *   \param  (C++ only) pDuplicatedVertexCount  Out parameter, return the count of those duplicated vertices.
+    *   \return (C++) A pointer to the original vertex ID mapping for those duplicated vertices. (Python) A list containing the vertex ID mapping for those duplicated vertices.
     */
-    const int* GetVertexArrayDuplicationMap(unsigned int& pDuplicatedVertexCound);
+    const int* GetVertexArrayDuplicationMap(unsigned int& pDuplicatedVertexCount);
 
-    /** Return Index Array*/
+    /** Return the index array size (see GetIndexArray()). It will sum the index size of each sub patch (see GetSubPatchIndexSize()).
+    *	\return The index array size.
+    */
+    int GetIndexArraySize();
+
+    /** Return the index array. For the size of the array, see GetIndexArraySize(). 
+    *   \return (C++) The index array pointer. (Python) The index array as a list.
+    */
     int* GetIndexArray();
 
-    /** Return Index Array VBO Id*/
+    /** Return the index array VBO Id.
+    *   \return The index array VBO Id.
+    */
     unsigned int GetIndexArrayVBOId();
 
-    /** Return Vertex Array Format 
-    *    \param  pArrayId        vertex array type to return.
-    *    \param  pAfterDeform    return deformed vertex array type if the model is deformable, pAfterDeform is true and deformation is occurred in CPU, otherwise return original.
-    *    \return VertexArray Format.
+    /** Return the vertex array format for the specified array Id.
+    *    \param  pArrayId        Vertex array Id type to be queried.
+    *    \param  pAfterDeform    Unused parameter.
+    *    \return The vertex array format for the specified array Id.
     *    \note   Use VertexArrayMappingRequest() to toggle CPU / GPU skinning per model when necessary.
     */
     FBGeometryArrayElementType GetVertexArrayType(FBGeometryArrayID pArrayId, bool pAfterDeform = true);
 
-    /** Return Vertex Array Pointer
-    *    \param  pArrayId        vertex array type to return.
-    *    \param  pAfterDeform    return deformed vertex array if the model is deformable, pAfterDeform is true and deformation is occurred in CPU, otherwise return original.
-    *    \return VertexArray Pointer. Deformed position & normal vertex arrays could be NULL if not request mapping vertex array.
+    /** Return the vertex array for the specified vertex array Id.
+    *    \param  pArrayId        Vertex array Id type to be queried.
+    *    \param  pAfterDeform    True to query the deformed position or normal vertex array (model must be deformable and deformation must occur in CPU), false to query the original vertex array.
+    *    \return (C++) The vertex array pointer. (Python) The vertex array as a list. Deformed position & normal vertex arrays could be NULL if one has not requested the mapping vertex array on CPU. 
     *    \note   Use VertexArrayMappingRequest() to toggle CPU / GPU skinning per model when necessary.
+         \code
+             // The following C++ snippet show how to deal with the Point vertex array pointer returned.
+             void* lVertexArray = lModelVertexData.GetVertexArray();
+             if( lVertexArray )
+             {
+                 int lVertexArrayCount = lModelVertexData->GetVertexCount();
+                 
+                 FBGeometryArrayElementType lArrayType = lModelVertexData->GetVertexArrayType( kFBGeometryArrayID_Point );
+                 if( lArrayType == kFBGeometryArrayElementType_Float4 )
+                 {
+                     FBVector4<float>* lVertexArrayFloat4 = (FBVector4<float>*)lVertexArray;
+                     
+                     for( int i = 0; i < lVertexArrayCount; i++ )
+                     {
+                         // Do something useful here
+                         FBTrace( "%f, %f, %f, %f\n", lVertexArrayFloat4[ i ][ 0 ], lVertexArrayFloat4[ i ][ 1 ], lVertexArrayFloat4[ i ][ 2 ], lVertexArrayFloat4[ i ][ 3 ] );
+                     }
+                 }
+             }
+         \endcode
     */
     void* GetVertexArray(FBGeometryArrayID pArrayId, bool pAfterDeform = true);
 
-    /** Return Vertex Buffer Object (VBO) Id for the request array
-    *    \param  pArrayId        vertex array type to return.
-    *    \param  pAfterDeform    return deformed vertex array VBO Id if the model is deformable, pAfterDeform is true and deformation is occurred in CPU, otherwise return original.
-    *    \return VertexArray VBO Id. Deformed position & normal vertex VBOId could be 0 is model use CPU skinning.
+    /** Return the Vertex Buffer Object (VBO) Id for the specified vertex array Id.
+    *    \param  pArrayId        Vertex array Id type to be queried.
+    *    \param  pAfterDeform    True to query the deformed position or normal vertex array (model must be deformable and deformation must occur in CPU), false to query the original vertex array.
+    *    \return The vertex array VBO Id. Deformed position & normal vertex VBO Id could be 0 if model use CPU skinning.
     *    \note   Use VertexArrayMappingRequest() to toggle CPU / GPU skinning per model when necessary.
     */
     unsigned int GetVertexArrayVBOId(FBGeometryArrayID pArrayId, bool pAfterDeform = true);
 
-    /** Return Vertex Buffer Object (VBO) offset for the request array
-    *    \param  pArrayId        vertex array type to return.
-    *    \param  pAfterDeform    return deformed vertex array VBO offset if the model is deformable, pAfterDeform is true and deformation is occurred in CPU, otherwise return original.
-    *    \return VertexArray VBO offset.
+    /** Return the Vertex Buffer Object (VBO) offset for the specified vertex array Id.
+    *    \param  pArrayId        Vertex array Id type to be queried. Only position or normal vertex array Id types are available.
+    *    \param  pAfterDeform    True to query the deformed position or normal vertex array (model must be deformable and deformation must occur in CPU), false to query the original vertex array.
+    *    \return The vertex array VBO offset (C++: as a pointer, Python: as a kReference).
     *    \note   Use VertexArrayMappingRequest() to toggle CPU / GPU skinning per model when necessary.
     */
     void* GetVertexArrayVBOOffset(FBGeometryArrayID pArrayId, bool pAfterDeform = true);
@@ -1307,39 +1381,69 @@ public:
     /**
     * \name UVset Array Management
     */
-
     //@{
-    /** Enable (Setup) OpenGL UV Set Array */
+
+    /** Enable (Setup) OpenGL UV set array.
+    *    \param  pTextureMapping    Texture Mapping Mode.
+    *    \param  pUVSet             UV Set name if pTextureMapping is kFBTextureMappingUV, otherwise ignored.
+    */
     void EnableOGLUVSet(FBTextureMapping pTextureMapping = kFBTextureMappingUV, const char* pUVSet = NULL);
 
-    /** Disable OpenGL UV Set Array*/
+    /** Disable OpenGL UV set array*/
     void DisableOGLUVSet();
 
-    /** Return UV Array Format. 
-    *    \param  pTextureMapping    Texture Mapping Mode.
-    *    \param  pUVSet            UVSet name if pTextureMapping is kFBTextureMappingUV, otherwise ignore.
-    *    \return UVSet Array Format.
+    /** Return the UV Set array format. 
+    *    \param  pTextureMapping    Unused parameter.
+    *    \param  pUVSet             Unused parameter.
+    *    \return The UV Set array format.
     */
     FBGeometryArrayElementType GetUVSetArrayFormat(FBTextureMapping pTextureMapping = kFBTextureMappingUV, const char* pUVSet = NULL);
 
-    /** Return UV Array Pointer
-    *    \param  pTextureMapping    Texture Mapping Mode.
-    *    \param  pUVSet            UVSet name if pTextureMapping is kFBTextureMappingUV, otherwise ignore.
-    *    \return UVSet Array Pointer.
+    /** Return the number of UVs in the UV Set for the specified texture mapping mode.
+    *    \param  pTextureMapping    Texture mapping mode to be queried.
+    *    \param  pUVSet             UV Set name to be queried if pTextureMapping is kFBTextureMappingUV, otherwise ignored.
+    *    \return The number of UVs in the UV Set for the specified texture mapping mode.
+    */
+    int GetUVSetUVCount(FBTextureMapping pTextureMapping = kFBTextureMappingUV, const char* pUVSet = NULL);
+
+    /** Return the UV Set array for the specified texture mapping mode.
+    *    \param  pTextureMapping    Texture mapping mode to be queried.
+    *    \param  pUVSet             UV Set name to be queried if pTextureMapping is kFBTextureMappingUV, otherwise ignored.
+    *    \return (C++) The UV Set array pointer. (Python) The UV Set array as a list.
+         \code
+             // The following C++ snippet show how to deal with the UV mapping UV Set array pointer returned.
+             void* lUVSetArray = lModelVertexData.GetUVSetArray();
+             if( lUVSetArray )
+             {
+                 int lUVArrayCount = lModelVertexData->GetUVSetUVCount();
+                 
+                 FBGeometryArrayElementType lArrayType = lModelVertexData->GetUVSetArrayFormat( kFBTextureMappingUV );
+                 if( lArrayType == kFBGeometryArrayElementType_Float2 )
+                 {
+                     FBUV* lUVArray = (FBUV*)lUVSetArray;
+                     
+                     for( int i = 0; i < lUVArrayCount; i++ )
+                     {
+                         // Do something useful here
+                         FBTrace( "%f, %f\n", lUVArray[ i ][ 0 ], lUVArray[ i ][ 1 ] );
+                     }
+                 }
+             }
+         \endcode
     */
     void* GetUVSetArray(FBTextureMapping pTextureMapping = kFBTextureMappingUV, const char* pUVSet = NULL);
 
-    /** Return UVSet Buffer Object (VBO) Id.
-    *    \param  pTextureMapping    Texture Mapping Mode.
-    *    \param  pUVSet            UVSet name if pTextureMapping is kFBTextureMappingUV, otherwise ignore.
-    *    \return UVSet VBO Id.
+    /** Return the UV Set Buffer Object (VBO) Id for the specified texture mapping mode.
+    *    \param  pTextureMapping    Texture mapping mode to be queried.
+    *    \param  pUVSet             UV Set name to be queried if pTextureMapping is kFBTextureMappingUV, otherwise ignored.
+    *    \return The UV Set VBO Id.
     */
     unsigned int GetUVSetVBOId(FBTextureMapping pTextureMapping = kFBTextureMappingUV, const char* pUVSet = NULL);
 
-    /** Return UVSet Buffer Object (VBO) offset.
-    *    \param  pTextureMapping    Texture Mapping Mode.
-    *    \param  pUVSet            UVSet name if pTextureMapping is kFBTextureMappingUV, otherwise ignore.
-    *    \return UVSet VBO Offset.
+    /** Return the UV Set Buffer Object (VBO) offset for the specified texture mapping mode.
+    *    \param  pTextureMapping    Texture mapping mode to be queried.
+    *    \param  pUVSet             UV Set name to be queried if pTextureMapping is kFBTextureMappingUV, otherwise ignored.
+    *    \return The UV Set VBO offset (C++: as a pointer, Python: as a kReference).
     */
     void* GetUVSetVBOOffset(FBTextureMapping pTextureMapping = kFBTextureMappingUV, const char* pUVSet = NULL);
 

@@ -149,8 +149,8 @@ public:
     *    \param    pFbxObject    FBX Object that is used to communicate I/O operations.
     *    \param    pStoreWhat    Which attributes are currently stored/retrieved.
     */
-    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
-    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat);
+    virtual bool FbxStore(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
+    virtual bool FbxRetrieve(FBFbxObject* pFbxObject, kFbxObjectStore pStoreWhat) override;
 
     /** Returns the class type inherited by the class of an object, for example: 'Material'.
     */

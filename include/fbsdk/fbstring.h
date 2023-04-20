@@ -66,11 +66,11 @@ K_FORWARD( KStringList );
 class FBSDK_DLL FBString
 {
 private:
-	char* mStr;
+    char* mStr{ nullptr };
 
 public:
 	//! Constructor.
-	FBString();
+    FBString() = default;
 
 	/** Constructor from a string.
 	*	\param pStr String to copy.
@@ -129,7 +129,13 @@ public:
 	bool  operator != ( const char* pStr ) const;
 	bool  operator != ( char* pStr ) const;
 
-	/** Overloaded += operator with a string.
+    /** Overloaded += operator with a char.
+    *	\param pChr Char to concatenate to \b this.
+    *	\return Reference to \b this.
+    */
+    const FBString& operator+=(const char pChr);
+    
+    /** Overloaded += operator with a string.
 	*	\param pStr String to concatenate to \b this.
 	*	\return Reference to \b this.
 	*/

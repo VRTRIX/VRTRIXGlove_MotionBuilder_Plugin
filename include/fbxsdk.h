@@ -245,6 +245,7 @@
 #include <fbxsdk/scene/shading/fbxsemanticentryview.h>
 #include <fbxsdk/scene/shading/fbxsurfacelambert.h>
 #include <fbxsdk/scene/shading/fbxsurfacematerial.h>
+#include <fbxsdk/scene/shading/fbxsurfacematerialutils.h>
 #include <fbxsdk/scene/shading/fbxsurfacephong.h>
 #include <fbxsdk/scene/shading/fbxtexture.h>
 

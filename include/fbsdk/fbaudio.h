@@ -316,7 +316,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	/** Play audio clip now.
 	*	\param	pStyle			How the audio clip should be triggered.

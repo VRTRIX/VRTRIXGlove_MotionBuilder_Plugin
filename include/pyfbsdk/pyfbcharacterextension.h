@@ -66,6 +66,8 @@ public:
 	void UpdateStancePose() { mFBCharacterExtension->UpdateStancePose(  ); }
 	void SetIncludePartInFullBody( bool pIncludePartInFullBody ) { mFBCharacterExtension->IncludePartInFullBody = pIncludePartInFullBody; }
 	bool GetIncludePartInFullBody(  ) { return mFBCharacterExtension->IncludePartInFullBody; }
+	void SetIncludePartInBodyPart( bool pIncludePartInBodyPart ) { mFBCharacterExtension->IncludePartInBodyPart = pIncludePartInBodyPart; }
+	bool GetIncludePartInBodyPart(  ) { return mFBCharacterExtension->IncludePartInBodyPart; }
 	void SetLabel( const char* pLabel ) { mFBCharacterExtension->Label = pLabel; }
 	const char* GetLabel(  ) { return mFBCharacterExtension->Label; }
 	void SetMirrorLabel( int pMirrorLabel ) { mFBCharacterExtension->MirrorLabel = pMirrorLabel; }

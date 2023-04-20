@@ -59,8 +59,6 @@ __FB_FORWARD( FBKernel );
 
 #if defined(KARCH_ENV_WIN32)
 	typedef struct TOpaqueInstance*		TInstance;
-#elif defined(KARCH_ENV_MACOSX)
-	typedef struct TOpaqueWindowRef*	TWindowRef;
 #endif
 
 /**	The MotionBuilder kernel
@@ -112,21 +110,6 @@ class FBSDK_DLL FBKernel : public FBComponent
 	    *	\return	\b true if successful.
 	    */
 		bool	HookKeyboard(bool pActive, TInstance pModuleHandle);
-	#elif defined(KARCH_ENV_MACOSX)
-	    /**	Hook to keyboard manager to steal key from hooked application.
-	    *	\param	pActive	set to true to activate hook.
-	    *	\param	pWindowRef	of the application to hook.
-	    *	\return	\b true if successful.
-	    */
-		bool	HookKeyboard(bool pActive, TWindowRef pWindowRef);
-	
-		/**	Handle raw keyboard input for DeviceKeyboard.
-		 *	\param	pHardwareKey	hardware key code.
-		 *	\param	pModifier	modifier information like shift, ctrl, alt ...
-		 *	\param	pKeyDown	true if key is down.
-		 *	\return	\b true if successful.
-		 */
-		void	HandleRawKeyboard( int pHardwareKey, int pModifier, bool pKeyDown );
 	#endif
 
 	/**	Get the global FBKernel object

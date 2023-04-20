@@ -1233,7 +1233,7 @@ namespace FBSDKNamespace {
 
         /** Virtual FBDelete function.
         */
-        virtual void FBDelete();
+        virtual void FBDelete() override;
 
 	};
 
@@ -1517,7 +1517,7 @@ namespace FBSDKNamespace {
 
         /** Virtual FBDelete function.
         */
-        virtual void FBDelete();
+        virtual void FBDelete() override;
 
         FBPropertyBool				Solo;				//!< <b>Read Write Property:</b> If true, the layer is soloed. When you solo a layer, you mute other layers that are at the same level in the hierarchy, as well as the children of those layers. Cannot be applied to the BaseAnimation Layer.
         FBPropertyBool				Mute;				//!< <b>Read Write Property:</b> If true, the layer is muted. A muted layer is not included in the result animation. Cannot be applied to the BaseAnimation Layer.
@@ -1702,7 +1702,7 @@ enum FBPropertyComponents {
         *   Using this method to delete the take insure that the destruction process
         *   follows the same path as if the GUI had been used.
         */
-        virtual void FBDelete();
+        virtual void FBDelete() override;
 
         /**	Copy the take.
         *	Will create a copy of the current take, with the current take data.

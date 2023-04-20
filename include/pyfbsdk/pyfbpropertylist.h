@@ -56,21 +56,15 @@ public:
     void Sort1( object pSortFnc );                                 // sort() 1 arg
     void Sort2( object pSortFnc, object pKeyFnc );                 // sort() 2 args
     void Sort3( object pSortFnc, object pKeyFnc, bool pReverse );  // sort() 3 args
+    object GetAt(int lIdx);
 
 protected:
 
     // CTOR
-    FBPropertyListBase_Wrapper()
-    {
-    };
+    FBPropertyListBase_Wrapper() = default;
     
     // DTOR
-    virtual ~FBPropertyListBase_Wrapper()
-    {
-    };
-    
-    object GetAt( int lIdx );
-
+    virtual ~FBPropertyListBase_Wrapper() = default;
     virtual object GetAtSelf( int lIdx ) = 0;
     virtual int GetCountSelf() = 0;
     virtual void AppendSelf( object pObject ) = 0;

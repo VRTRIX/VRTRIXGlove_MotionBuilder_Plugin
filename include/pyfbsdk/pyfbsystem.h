@@ -60,6 +60,7 @@ public:
 	const char* GetComputerName(  ) { return mFBSystem->ComputerName; }
     const char* GetBuildId(  ) { return mFBSystem->BuildId; }
 	const char* GetBuildVersion(  ) { return mFBSystem->BuildVersion; }
+	int GetPythonVersion() { return mFBSystem->PythonVersion; }
 	void SetCurrentTake( FBTake_Wrapper& pCurrentTake ) { mFBSystem->CurrentTake = pCurrentTake.mFBTake; }
 	object GetCurrentTake(  ) { return FBWrapperFactory::TheOne().WrapFBObject( mFBSystem->CurrentTake ); }
 	FBVector2d_Wrapper* GetDesktopSize(  ) { return FBVector2d_Wrapper_Factory( mFBSystem->DesktopSize ); }	

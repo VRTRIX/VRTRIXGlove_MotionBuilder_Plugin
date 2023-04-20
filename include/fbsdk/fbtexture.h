@@ -121,7 +121,7 @@ public:
     *    \param    pObject        For internal use only.
     */
     FBTexture(const char* pName, HIObject pObject=NULL);
-    virtual void FBDelete();
+    virtual void FBDelete() override;
 
     /** Clone the texture.
     *    This will duplicated the current texture. 
@@ -194,7 +194,7 @@ public:
     *    \param    pObject      For internal use only.
     */
     FBLayeredTexture(const char* pName, HIObject pObject=NULL);
-    virtual void FBDelete();
+    virtual void FBDelete() override;
 
     /** Clone the current texture.
     *    Duplicates the current texture. 

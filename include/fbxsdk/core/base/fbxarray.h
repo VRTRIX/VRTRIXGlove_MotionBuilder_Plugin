@@ -22,6 +22,15 @@
     #pragma warning( disable : 4201 ) // nonstandard extension used: nameless struct/union
 #endif
 
+#ifdef THROW_EXCEPTIONS
+	#define FBX_THROW(x) throw std::runtime_error(x)
+	#define FBX_ARRAY_INLINE __forceinline
+#else
+	#define FBX_THROW(x) FBX_ASSERT_NOW(x)
+	#define FBX_ARRAY_INLINE inline
+#endif
+
+
 /** Class for array of basic elements such as pointers and basic types. This class will not
 * call constructor and destructor for elements, thus it is not suitable for object references.
 * Memory allocations are always done in a single contiguous memory region. */
@@ -131,21 +140,21 @@ public:
     * \param pIndex Position of element in the array.
     * \return A reference to the element at the specified position in the array.
     * \remark No error will be thrown if the index is out of bounds. */
-    inline T& operator[](const int pIndex) const
+	FBX_ARRAY_INLINE T& operator[](const int pIndex) const
     {
         if (pIndex < 0)
         {
-            throw std::runtime_error("Index is out of range!");
+            FBX_THROW("Index is out of range!");
         }
 
         if (pIndex >= GetSize())
         {
             if (pIndex < GetCapacity())
             {
-                throw std::runtime_error("Index is out of range, but not outside of capacity! Call SetAt() to use reserved memory.");
+				FBX_THROW("Index is out of range, but not outside of capacity! Call SetAt() to use reserved memory.");
             }
 
-            throw std::runtime_error("Index is out of range!");
+			FBX_THROW("Index is out of range!");
         }
 
         return GetArray()[pIndex];
@@ -165,13 +174,6 @@ public:
     * \remark The array should have at least one element and no error will be thrown if the array is empty. */
     inline T GetFirst() const
     {
-        const int size = GetSize();
-
-        if (size <= 0)
-        {
-            throw std::runtime_error("FbxArray is empty");
-        }
-
         return GetAt(0);
     }
 
@@ -180,14 +182,7 @@ public:
     * \remark The array should have at least one element and no error will be thrown if the array is empty. */
     inline T GetLast() const
     {
-        const int size = GetSize();
-
-        if (size <= 0)
-        {
-            throw std::runtime_error("FbxArray is empty");
-        }
-
-        return GetAt(size - 1);
+        return GetAt(GetSize() - 1);
     }
 
     /** Find first matching element, from first to last.
@@ -263,13 +258,6 @@ public:
     * \remark The array should have at least one element and no error will be thrown if the array is empty. */
     inline void SetFirst(const T& pElement)
     {
-        const int size = GetSize();
-
-        if (size <= 0)
-        {
-            throw std::runtime_error("FbxArray is empty");
-        }
-
         SetAt(0, pElement);
     }
 
@@ -278,33 +266,26 @@ public:
     * \remark The array should have at least one element and no error will be thrown if the array is empty. */
     inline void SetLast(const T& pElement)
     {
-        const int size = GetSize();
-
-        if (size <= 0)
-        {
-            throw std::runtime_error("FbxArray is empty");
-        }
-
-        SetAt(size - 1, pElement);
+        SetAt(GetSize() - 1, pElement);
     }
 
     /** Remove an element at the given position in the array.
     * \param pIndex Position of the element to remove.
     * \return Removed element.
     * \remark No error will be thrown if the index is out of bounds. */
-    inline T RemoveAt(const int pIndex)
+	FBX_ARRAY_INLINE T RemoveAt(const int pIndex)
     {
         const int size = GetSize();
-
-        if (pIndex < 0 || pIndex >= size)
-        {
-            throw std::runtime_error("Index is out of range!");
-        }
+		const int index = pIndex + 1;
+		if (index < 0 || index > size)
+		{
+			FBX_THROW("Index is out of range!");
+		}
 
         T lElement = GetAt(pIndex);
-        if (pIndex + 1 < size)
+        if (index < size)
         {
-            memmove(&GetArray()[pIndex], &GetArray()[pIndex + 1], (size - pIndex - 1) * sizeof(T));
+            memmove(&GetArray()[pIndex], &GetArray()[index], (size - pIndex - 1) * sizeof(T));
         }
         mData->mSize--;
         return lElement;
@@ -315,13 +296,6 @@ public:
     * \remark The array should have at least one element and no error will be thrown if the array is empty. */
     inline T RemoveFirst()
     {
-        const int size = GetSize();
-
-        if (size <= 0)
-        {
-            throw std::runtime_error("FbxArray is empty");
-        }
-
         return RemoveAt(0);
     }
 
@@ -330,14 +304,7 @@ public:
     * \remark The array should have at least one element and no error will be thrown if the array is empty. */
     inline T RemoveLast()
     {
-        const int size = GetSize();
-
-        if (size <= 0)
-        {
-            throw std::runtime_error("FbxArray is empty");
-        }
-
-        return RemoveAt(size - 1);
+        return RemoveAt(GetSize() - 1);
     }
 
     /** Remove first matching element in the array.
@@ -428,7 +395,7 @@ public:
         FbxLongLong newSize = static_cast<FbxLongLong>(size) + static_cast<FbxLongLong>(pSize);
         if (newSize > INT_MAX)
         {
-            throw std::runtime_error("Grow - Int overflow!");
+			return false;
         }
 
         return Resize(size + pSize);
@@ -441,9 +408,11 @@ public:
     {
         const int size = GetSize();
 
-        if (pSize < 0 || size - pSize < 0)
+		// Check int32 paramater does not overflow
+		FbxLongLong newSize = static_cast<FbxLongLong>(size) - static_cast<FbxLongLong>(pSize);
+        if (pSize < 0 || newSize < 0 || newSize > size)
         {
-            throw std::runtime_error("Shrink - Int underflow!");
+			return false;
         }
 
         return Resize(size - pSize);
@@ -556,8 +525,6 @@ private:
         else
         {
             mData = NULL;
-
-            throw std::runtime_error("FbxArray Allocate failed");
         }
     }
 
@@ -611,5 +578,8 @@ template <class T> inline void FbxArrayDestroy(FbxArray<T>& pArray)
 template <class T> FBXSDK_INCOMPATIBLE_WITH_ARRAY_TEMPLATE(FbxArray<T>);
 
 #include <fbxsdk/fbxsdk_nsend.h>
+
+#undef FBX_ARRAY_INLINE
+#undef FBX_THROW
 
 #endif /* _FBXSDK_CORE_BASE_ARRAY_H_ */

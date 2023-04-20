@@ -36,24 +36,6 @@
  
 **************************************************************************/
 
-/**	\file fbversion.h
-*	define declarations to determine cross-platform namespace conventions.
-*	\remarks	fbsdk15 is no longer supported
-*	\remarks	fbsdk20 is no longer supported
-*	\remarks	fbsdk25 is no longer supported
-*	\remarks	fbsdk27 is no longer supported
-*	\remarks	fbsdk30 is no longer supported
-*	\remarks	fbsdk32 is no longer supported
-*	\remarks	fbsdk35 is no longer supported
-*	\remarks	fbsdk351 is no longer supported
-*	\remarks	fbsdk40 is no longer supported
-*	\remarks	fbsdk50 is no longer supported
-*	\remarks	fbsdk55 is no longer supported
-*	\remarks	fbsdk56 is no longer supported
-*	\remarks	fbsdk60 is no longer supported
-*	\remarks	fbsdk from version 7.0 is no longer supported
-*/
-
 #include <karch/arch.h>
 
 // Here we must set the namespace name to reflect the
@@ -61,12 +43,12 @@
 //! FBSDKUseNamespace define
 #define FBSDKUseNamespace 
 //! FBSDKNamespace define
-#define FBSDKNamespace             ORSDK2019
+#define FBSDKNamespace             ORSDK2022
 //! FBSDKNamespaceFunc define
 #define FBSDKNamespaceFunc( Name ) FBSDKNamespace::Name
 
 /**
-*	\mainpage	Open Reality SDK for MotionBuilder 2017 - Reference Guide
+*	\mainpage	Open Reality SDK for MotionBuilder 2022 - Reference Guide
 *	\section	intro	Introduction
 *		\subsection	welcome		Welcome To Open Reality
 *	The Open Reality SDK is a C++ software development kit (SDK) that lets you 

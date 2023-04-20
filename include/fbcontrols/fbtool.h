@@ -117,7 +117,7 @@ public:
     */
     FBTool(const char* pName = NULL);
 
-    /** Constructor used when creating tools not in the Tools menu of Motion Builder.
+    /** Constructor used when creating tools not in the Tools menu of MotionBuilder.
     *	\param	pName		    Name of tool, must be an unique name.
     *	\param	pRegisterTool	Tells if we should register the tool on the toolmanager. You can later call Showtool to pop it.
     */    
@@ -126,7 +126,7 @@ public:
     /** Redefine Custom Destroy function. Internal use only
     *	\param	pIsLocal		Not Used
     */    
-    virtual void Destroy(int pIsLocal);
+    virtual void Destroy(int pIsLocal) override;
     //@{
     /** Storage/Retrieval of information into the FBX file format.
     *	\param	pFbxObject	Object to interface with FBX file format.
@@ -146,13 +146,14 @@ public:
     */
     void SetPossibleDockPosition(FBToolPossibleDockPosition pFlags);
 
-    IQuery_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+    IQuery_Declare(override);		// Interface to IObject.
 
-    FBPropertyInt		StartSize	[2];	//!< Starting Size. This is the initial size when the tool is opened. (0:Width, 1:Height. Default = 800x400)
-    FBPropertyInt		MaxSize		[2];	//!< Maximum Size (Disabled in this version). A value of -1 means no maximum size. (0:Width, 1:Height. Default = -1x-1)
-    FBPropertyInt		MinSize		[2];	//!< Minimum Size. A value of -1 means no minimum value. (0:Width, 1:Height. Default = 140x-1).
-    FBPropertyInt		StartPos	[2];	//!< Starting Position. This is the initial position when the tool is opened. (0:X, 1:Y. Default for first tool = 450x450)
-    FBPropertyString    Name;               //! Tool Name
+    FBPropertyInt		StartSize	[2];	//!< <b>Read Write Property:</b> Starting Size. This is the initial size when the tool is opened. (0:Width, 1:Height. Default = 800x400)
+    FBPropertyInt		MaxSize		[2];	//!< <b>Read Write Property:</b> Maximum Size (Disabled in this version). A value of -1 means no maximum size. (0:Width, 1:Height. Default = -1x-1)
+    FBPropertyInt		MinSize		[2];	//!< <b>Read Write Property:</b> Minimum Size. A value of -1 means no minimum value. (0:Width, 1:Height. Default = 140x-1).
+    FBPropertyInt		StartPos	[2];	//!< <b>Read Write Property:</b> Starting Position. This is the initial position when the tool is opened. (0:X, 1:Y. Default for first tool = 450x450)
+    FBPropertyString    Name;               //!< <b>Read-Only Property:</b> Tool Name
+    FBPropertyString    DisplayName;        //!< <b>Read Write Property:</b> Tool Display Name (Caption on the tool's title bar)
 private:
 
     void InitTool();

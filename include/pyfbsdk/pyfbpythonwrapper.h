@@ -24,10 +24,10 @@
 class FBPythonGuard
 {
 public:
-	FBPythonGuard()		{ mGILState = PyGILState_Ensure(); }
-	~FBPythonGuard()	{ PyGILState_Release( mGILState ); }
+    FBPythonGuard();
+    ~FBPythonGuard();
 private:
-	PyGILState_STATE mGILState;
+    PyGILState_STATE mGILState{ (PyGILState_STATE)-1 };
 };
 
 void FBPythonWrapper_Init();

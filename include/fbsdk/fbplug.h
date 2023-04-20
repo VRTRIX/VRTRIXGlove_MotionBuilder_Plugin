@@ -503,8 +503,8 @@ public:
     virtual	bool PlugNotify(FBConnectionAction pAction,FBPlug* pThis,int pIndex,FBPlug* pPlug = NULL,FBConnectionType pConnectionType=kFBConnectionTypeNone,FBPlug* pNewPlug=NULL );
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    IObject_Declare(K_IMPLEMENTATION);
-    ICallback_Declare(K_IMPLEMENTATION);
+    IObject_Declare(override);
+    ICallback_Declare(override);
 
     /** Print out internal Class (ID) Definition table.
     *   For internal debug purpose only. 

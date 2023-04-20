@@ -43,13 +43,7 @@
 	#include <karch/arch.h>
 #endif
 
-#ifndef __STDC_LIMIT_MACROS		// need to be defined to have access to UINTPTR_MAX on Linux
-	#define __STDC_LIMIT_MACROS
-#endif
-
-#include <float.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <cstdint>
 
 // Common independant definitions
 
@@ -60,10 +54,6 @@ typedef unsigned char		kUChar;
 typedef unsigned int		kUInt;
 typedef signed short		kShort;
 typedef unsigned short		kUShort;
-
-typedef double				kVector2[2];   /* 2 x 64-bit real              */
-typedef double				kVector3[3];   /* 3 x 64-bit real              */
-typedef double				kVector4[4];   /* 4 x 64-bit real              */
 
 #define K_SCHAR_MIN			(-128)
 #define K_SCHAR_MAX			(127)
@@ -139,61 +129,29 @@ typedef unsigned long long	kULongLong;
 #define K_ULONGLONG_MIN		K_ULONGLONG(0)
 #define K_ULONGLONG_MAX		K_ULONGLONG(0xffffffffffffffff)
 
-#define K_FLOAT(x)			(x##F)
-#define K_FLOAT_MIN			FLT_MIN					// minimum positive value
-#define K_FLOAT_MAX			FLT_MAX					// maximum positive value
+typedef int8_t              kInt8;
+typedef uint8_t             kUInt8;
 
-#define K_DOUBLE(x)			(x)
-#define K_DOUBLE_MIN		DBL_MIN					// minimum positive value
-#define K_DOUBLE_MAX		DBL_MAX					// maximum positive value
+typedef int16_t             kInt16;
+typedef uint16_t            kUInt16;
 
-typedef kSChar				kInt8;
-typedef kUChar				kUInt8;
+typedef int32_t             kInt32;
+typedef uint32_t            kUInt32;
 
-typedef kShort				kInt16;
-typedef kUShort				kUInt16;
-
-typedef int					kInt32;
-typedef kUInt				kUInt32;
-
-typedef kLongLong			kInt64;
-typedef kULongLong			kUInt64;
-#define K_INT64_MIN			K_LONGLONG_MIN
-#define K_INT64_MAX			K_LONGLONG_MAX
-
-#ifdef KARCH_DEV_MSC
-	#define K_TEMPLATE_SPEC(t)
-	#define K_TEMPLATE_SPEC2(t1, t2)
-	#define K_INLINE			inline
-	#ifdef _DEBUG
-		#define K_FORCEINLINE		K_INLINE
-	#else
-		#define K_FORCEINLINE		__forceinline
-	#endif
-	#define K_TLS	__declspec( thread )	//	Thread-Local Storage
-#else
-	#define K_TEMPLATE_SPEC(t)	template<>
-	#define K_TEMPLATE_SPEC2(t1, t2)
-	#define K_INLINE			inline
-	#define K_FORCEINLINE		K_INLINE
-	#define K_TLS	__thread				//	Thread-Local Storage
-#endif
+typedef int64_t             kInt64;
+typedef uint64_t            kUInt64;
 
 // Atomic definitions
 #ifdef KARCH_ARCH_64
-	#ifdef KARCH_DEV_MSC
-		typedef __int64			kAtomic;
-	#else
-		typedef long long		kAtomic;
-	#endif
+	typedef int64_t			kAtomic;
 #else
-	typedef long				kAtomic;
+	typedef int32_t			kAtomic;
 #endif
 
 // Pointer definitions
 typedef uintptr_t			kReference;
 #define K_REFERENCE_MAX		UINTPTR_MAX
 
-typedef kULongLong			KMicroTime; 
+typedef kULongLong			KMicroTime;
 
 #endif

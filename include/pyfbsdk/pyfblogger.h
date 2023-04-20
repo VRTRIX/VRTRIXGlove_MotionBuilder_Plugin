@@ -37,7 +37,7 @@ public:
     void DisableClear() { FBLogger::TheOne().DisableClear(); }
     object DumpObject(FBPlug_Wrapper& pObject, int pDepth);
 
-    virtual ~FBLogger_Wrapper( );
+    virtual ~FBLogger_Wrapper( ) = default;
 
 	
 };

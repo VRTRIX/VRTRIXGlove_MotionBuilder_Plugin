@@ -174,8 +174,8 @@ class FBSDK_DLL FBConsole : public FBComponent {
 	//@}
 
 	// Re-implemented from FBComponent.
-    virtual bool FBCreate();
-    virtual void FBDestroy();
+    virtual bool FBCreate() override;
+    virtual void FBDestroy() override;
 
 	/** Open console.
 	*	\return \b true if successful.
@@ -223,7 +223,7 @@ __FB_FORWARD( FBJLCooper );
 /** JL Cooper interface class.
 *	Small API to interface a tool with a JLCooper console.
 */
-class FBSDK_DLL FBJLCooper : public FBComponent
+class FBSDK_DLL FBJLCooper : public FBComponent, public IJLCooper
 {
   private:
 	__FBClassDeclare( FBJLCooper, FBComponent );
@@ -233,7 +233,8 @@ class FBSDK_DLL FBJLCooper : public FBComponent
 	*/
 	FBJLCooper			( int pIndex = 0 );
 
-	IJLCooper_Declare	( K_IMPLEMENTATION );
+	IJLCooper_Declare	( override );
+    IObject_Declare     ( override );
 };
 
     

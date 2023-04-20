@@ -83,7 +83,7 @@ public:
 	*/
 	FBPose( const char *pName, HIObject pObject = NULL );
     
-    IQuery_Declare(K_IMPLEMENTATION);
+    IQuery_Declare(override);
 
     //! Returns the number of pose nodes stored.
 	int GetNodeCount();

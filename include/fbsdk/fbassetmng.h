@@ -199,12 +199,12 @@ public:
 	*/
 	FBAssetFile( const char* pName, HIObject pObject=NULL );
 
-	IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+	IObject_Declare(override);		// Interface to IObject.
 
 	/** Open Reality Creation function.
 	*	\return Outcome of creation (true/false).
 	*/
-	virtual bool FBCreate();
+	virtual bool FBCreate() override;
 
 	/** Returns a boolean value indicating if this file is checked out by any user.
 	*	\return A boolean value indicating if this node is checked out.
@@ -282,12 +282,12 @@ public:
 	*/
 	FBAssetFolder( const char* pName, HIObject pObject=NULL );
 
-	IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+	IObject_Declare(override);		// Interface to IObject.
 
 	/** Open Reality Creation function.
 	*	\return Outcome of creation (true/false).
 	*/
-	virtual bool FBCreate();
+	virtual bool FBCreate() override;
 
 	/** Get the number of items in this folder.
 	*	\return The number of items in this folder.
@@ -440,7 +440,7 @@ public:
 	*/
 	FBAssetMng( const char* pName, HIObject pObject=NULL );
 
-	IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+	IObject_Declare(override);		// Interface to IObject.
 
 	/** Initialize the connection to the server.
 	*	\return \b True if the connection was established, \b false otherwise.

@@ -157,7 +157,7 @@ class FBSDK_DLL FBDeviceOpticalLayout :	public FBDeviceLayout
 
 	//---- See base class ----
     // Standard device virtual functions creation
-    virtual bool FBCreate();
+    virtual bool FBCreate() override;
 
   public:
     FBDeviceOptical*        mDeviceOptical;			//!< Optical device.
@@ -181,8 +181,8 @@ class FBSDK_DLL FBDeviceCameraLayout : public FBDeviceLayout
     FBDeviceCameraLayout(FBDevice* pDevice);
 
 	//--- Open Reality Creation/Destruction.
-	virtual bool FBCreate();		//!< Open Reality Constructor.
-	virtual void FBDestroy();		//!< Open Reality Destructor.
+	virtual bool FBCreate() override;		//!< Open Reality Constructor.
+	virtual void FBDestroy() override;		//!< Open Reality Destructor.
 													
 public:
 	//--- UI Management

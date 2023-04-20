@@ -21,7 +21,7 @@
 
 //FBX SDK version defines
 #define FBXSDK_VERSION_MAJOR    2020        //<! Integer, version major number
-#define FBXSDK_VERSION_MINOR    0           //<! Integer, version minor number
+#define FBXSDK_VERSION_MINOR    1           //<! Integer, version minor number
 #define FBXSDK_VERSION_POINT    1           //<! Integer, version point number
 #define FBXSDK_VERSION_NAME     "Release"   //<! String, version name, example: Alpha, Beta, RC, Release
 

@@ -50,6 +50,8 @@ public:
     void GetBoundingBox(FBVector3d_Wrapper& pMin, FBVector3d_Wrapper& pMax) { mFBModel->GetBoundingBox( *pMin.mFBVector3d, *pMax.mFBVector3d ); }
     void GetMatrix(FBMatrix_Wrapper& pMatrix, FBModelTransformationType pWhat = kModelTransformation, bool pGlobalInfo = true, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) 
     { mFBModel->GetMatrix( *pMatrix.mFBMatrix, pWhat, pGlobalInfo, (pEvalInfo) ? pEvalInfo->mFBEvaluateInfo : NULL ); }
+    void GetLocalTransformationMatrixWithGlobalRotationDoF(FBMatrix_Wrapper& pMatrix, bool pInverse = false, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) 
+    { mFBModel->GetLocalTransformationMatrixWithGlobalRotationDoF( *pMatrix.mFBMatrix, pInverse, (pEvalInfo) ? pEvalInfo->mFBEvaluateInfo : NULL ); }
     list GetHierarchyWorldMatrices(unsigned int pMatricesCountMax, FBModelHiercharyTraverserType pHiercharyTraverserType, FBEvaluateInfo_Wrapper *pEvalInfo = NULL);
     int GetSelectedPointsCount() { return mFBModel->GetSelectedPointsCount(  ); }
     void GetVector(FBVector3d_Wrapper& pVector, FBModelTransformationType pWhat = kModelTranslation, bool pGlobalInfo = true, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) 
@@ -59,7 +61,7 @@ public:
     void SetMatrixWithPrecision(FBMatrix_Wrapper& pMatrix, FBModelTransformationType pWhat = kModelTransformation, bool pGlobalInfo = true, FBEvaluateInfo_Wrapper *pEvalInfo = NULL, double pPrecision = FBMat2EulerDegenerateForPrecision10) 
     { mFBModel->SetMatrixWithPrecision( *pMatrix.mFBMatrix, pWhat, pGlobalInfo, false, (pEvalInfo) ? pEvalInfo->mFBEvaluateInfo : NULL, pPrecision ); }
     void SetVector(FBVector3d_Wrapper& pVector, FBModelTransformationType pWhat = kModelTranslation, bool pGlobalInfo = true, FBEvaluateInfo_Wrapper *pEvalInfo = NULL) 
-    { mFBModel->SetVector( *pVector.mFBVector3d, pWhat, pGlobalInfo, (pEvalInfo) ? pEvalInfo->mFBEvaluateInfo : NULL ); }
+    { mFBModel->SetVector( *pVector.mFBVector3d, pWhat, pGlobalInfo, false, (pEvalInfo) ? pEvalInfo->mFBEvaluateInfo : NULL ); }
     void MatrixToRotation(FBVector3d_Wrapper& pVector, FBMatrix_Wrapper& pMatrix) {  mFBModel->MatrixToRotation(*pVector.mFBVector3d, *pMatrix.mFBMatrix); }
     void RotationToMatrix(FBMatrix_Wrapper& pMatrix, FBVector3d_Wrapper& pVector) { mFBModel->RotationToMatrix(*pMatrix.mFBMatrix, *pVector.mFBVector3d); }
     void LRMToDof(FBVector3d_Wrapper& pDof, FBMatrix_Wrapper& pLRM) { mFBModel->LRMToDof(*pDof.mFBVector3d, *pLRM.mFBMatrix);}

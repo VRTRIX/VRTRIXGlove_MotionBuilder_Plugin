@@ -134,7 +134,7 @@ public:
 	*/
 	FBCommand(const char* pName = NULL, HIObject pObject = NULL);
 
-	IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+	IObject_Declare(override);		// Interface to IObject.
 
 	//@{
 	/** Storage/Retrieval of information into the FBX file format.

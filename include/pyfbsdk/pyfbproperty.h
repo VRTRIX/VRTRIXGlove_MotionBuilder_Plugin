@@ -74,6 +74,8 @@ public:
     FBStringList_Wrapper* GetEnumStringList(bool pCreateIt = true);
     FBStringList_Wrapper* GetEnumStringList1() { return GetEnumStringList(); }
     void NotifyEnumStringListChanged();
+
+    object GetReferencedProperty();
 };
 
 PYSDK_DLL object FBProperty_Wrapper_Factory( FBProperty& pFBProperty );

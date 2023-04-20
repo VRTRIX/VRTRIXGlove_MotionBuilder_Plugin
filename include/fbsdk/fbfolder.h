@@ -90,7 +90,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	FBPropertyListComponent	Items;	//!< <b>List:</b> List of components in the folder.
 };

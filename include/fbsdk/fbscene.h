@@ -297,7 +297,7 @@ public:
 
     /** Virtual FBDelete function.
     */
-    virtual void FBDelete();
+    virtual void FBDelete() override;
 
     /**	Clears the elements part of the scene. Not those that belong to all the scenes.   	
     */

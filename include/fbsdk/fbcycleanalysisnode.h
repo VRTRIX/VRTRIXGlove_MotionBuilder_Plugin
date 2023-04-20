@@ -64,7 +64,7 @@ public:
 	*/
 	FBCycleAnalysisNode(const char* pName, HIObject pObject=NULL);
 
-    IQuery_Declare(K_IMPLEMENTATION);			// Interface to IObject  
+    IQuery_Declare(override);			// Interface to IObject  
 
     FBRootRMode     CycleAnalysisRootRMode;		//!< <b>Read Write Property:</b> The current RootR mode.
     FBRootHMode     CycleAnalysisRootHMode;		//!< <b>Read Write Property:</b> The current RootH mode.

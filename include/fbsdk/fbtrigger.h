@@ -173,7 +173,7 @@ public:
 	*/
 	FBTriggerGroup(char* pName = NULL, HIObject pObject = NULL);
 
-	IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+	IObject_Declare(override);		// Interface to IObject.
 
 	void Synchronize();
 
@@ -216,7 +216,7 @@ public:
 	*/
 	FBTrigger(char* pName = NULL, HIObject pObject = NULL);
 
-	IObject_Declare(K_IMPLEMENTATION);	// Interface to IObject.
+	IObject_Declare(override);	// Interface to IObject.
 
 	FBPropertyString		Name;		//!< Name of trigger.
 	FBPropertyTriggerType	Type;		//!< Trigger type.
@@ -238,7 +238,7 @@ public:
 	*/
 	FBMotionClip(char* pName, char* pFilename, HIObject pObject = NULL);
 
-	IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+	IObject_Declare(override);		// Interface to IObject.
 
 	FBPropertyString		Name;		//!< Name of motion clip.
 	FBPropertyString		Filename;	//!< Filename to load clip from.
@@ -259,7 +259,7 @@ public:
 	*/
 	FBTriggerBranch(char* pName, HIObject pObject = NULL);
 
-	IObject_Declare(K_IMPLEMENTATION);		// Interface to IObject.
+	IObject_Declare(override);		// Interface to IObject.
 
 	FBPropertyMotionClip	MotionClip;		//!< Motion clip to branch into.
 	FBPropertyTrigger		Trigger;		//!< Trigger to control branching.

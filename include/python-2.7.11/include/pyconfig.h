@@ -53,9 +53,13 @@ WIN32 is still required for the locale module.
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #endif
 
+/* Windows CE and clang as shiboken2 uses it does not have io.h */
+#if !(defined(MS_WINCE) || defined(__clang__))
+#define HAVE_IO_H
+#endif
+
 /* Windows CE does not have these */
 #ifndef MS_WINCE
-#define HAVE_IO_H
 #define HAVE_SYS_UTIME_H
 #define HAVE_TEMPNAM
 #define HAVE_TMPFILE

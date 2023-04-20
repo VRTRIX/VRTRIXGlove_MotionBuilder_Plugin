@@ -18,6 +18,7 @@
 
 #ifdef _MSC_VER
 	// Suppress warnings from boost header files.
+	#pragma warning(disable:4005) // 'BOOST_NO_AUTO_PTR': macro redefinition
 	#pragma warning(disable:4100) // Unreferenced formal parameter.
 	#pragma warning(disable:4244) // Conversion from 'long double' to 'double', possible loss of data.
 	#pragma warning(disable:4459) // declaration of 'xxxx' hides global declaration

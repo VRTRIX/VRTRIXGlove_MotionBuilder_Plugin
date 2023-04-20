@@ -121,14 +121,16 @@ namespace FBSDKNamespace {
         kFBPropertyFlagHideProperty = (1 << 0),       //!< This flag is used to show/hide the property in the propertiview. However, when turn on/off HidePropertry flag, this property won't show/hide unless you reload the UI.  The nodes hidden by this flag are removed from UI.
         kFBPropertyFlagForceStaticProperty = (1 << 1),
         kFBPropertyFlagDisableProperty = (1 << 2),
-        kFBPropertyFlagSlavedProperty = (1 << 3),     //!< This is property is connected and slaved by other same type of master property, and it always ask value from its master property.
+        kFBPropertyFlagDrivenProperty = (1 << 3),     //!< This is property is connected and driven by other same type of main property, and it always ask value from its main property.
+        kFBPropertyFlagSlavedProperty = kFBPropertyFlagDrivenProperty, //!< K_DEPRECATED_2021, use kFBPropertyFlagDrivenProperty
         kFBPropertyFlagAnimated = (1 << 4),
         kFBPropertyFlagNotSavable = (1 << 5),         //!< Should not be saved to or loaded from an FBX file
         kFBPropertyFlagReadOnly = (1 << 6),
         kFBPropertyFlagNotUserDeletable = (1 << 7),
         kFBValueAllocated = (1 << 8),                 //!< The value has been allocated and must be delete in destructor.
         kFBDynamicHidden = (1 << 9),                  //!< This flag is used to show/hide the property in the propertiview. When turn on/ff DynamicHidden flag, this property will show/hide.  The nodes hidden by this flag still exist in UI.
-        kFBSlaveSetByMaster = (1 << 10),              //!< Slave property can be modified, valid only when the master property is modified
+        kFBDrivenSetByMain = (1 << 10),                //!< Driven property can be modified, valid only when the main property is modified
+        kFBSlaveSetByMaster = kFBDrivenSetByMain,      //!< K_DEPRECATED_2021, use kFBDrivenSetByMain
         kFBLoadedUserProperty = (1 << 11)             //!< This property is loaded from file
     };
 
@@ -205,7 +207,7 @@ namespace FBSDKNamespace {
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
         //! IObject_Declare Interface to IObject.
-        IObject_Declare(K_IMPLEMENTATION);		
+        IObject_Declare(override);		
 
         //! Initialize internal pointer.
         FBProperty* InitInternal( KProperty* pProperty );
@@ -468,6 +470,11 @@ namespace FBSDKNamespace {
 
         //@}
 
+        /**	Get the referenced property, in the case of this property is a reference property (see the IsReferenceProperty() method).
+        *	\return The referenced property, or a null pointer if this property is not a reference property.
+        */
+        FBProperty* GetReferencedProperty();
+
     private:
         //	FBProperty(FBProperty&); // Make sure no copy constructor is use
     };
@@ -709,12 +716,12 @@ namespace FBSDKNamespace {
         *	If there is an existing set function, this class is read/write, otherwise it is read-only.
         *	\return \b true if it is read-only.
         */
-        inline virtual bool IsReadOnly()  { return IsInternal() ? (FBProperty::IsReadOnly()) : (Set == NULL); }
+        inline virtual bool IsReadOnly() override  { return IsInternal() ? (FBProperty::IsReadOnly()) : (Set == NULL); }
 
         /**	Get value.
         *	\retval	pValue Value to fill with current object value.
         */
-        inline virtual void GetData(void* pData, int pSize, FBEvaluateInfo *pEvalInfo = NULL) const
+        inline virtual void GetData(void* pData, int pSize, FBEvaluateInfo *pEvalInfo = NULL) const override
         {
             if(Get)
             { 
@@ -733,7 +740,7 @@ namespace FBSDKNamespace {
         /**	Set value.
         *	\param	pData	Integer to use to set.
         */
-        inline virtual void SetData(void* pData)
+        inline virtual void SetData(void* pData) override
         { 
             if(Set) 
             { 
@@ -762,13 +769,10 @@ namespace FBSDKNamespace {
         static const char *mStrings[];
 #endif
         //! Constructor.
-        inline FBPropertyBaseEnum(){}  
+        FBPropertyBaseEnum()=default;
 
         //! Destructor.
-        inline ~FBPropertyBaseEnum()
-        {
-
-        }  
+        inline ~FBPropertyBaseEnum()=default;
 
         /** FBPropertyBaseEnum
         *	\param pValue FBPropertyBaseEnum.
@@ -1252,39 +1256,25 @@ namespace FBSDKNamespace {
     *	\param	DllTag		Associated DLL.
     *	\param	Type	Class to implement.
     */
-#if defined(KARCH_DEV_INTEL)
-#define FBImplementPropertyComponent( DllTag, Type ) 
-#else
 #define FBImplementPropertyComponent( DllTag, Type ) \
     template class DllTag FBSDKNamespaceFunc(FBPropertyBase)< FB##Type*,kFBPT_object >;	\
     template class DllTag FBSDKNamespaceFunc(FBPropertyBaseComponent)< FB##Type* >;
-#endif
 
     /**	Implement a property based on an enumeration
     *	\param	DllTag		Associated DLL.
     *	\param	Type	Class to implement.
     */
-#if defined(KARCH_DEV_INTEL)
-#define FBImplementPropertyEnum( DllTag, Type )	// On SGI by having mString defined for each enum already instantiates the template.
-#define FBImplementClassPropertyEnum( DllTag, Class, EnumName )
-#else
 #define FBImplementPropertyEnum( DllTag, Type ) \
     template class DllTag FBSDKNamespaceFunc(FBPropertyBaseEnum)< enum FB##Type >
 #define FBImplementClassPropertyEnum( DllTag, Class, EnumName ) \
     template class DllTag FBSDKNamespaceFunc(FBPropertyBaseEnum)< enum Class::E##EnumName >
-#endif
 
     /** Implement a property list for a component
     *	\param	DllTag		Associated DLL.
     *	\param	Type	Class to implement list for.
     */
-#if defined(KARCH_DEV_INTEL)
-#define FBImplementPropertyList( DllTag, Type )
-#else
 #define FBImplementPropertyList( DllTag, Type ) \
     template class DllTag FBSDKNamespaceFunc(FBPropertyBaseList) < FB##Type* >
-#endif
-
 
     //!	\b Property class: const char * (String).
     class FBSDK_DLL FBPropertyString : public FBPropertyBase< const char *, kFBPT_charptr > 

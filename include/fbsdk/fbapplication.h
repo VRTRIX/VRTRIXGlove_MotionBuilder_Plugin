@@ -343,12 +343,17 @@ public:
     */
     void FlushEventQueue();
 
-    /**	Command FILE->NEW in the menus.
+    /** Is the scene modified since last save / new scene creation?
+    *   \return	True if the scene is modified since last save / new scene creation, false otherwise.
+    */
+	bool IsSceneModified();
+
+    /**	Command File->New in the menus.
     *	\param	pAskUser            Set to true to cause a save dialog to popup. Default is false.
     *	\param	pClearSceneName     Set to true to clear the scene name, set to false to retain it. Default is true.
     *	\return	true if successful.
     */
-    bool FileNew(bool  pAskUser = false, bool pClearSceneName = true);
+    bool FileNew(bool pAskUser = false, bool pClearSceneName = true);
 
     /**	Open a file, replacing the current scene.
     *	Command File->Open in the menus.
@@ -554,7 +559,7 @@ public:
 #endif
 
     /** Render current scene to media file.
-    *	Command FILE->RENDER in the menus.
+    *	Command File->Render in the menus.
     *	\param	pRenderOptions	The options used when rendering the scene. If you don't specify them, current one are used.
     *	\return					True if the file was rendered successfully otherwise False and FBVideoGrabber.GetLastErrorMsg() contains the description of the error.
     *	\remark					Render options can be changed if they are not valid.
@@ -577,12 +582,6 @@ public:
     *	\remark					This function can only be used in the UI thread.
     */
     bool ExecuteScript(FBString pFilename);
-
-    /**	Switch the current viewer's camera.
-    *	\param	pCamera			Camera to switch current viewer to.
-	*	\remark					This method is deprecated. Use FBRenderer.SetCameraInPane instead.
-    */
-    K_DEPRECATED_2016 void SwitchViewerCamera( FBCamera &pCamera );
 
 public:
     FBPropertyString        FBXFileName;            //!< <b>Read Write Property:</b> Current scene filename.
@@ -727,6 +726,26 @@ FBSDK_DLL void FBMergeTransactionFileRefEditEnd();
 /**  Call to tell if system is during File Reference Edit Merge transaction. 
 */
 FBSDK_DLL bool FBMergeTransactionFileRefEditIsOn();
+
+//! Different threshold types for the Constant Key Reducer filter.
+enum FBConstantKeyReducerThresholdType {
+	kFBTranslationThreshold,	//!< Translation threshold.
+	kFBRotationThreshold,		//!< Rotation threshold.
+	kFBScalingThreshold,		//!< Scaling threshold.
+	kFBDefaultThreshold,		//!< All other curves threshold.
+};
+
+/**	Return a specific threshold value used by the Constant Key Reducer filter.
+*	\param	pThresholdType		The threshold type to retrieve its value.
+*	\return	The threshold value.
+*/	
+FBSDK_DLL double FBGetConstantKeyReducerThresholdValue( FBConstantKeyReducerThresholdType pThresholdType );
+
+/**	Set a specific threshold value used by the Constant Key Reducer filter.
+*	\param	pThresholdType		The threshold type to set its value.
+*	\param	pValue				The new threshold value to set.
+*/	
+FBSDK_DLL void FBSetConstantKeyReducerThresholdValue( FBConstantKeyReducerThresholdType pThresholdType, double pValue );
 
 /** 
 *   @}

@@ -583,7 +583,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	/** Allow to load/unload all story clips under this folder.
 	*	\remark	Currently only animation clips are supported.
@@ -661,7 +661,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	/**	ChangeDetailsBegin.
 	*	You must call this function before adding/removing any object to the Details list or it won't work.
@@ -807,7 +807,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	/** Clone the clip.
 	*/
@@ -1068,7 +1068,7 @@ public:
 
 	/** Virtual FBDelete function.
 	*/
-	virtual void FBDelete();
+	virtual void FBDelete() override;
 
 	/**	Move.
 	*	Move the clip of a delta offset.

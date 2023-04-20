@@ -113,7 +113,7 @@ struct FBSDK_DLL FBVideoGrabOptions
 	bool						mAntiAliasing;			//!< If true, video frames will be anti-aliased.
 	bool						mRenderAudio;			//!< If true and there's audio in the scene, render the audio as well.
 	FBAudioFmt					mAudioRenderFormat;		//!< Audio render format.
-    int                         mStillImageCompression;	//!< Compression ratio for image(jpg) 0-100 where 0=Greatest compression, 100=Least Compression.
+    int                         mStillImageCompression;	//!< Compression ratio for image(jpg) 0-100 where 0=Greatest compression, 100=Least Compression. For tif/tiff images, if different than 100, lossless compression will be applied.
 	FBAudioOutputLocation		mAudioOutputLocation;	//!< Audio output location when rendering using a video format (for still image formats & SWF (Flash) format, the audio is always rendered in a standalone file).
 	bool						mAudioUseCustomStandaloneFileName;	//!< If true and if the audio is rendered in a standalone output file, the audio file is generated at the file location specified by mAudioCustomStandaloneFileName, otherwise the audio file is generated in the same directory as the rendered images/video files based on their names.
 	FBString					mAudioCustomStandaloneFileName;		//!< Destination for the custom audio standalone file, if mAudioUseCustomStandaloneFileName is set to true.

@@ -69,7 +69,7 @@ FB_FORWARD( FBScriptWrapper );
 class FBScriptWrapper
 {
 public:
-    virtual ~FBScriptWrapper() { }
+    virtual ~FBScriptWrapper() = default;
     virtual void ContentDestroy() = 0;    
 };
 

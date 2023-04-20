@@ -191,7 +191,7 @@ private:
         */
         FBVideoClip(const char* pName, HIObject pObject=NULL);
 
-        virtual void FBDelete();
+        virtual void FBDelete() override;
 
         /** Verifies the validity of the FBVideo object.
         *	\return \b true if data is valid.
